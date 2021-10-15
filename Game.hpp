@@ -58,12 +58,22 @@ public:
     /// two menus at the same time, a stage running during the menu, etc.
     void showMainMenu();
     
+    
+    /// @brief Save to a file storage the current Save.
+    /// @details
+    ///     The Save lives only in memory, so it has to be called to be taken into consideration for next
+    ///     execution.
+    void writeSave() const;
+    
 public:
     TextureCache textures;
     SceneStack scene;
-    Save save;
+    
+    Save& getSave() { return *m_save; }
+    const Save& getSave() const { return *m_save; }
     
 private:
+    std::shared_ptr<Save> m_save;
     Shader m_shader;
     Font m_font;
     

@@ -7,51 +7,10 @@
 
 namespace ui
 {
-    MenuStage::MenuStage(Game &game, std::vector<bool> stages)
-        : m_game(game), m_stages(std::move(stages))
+    MenuStage::MenuStage(Game &game)
+        : m_game{game},
+          m_lastLevelUnlocked{0}
     {
-        const glm::vec2 winSize = m_game.getWindow().getSize();
-        
-        // Each item is fixed size
-        const glm::vec2 itemSize{128.0f};
-    
-        // To have empty space between the items and be more spaced,
-        // We add padding between the items. Exprimed in pixel.
-        // All computations are done with itemSize but the rendered size is (itemSize - padding).
-        const glm::vec2 padding {10.0f, 20.0f};
-    
-        // Margin between the borders of the window and the border items
-        // Since padding is computed twice,
-        // We need to compensate (and we can also give a different value for a style)
-        const float margin = 32.0f;
-        
-        // Drawable area in center
-        // Count twice margin (left and right)
-        const float viewWidth { winSize.x - margin * 2.0f };
-    
-        // We search how many rects we can fill
-        m_columns = std::floor(viewWidth / itemSize.x); // Columns count (integer)
-        m_rows = std::ceil(static_cast<float>(m_stages.size()) / static_cast<float>(m_columns));
-        m_focus = GridPosition{m_columns};
-        const float columnWidth = viewWidth / static_cast<float>(m_columns);
-        
-        GridPosition gridPos(m_columns);
-        
-        for(int i = 0; i < static_cast<int>(m_stages.size()); ++i)
-        {
-            const auto item = std::make_shared<Item>(itemSize - padding, m_game.getFont(), i);
-            
-            float x = columnWidth * gridPos->x + columnWidth / 2.0f + margin;
-            float y = winSize.y - margin - (itemSize.y * gridPos->y + itemSize.y / 2.0f);
-            
-            item->setPosition({x, y});
-            
-            m_items.push_back(item);
-            
-            ++gridPos;
-        }
-        
-        m_items.at(0)->setFocused(true);
     }
     
     bool MenuStage::updateNode()
@@ -96,7 +55,7 @@ namespace ui
                 // The last row may be incomplete
                 if(pos.y == m_rows - 1)
                 {
-                    pos.x = glm::clamp<int>(pos.x, 0, (m_stages.size() % m_columns) - 1);
+                    pos.x = glm::clamp<int>(pos.x, 0, (m_lastLevelUnlocked % m_columns) - 1);
                 }
                 
                 // Unfocus previous item and focus new item (if they are the same it's ok)
@@ -109,7 +68,7 @@ namespace ui
             
             if(controls.menuSelect.isJustPressed())
             {
-                m_game.scene.push(std::make_shared<Stage>(m_game, m_focus.getIndex()));
+                m_game.scene.push(std::make_shared<Stage>(m_game, m_focus.getIndex() + 1));
             }
             
             co_await std::suspend_always{};
@@ -138,6 +97,61 @@ namespace ui
             ImGui::InputInt2("Focus position" , &m_focus->x, ImGuiInputTextFlags_ReadOnly);
             ImGui::InputInt("Focus ID", &id, ImGuiInputTextFlags_ReadOnly);
         }
+    }
+    
+    void MenuStage::onBecomeTop()
+    {
+        m_items.clear();
+        m_lastLevelUnlocked = m_game.getSave().lastLevelUnlocked;
+        
+        const glm::vec2 winSize = m_game.getWindow().getSize();
+    
+        // Each item is fixed size
+        const glm::vec2 itemSize{128.0f};
+    
+        // To have empty space between the items and be more spaced,
+        // We add padding between the items. Exprimed in pixel.
+        // All computations are done with itemSize but the rendered size is (itemSize - padding).
+        const glm::vec2 padding {10.0f, 20.0f};
+    
+        // Margin between the borders of the window and the border items
+        // Since padding is computed twice,
+        // We need to compensate (and we can also give a different value for a style)
+        const float margin = 32.0f;
+    
+        // Drawable area in center
+        // Count twice margin (left and right)
+        const float viewWidth { winSize.x - margin * 2.0f };
+    
+        // We search how many rects we can fill
+        m_columns = std::floor(viewWidth / itemSize.x); // Columns count (integer)
+        m_rows = std::ceil(static_cast<float>(m_lastLevelUnlocked) / static_cast<float>(m_columns));
+        
+        // Keep the focused button if there was one
+        const GridPosition previousFocus{m_focus};
+        
+        m_focus = GridPosition{m_columns};
+        m_focus.setPosition(*previousFocus);
+        
+        const float columnWidth = viewWidth / static_cast<float>(m_columns);
+    
+        GridPosition gridPos(m_columns);
+    
+        for(int i = 0; i < static_cast<int>(m_lastLevelUnlocked); ++i)
+        {
+            const auto item = std::make_shared<Item>(itemSize - padding, m_game.getFont(), i);
+        
+            float x = columnWidth * gridPos->x + columnWidth / 2.0f + margin;
+            float y = winSize.y - margin - (itemSize.y * gridPos->y + itemSize.y / 2.0f);
+        
+            item->setPosition({x, y});
+        
+            m_items.push_back(item);
+        
+            ++gridPos;
+        }
+    
+        m_items.at(m_focus.getIndex())->setFocused(true);
     }
     
     MenuStage::Item::Item(glm::vec2 size, const Font& font, int id)

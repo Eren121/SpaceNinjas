@@ -1,4 +1,4 @@
-#include "MainMenu.hpp"
+#include "VerticalListMenu.hpp"
 #include "Game.hpp"
 #include "media/input/Axis.hpp"
 #include "process/Wait.hpp"
@@ -9,12 +9,12 @@
 
 namespace ui
 {
-    MainMenu::MainMenu(Game& game)
+    VerticalListMenu::VerticalListMenu(Game& game)
         : m_game(game)
     {
     }
     
-    void MainMenu::drawNode(RenderStates states) const
+    void VerticalListMenu::drawNode(RenderStates states) const
     {
         const Window& window = m_game.getWindow();
         const glm::vec2 winSize = window.getSize();
@@ -51,7 +51,7 @@ namespace ui
         }
     }
     
-    void MainMenu::addOption(const std::string& label, std::function<void()> onClick)
+    void VerticalListMenu::addOption(const std::string& label, std::function<void()> onClick)
     {
         m_inputs.push_back(Input{
             .label = label,
@@ -59,12 +59,12 @@ namespace ui
         });
     }
     
-    bool MainMenu::updateNode()
+    bool VerticalListMenu::updateNode()
     {
         return (*this)();
     }
     
-    task<> MainMenu::coroutine()
+    task<> VerticalListMenu::coroutine()
     {
         const GameControls& controls = m_game.getControls();
     
@@ -119,7 +119,7 @@ namespace ui
         }
     }
     
-    void MainMenu::debugNode()
+    void VerticalListMenu::debugNode()
     {
         if(ImGui::CollapsingHeader("Main menu"))
         {
@@ -127,7 +127,7 @@ namespace ui
         }
     }
     
-    void MainMenu::onClick()
+    void VerticalListMenu::onClick()
     {
         if(m_focus >= 0 && m_focus < static_cast<int>(m_inputs.size()))
         {

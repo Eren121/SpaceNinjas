@@ -15,7 +15,7 @@ public:
         Max = 32767
     };
     
-    virtual ~Action() = default;
+    ~Action() override = default;
 
     /// @returns true if the action is currently pressed
     bool isPressed() const;

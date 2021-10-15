@@ -14,12 +14,12 @@ namespace ui
     class MenuStage : public SceneNode, private CoProcess
     {
     public:
-        /// @brief MainMenu Stage item
+        /// @brief VerticalListMenu Stage item
         class Item : public Sprite
         {
         public:
             explicit Item(glm::vec2 size, const Font& font, int id);
-    
+            
             void draw(RenderStates states) const override;
 
             void setFocused(bool focus);
@@ -30,8 +30,10 @@ namespace ui
         
     public:
         /// @param stages The vector of all stage to render. true means the stage is unlocked.
-        explicit MenuStage(Game& game, std::vector<bool> stages);
+        explicit MenuStage(Game& game);
 
+        void onBecomeTop() override;
+        
     protected:
         void drawNode(RenderStates states) const override;
         void debugNode() override;
@@ -40,13 +42,14 @@ namespace ui
         task<> coroutine() override;
         
     private:
+        Game& m_game;
+        
         /// @brief Count of items on each row
         int m_columns;
         int m_rows;
+        int m_lastLevelUnlocked;
         
         GridPosition m_focus;
-        Game& m_game;
-        std::vector<bool> m_stages;
         std::vector<std::shared_ptr<Item>> m_items;
     };
 }

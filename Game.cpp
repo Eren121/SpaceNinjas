@@ -2,7 +2,7 @@
 #include "WindowDebugInfo.hpp"
 #include "process/CoProcess.hpp"
 #include "process/Wait.hpp"
-#include "ui/MainMenu.hpp"
+#include "ui/VerticalListMenu.hpp"
 #include "ui/MenuStage.hpp"
 #include <wrappers/gl/Circle.hpp>
 #include <wrappers/gl/Shader.hpp>
@@ -14,7 +14,8 @@
 
 Game::Game()
     : m_window("Haaa", 800, 600),
-      textures(getRoot() / "textures")
+      textures(getRoot() / "textures"),
+      m_save(std::make_shared<Save>())
 {
     GL::enableDebugging();
 
@@ -28,12 +29,12 @@ Game::Game()
             
             std::ofstream jsonOut{savePath};
             cereal::JSONOutputArchive ar{jsonOut};
-            save.serialize(ar);
+            ar(*m_save);
         }
         
         std::ifstream jsonIn{savePath};
         cereal::JSONInputArchive ar{jsonIn};
-        save.serialize(ar);
+        ar(*m_save);
     }
     
     std::filesystem::path assets = std::filesystem::current_path() / "../assets";
@@ -46,18 +47,17 @@ Game::Game()
     
     m_userControls = std::make_shared<GameControls>(m_window.getInput());
     
+    m_debugNode.addChild(m_save);
     m_debugNode.addChild(m_userControls);;
     m_debugNode.addChild(std::make_shared<WindowDebugInfo>(m_window));
 }
 
 void Game::showMainMenu()
 {
-    auto menu = std::make_shared<ui::MainMenu>(*this);
+    auto menu = std::make_shared<ui::VerticalListMenu>(*this);
     
     menu->addOption("Play", [this] {
-        std::vector<bool> stages(50);
-        
-        scene.push(std::make_shared<ui::MenuStage>(*this, stages));
+        scene.push(std::make_shared<ui::MenuStage>(*this));
     });
     
     menu->addOption("Settings");
@@ -204,4 +204,22 @@ float Game::getPixelPerMeter() const
 const GameControls& Game::getControls() const
 {
     return *m_userControls;
+}
+
+void Game::writeSave() const
+{
+    const std::filesystem::path savePath{getRoot() / "save.json"};
+    
+    if(!std::filesystem::exists(savePath))
+    {
+        std::cerr << "Creating a new save file " << savePath << "..." << std::endl;
+    }
+    else
+    {
+        std::cerr << "Overwriting save file " << savePath << "..." << std::endl;
+    }
+    
+    std::ofstream jsonOut{savePath};
+    cereal::JSONOutputArchive ar{jsonOut};
+    ar(*m_save);
 }

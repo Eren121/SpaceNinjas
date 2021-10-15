@@ -2,7 +2,7 @@
 
 #include <glm/vec2.hpp>
 
-/// @brief Utility for iterating 2D grids.
+/// @brief Utility for iterating unsigned 2D grids.
 /// @details
 /// Having a fixed count of column, each increment go to the next position, in row-major order by default.
 /// The count of rows is infinite.
@@ -36,6 +36,11 @@ public:
     
     /// @brief Get the index of the position.
     int getIndex() const;
+    
+    
+    /// @brief Set to a new position.
+    /// @param newPos The new position. If a coordinate is outside the bounds, the value is clamped.
+    void setPosition(glm::ivec2 newPos);
     
 private:
     glm::ivec2 m_pos{0};

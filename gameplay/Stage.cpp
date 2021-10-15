@@ -19,7 +19,8 @@ Stage::Stage(Game &game, int id)
       m_luaEngine(std::make_shared<LuaEngine>(*this)),
       m_playerControl(std::make_unique<PlayerControl>(*this)),
       m_uiRenderer(std::make_shared<UIStage>(game, *this)),
-      m_victory(Victory::Running)
+      m_victory(Victory::Running),
+      m_logger{Logger::getOrCreate("Stage")}
 {
     initPlayer();
     initVoid();
@@ -109,12 +110,28 @@ void Stage::update()
         // The player has win or lost
         // In either way we stop the process
         stop();
-
-        // The shared_ptr argument is also useful to not have a dangling pointer
-        // Because if we restart a stage here, this is deleted because removed from the ProcessPool
-
-        // m_game.getStagePtr() == this
-        // But as a shared_ptr (cannot get a shared_ptr from this)
+        
+        getLogger().debug("Level finished by the player. Result: {}", to_string(m_victory));
+        
+        if(m_victory == Victory::Win)
+        {
+            // Unlock the next level (if not already unlocked)
+            const int nextID{m_id + 1};
+            
+            if(m_game.getSave().lastLevelUnlocked < nextID)
+            {
+                m_game.getSave().lastLevelUnlocked = nextID;
+                m_game.writeSave();
+                
+                getLogger().debug("Level {} unlocked", nextID);
+            }
+            else
+            {
+                getLogger().debug("Level {} already unlocked", nextID);
+            }
+        }
+        
+        
         //m_game.scene.addChild(std::make_shared<VictoryMenu>(m_game.getStagePtr()));
         ///TODO
     }

@@ -16,6 +16,13 @@ public:
     /// @returns false To remove the node from its parent after its update.
     bool update(bool printDebugInfo);
     
+    /// @brief Callback called when this becomes this top stack node.
+    /// @details
+    /// Can be called either:
+    /// - When this is just pushed to the stack.
+    /// - When this node was the sub-top node, and the top node is popped, making this the top node again.
+    virtual void onBecomeTop() {}
+    
 protected:
     virtual void drawNode(RenderStates states) const {}
     

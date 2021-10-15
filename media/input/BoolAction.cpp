@@ -3,7 +3,7 @@
 BoolAction::BoolAction()
 {
     // Dead zone is always zero for bool because values are only either 0 or 1
-    // With dead zone it would be always 0
+    // With any dead zone > 0 it would be always 0
     m_deadZone = 0;
 }
 

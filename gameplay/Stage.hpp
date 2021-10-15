@@ -8,10 +8,11 @@
 #include "UIStage.hpp"
 #include "gameplay/lua/LuaEngine.hpp"
 #include "process/ProcessPool.hpp"
+#include <utility/logging.hpp>
 
 class Game;
 
-class Stage : public SceneNode, public Process
+class Stage : public SceneNode, public Process, public Loggable<"Stage">
 {
 public:
     explicit Stage(Game& game, int id);
@@ -37,7 +38,7 @@ public:
     
     /// @brief When getting the player, you must ensure the player exists (not dead).
     bool hasPlayer() const;
-
+    
 protected:
     void debugNode() override;
 
@@ -79,5 +80,8 @@ private:
     
 public:
     ProcessPool eachStep; ///< Processes to run each step
+    
+private:
+    Logger::pointer m_logger;
 };
 

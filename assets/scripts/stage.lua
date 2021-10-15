@@ -66,9 +66,6 @@ function main(id)
 
     print("Starting level " .. id)
 
-    -- id starts at zero in code, but one in scripts
-    id = id + 1
-
     local stage = _ENV["stage" .. id]
 
     if(type(stage) == "nil") then

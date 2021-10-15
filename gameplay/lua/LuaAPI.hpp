@@ -2,15 +2,15 @@
 
 #include "process/Process.hpp"
 #include "wrappers/box2d/World.hpp"
+#include "utility/logging.hpp"
 #include <sol/sol.hpp>
-#include <spdlog/fwd.h>
 
 class Stage;
 class Game;
 
 /// @brief An instance of this class is in the Lua code, named 'api'.
 /// @details The functions of this class are bound to Lua.
-class LuaAPI
+class LuaAPI : public Loggable<"LuaAPI">
 {
 public:
     explicit LuaAPI(Stage& stage);
@@ -51,7 +51,5 @@ private:
 
     /// @brief Count of remaining living ennemies.
     int m_ennemyCount{0};
-    
-    std::shared_ptr<spdlog::logger> m_logger;
 };
 

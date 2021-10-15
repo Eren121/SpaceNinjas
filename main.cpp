@@ -11,17 +11,10 @@ using std::cerr;
 using std::cout;
 using std::endl;
 
-void register_loggers()
-{
-    static auto luaAPi{spdlog::stdout_logger_st("LuaAPI")};
-}
-
 /// @brief Main where all exceptions are caught
 /// @details Better to never use abort(), but instead throwing errors to ensure cleanup of SDL.
 void safe_main()
 {
-    register_loggers();
-    
     SDL::init();
     SDL::init_image();
 

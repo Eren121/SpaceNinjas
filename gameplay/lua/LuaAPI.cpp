@@ -9,10 +9,9 @@
 #include <spdlog/spdlog.h>
 
 LuaAPI::LuaAPI(Stage& stage)
-    : m_stage(stage),
-      m_logger(spdlog::get("LuaAPI"))
+    : m_stage(stage)
 {
-    m_logger->set_level(spdlog::level::debug);
+    getLogger().set_level(spdlog::level::debug);
     
     auto& world = m_stage.getWorld();
     world.onDestroy.connect([this](b2Body& b2body) {
@@ -21,7 +20,7 @@ LuaAPI::LuaAPI(Stage& stage)
         if(body->type == Body::Ennemy)
         {
             m_ennemyCount--;
-            m_logger->debug("Ennemy destroyed (remaining: {})", m_ennemyCount);
+            getLogger().debug("Ennemy destroyed (remaining: {})", m_ennemyCount);
         }
     });
 }
@@ -46,7 +45,7 @@ void LuaAPI::createNewType(sol::state& L)
 
 b2Body& LuaAPI::spawnEnnemy(float x, float y, float velX, float velY)
 {
-    m_logger->debug("Calling spawnEnnemy({}, {}, {}, {})", x, y, velX, velY);
+    getLogger().debug("Calling spawnEnnemy({}, {}, {}, {})", x, y, velX, velY);
     
     m_ennemyCount++;
 
@@ -70,21 +69,21 @@ b2Body& LuaAPI::spawnEnnemy(float x, float y, float velX, float velY)
 
 void LuaAPI::win()
 {
-    m_logger->debug("Calling win()");
+    getLogger().debug("Calling win()");
     
     m_stage.stopStage(Victory::Win);
 }
 
 void LuaAPI::defeat()
 {
-    m_logger->debug("Calling defeat()");
+    getLogger().debug("Calling defeat()");
     
     m_stage.stopStage(Victory::Loss);
 }
 
 void LuaAPI::run(const sol::function& function)
 {
-    m_logger->debug("Calling run(<function>)");
+    getLogger().debug("Calling run(<function>)");
     
     lua_State *L = function.lua_state();
     
@@ -103,14 +102,14 @@ void LuaAPI::run(const sol::function& function)
 
 int LuaAPI::ennemyCount() const
 {
-    m_logger->debug("Calling ennemyCount() (returns: {})", m_ennemyCount);
+    getLogger().debug("Calling ennemyCount() (returns: {})", m_ennemyCount);
     
     return m_ennemyCount;
 }
 
 std::shared_ptr<Process> LuaAPI::wait(int millis) const
 {
-    m_logger->debug("Calling wait({})", millis);
+    getLogger().debug("Calling wait({})", millis);
     
     auto source = [this]() {
         return m_stage.getWorld().getTime();

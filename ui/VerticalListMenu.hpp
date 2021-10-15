@@ -10,11 +10,11 @@ class Game;
 namespace ui
 {
     /// @brief A vertical list, equally spaced, of options.
-    class MainMenu : public SceneNode, private CoProcess
+    class VerticalListMenu : public SceneNode, private CoProcess
     {
     public:
         /// @brief Constructor.
-        explicit MainMenu(Game& game);
+        explicit VerticalListMenu(Game& game);
     
         /// @brief Add an option to the menu.
         void addOption(const std::string& label, std::function<void()> onClick = {});
