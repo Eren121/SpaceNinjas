@@ -1,6 +1,7 @@
 #include "FT.hpp"
 
 #include <vector>
+#include <algorithm>
 
 namespace FT
 {
