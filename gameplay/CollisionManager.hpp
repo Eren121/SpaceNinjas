@@ -60,12 +60,12 @@ sigslot::connection CollisionManager::connect(Body::Type a, Body::Type b, T&& ca
 
     if(a <= b)
     {
-        return m_callbacks[{a, b}].template connect(callback);
+        return m_callbacks[{a, b}].connect(callback);
     }
     else
     {
         // Do not forget to also reverse the callback arguments!!!
-        return m_callbacks[{b, a}].template connect([cb = std::forward<T>(callback)](b2Body& b, b2Body& a) {
+        return m_callbacks[{b, a}].connect([cb = std::forward<T>(callback)](b2Body& b, b2Body& a) {
             cb(a, b);
         });
     }
@@ -74,5 +74,5 @@ sigslot::connection CollisionManager::connect(Body::Type a, Body::Type b, T&& ca
 template<typename T>
 sigslot::connection CollisionManager::connect(Body::Type a, T&& callback)
 {
-    return m_anyCallbacks[a].template connect(callback);
+    return m_anyCallbacks[a].connect(callback);
 }
