@@ -8,7 +8,7 @@ namespace FT::RAII
     {
         std::cout << "Loading font '" << path << "' with character size " << characterSize << "px" << std::endl;
 
-        FT_Check(FT_New_Face(library, path.c_str(), 0, &m_wrapped));
+        FT_Check(FT_New_Face(library, path.string().c_str(), 0, &m_wrapped));
         FT_Check(FT_Set_Pixel_Sizes(m_wrapped, 0, characterSize));
     }
 
