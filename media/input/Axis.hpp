@@ -1,6 +1,6 @@
 #pragma once
 
-#include <SDL2/SDL_events.h>
+#include <SDL_events.h>
 #include <glm/vec2.hpp>
 
 /// @brief Represent an input that is represented by a 2D vector.

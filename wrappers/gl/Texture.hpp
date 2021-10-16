@@ -2,7 +2,7 @@
 
 #include "wrappers/gl/GL.hpp"
 #include "utility/Rect.hpp"
-#include <SDL2/SDL_surface.h>
+#include <SDL_surface.h>
 #include <glm/vec2.hpp>
 #include <filesystem>
 

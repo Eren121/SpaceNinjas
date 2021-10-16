@@ -1,7 +1,7 @@
 #pragma once
 
 #include <utility/offset_of.hpp>
-#include <GL/glew.h>
+#include "OpenGL.hpp"
 #include <vector>
 #include <utility>
 

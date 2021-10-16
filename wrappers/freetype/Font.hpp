@@ -5,7 +5,7 @@
 #include <wrappers/freetype/Glyph.hpp>
 #include <filesystem>
 #include <memory>
-#include <SDL2/SDL_version.h>
+#include <SDL_version.h>
 
 namespace FT
 {

@@ -7,7 +7,7 @@
 #include <wrappers/gl/Circle.hpp>
 #include <wrappers/gl/Shader.hpp>
 #include <wrappers/gl/Texture.hpp>
-#include <GL/glew.h>
+#include "OpenGL.hpp"
 #include <imgui.h>
 #include <cereal/archives/json.hpp>
 #include <fstream>

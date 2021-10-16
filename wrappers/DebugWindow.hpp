@@ -1,6 +1,6 @@
 #pragma once
 
-#include <SDL2/SDL.h>
+#include <SDL.h>
 
 /// @brief ImGUI with OpenGL and SDL wrapper
 class DebugWindow

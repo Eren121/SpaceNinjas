@@ -2,7 +2,7 @@
 
 #include "InputListener.hpp"
 #include <sigslot/signal.hpp>
-#include <SDL2/SDL_events.h>
+#include <SDL_events.h>
 #include <glm/vec2.hpp>
 #include <map>
 

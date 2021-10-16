@@ -2,7 +2,7 @@
 
 #include "Key.hpp"
 #include <sigslot/signal.hpp>
-#include <SDL2/SDL_events.h>
+#include <SDL_events.h>
 #include <unordered_map>
 
 class Window;

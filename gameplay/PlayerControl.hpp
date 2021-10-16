@@ -1,7 +1,7 @@
 #pragma once
 
 #include "PlayerProcess.hpp"
-#include <SDL2/SDL_keycode.h>
+#include <SDL_keycode.h>
 
 class Game;
 class Window;

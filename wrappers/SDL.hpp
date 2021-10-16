@@ -3,8 +3,8 @@
 #include "wrappers/nostd/source_location.hpp"
 #include "utility/Exception.hpp"
 #include "utility/swapmove.hpp"
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_image.h>
+#include <SDL.h>
+#include <SDL_image.h>
 #include <glm/vec4.hpp>
 #include <string>
 

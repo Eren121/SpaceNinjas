@@ -1,7 +1,7 @@
 #include "Shader.hpp"
 #include <utility/Exception.hpp>
 #include <utility/IO.hpp>
-#include <GL/glew.h>
+#include "OpenGL.hpp"
 #include <glm/gtc/type_ptr.hpp>
 #include <vector>
 

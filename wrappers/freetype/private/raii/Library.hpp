@@ -1,7 +1,7 @@
 #pragma once
 
 #include "utility/swapmove.hpp"
-#include <SDL2/SDL_version.h>
+#include <SDL_version.h>
 #include <ft2build.h>
 #include FT_FREETYPE_H
 

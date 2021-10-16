@@ -1,6 +1,6 @@
 #include "Window.hpp"
 #include "utility/Str.hpp"
-#include <GL/glew.h>
+#include "OpenGL.hpp"
 #include <iostream>
 
 Window::Window(const std::string& title, int width, int height)
