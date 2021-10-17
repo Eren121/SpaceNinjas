@@ -2,8 +2,10 @@
 #include "media/Window.hpp"
 #include "utility/macro/unused.hpp"
 
-UnifiedInput::UnifiedInput(Window& window)
-    : InputListener(window)
+namespace Snow::in
+{
+UnifiedInput::UnifiedInput(media::Window &window)
+        : InputListener(window)
 {
 }
 
@@ -27,4 +29,5 @@ glm::vec2 UnifiedInput::getMouseInClipSpace() const
     mouse.y = -mouse.y; // We still need to reverse Y because the sens is opposite in clip space / window space.
 
     return mouse;
+}
 }

@@ -1,12 +1,11 @@
 #pragma once
 
-#include "process/Process.hpp"
 #include "wrappers/box2d/World.hpp"
 #include "utility/logging.hpp"
+#include "process/Process.hpp"
+#include "Fwd.hpp"
 #include <sol/sol.hpp>
 
-class Stage;
-class Game;
 
 /// @brief An instance of this class is in the Lua code, named 'api'.
 /// @details The functions of this class are bound to Lua.
@@ -41,7 +40,7 @@ public:
     void win();
     void defeat();
     
-    std::shared_ptr<Process> wait(int millis) const;
+    std::shared_ptr<Snow::exe::Process> wait(int millis) const;
 
     int ennemyCount() const;
 

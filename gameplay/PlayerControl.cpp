@@ -2,7 +2,7 @@
 #include "PlayerControl.hpp"
 #include <utility/math.hpp>
 
-void PlayerControl::update(b2Body& player)
+void SpaceNinja::PlayerControl::update(b2Body& player)
 {
     tryMove(player);
     tryRotateWithKeys(player);
@@ -11,7 +11,7 @@ void PlayerControl::update(b2Body& player)
     clampPlayer(player);
 }
 
-void PlayerControl::tryMove(b2Body& player)
+void SpaceNinja::PlayerControl::tryMove(b2Body& player)
 {
     glm::vec2 move = m_stage.getGame().getControls().move.getValue();
 
@@ -24,7 +24,7 @@ void PlayerControl::tryMove(b2Body& player)
     }
 }
 
-void PlayerControl::clampPlayer(b2Body& player)
+void SpaceNinja::PlayerControl::clampPlayer(b2Body& player)
 {
     glm::vec2 pos = b2::getPosition(player);
 
@@ -39,7 +39,7 @@ void PlayerControl::clampPlayer(b2Body& player)
     }
 }
 
-void PlayerControl::tryRotateWithKeys(b2Body& player)
+void SpaceNinja::PlayerControl::tryRotateWithKeys(b2Body& player)
 {
     glm::vec2 dir = m_stage.getGame().getControls().turn.getValue();
     
@@ -54,7 +54,7 @@ void PlayerControl::tryRotateWithKeys(b2Body& player)
     }
 }
 
-void PlayerControl::tryRotateFollowMouse(b2Body& player)
+void SpaceNinja::PlayerControl::tryRotateFollowMouse(b2Body& player)
 {
     // The player's ship always face the mouse position
 
@@ -71,7 +71,7 @@ void PlayerControl::tryRotateFollowMouse(b2Body& player)
     b2::setAngle(player, angle);
 }
 
-glm::vec2 PlayerControl::convertClipSpaceToSimulationSpace(const glm::vec2& clipCoords) const
+glm::vec2 SpaceNinja::PlayerControl::convertClipSpaceToSimulationSpace(const glm::vec2& clipCoords) const
 {
     auto& game = m_stage.getGame();
     return glm::inverse(game.getViewMatrix())
@@ -79,7 +79,7 @@ glm::vec2 PlayerControl::convertClipSpaceToSimulationSpace(const glm::vec2& clip
          * glm::vec4(clipCoords, 0.0f, 1.0f);
 }
 
-glm::vec2 PlayerControl::getDirection(SDL_Scancode left, SDL_Scancode right, SDL_Scancode up, SDL_Scancode down) const
+glm::vec2 SpaceNinja::PlayerControl::getDirection(SDL_Scancode left, SDL_Scancode right, SDL_Scancode up, SDL_Scancode down) const
 {
     const Uint8 *state = SDL_GetKeyboardState(nullptr);
     glm::vec2 move(0.0f, 0.0f);

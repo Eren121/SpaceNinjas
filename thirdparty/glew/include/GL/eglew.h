@@ -77,6 +77,8 @@
 ** MATERIALS OR THE USE OR OTHER DEALINGS IN THE MATERIALS.
 */
 
+#pragma once
+
 #ifndef __eglew_h__
 #define __eglew_h__
 #define __EGLEW_H__

@@ -1,4 +1,4 @@
-#include "TestTransformable.hpp"
+#include "test/TestTransformable.hpp"
 #include <wrappers/gl/VertexArray.hpp>
 #include <wrappers/gl/ConvexShape.hpp>
 #include <wrappers/gl/Line.hpp>
@@ -8,8 +8,11 @@
 #include <imgui_impl_sdl.h>
 #include <glm/gtc/matrix_transform.hpp>
 
+namespace SpaceNinja::test
+{
+
 TestTransformable::TestTransformable()
-    : m_window("Test transformable", 800, 800)
+        : m_window("Test transformable", 800, 800)
 {
     std::filesystem::path path = std::filesystem::current_path() / "../assets";
 
@@ -19,11 +22,14 @@ TestTransformable::TestTransformable()
     m_current = &m_triangle;
 
     m_triangle.setVerticesCount(3);
-    m_triangle.setVertex(0, {{1, 0}, {1, 0, 0, 1}});
-    m_triangle.setVertex(1, {{0, 1}, {0, 1, 0, 1}});
-    m_triangle.setVertex(2, {{-1, 0}, {0, 0, 1, 1}});
+    m_triangle.setVertex(0, {{1, 0},
+                             {1, 0, 0, 1}});
+    m_triangle.setVertex(1, {{0, 1},
+                             {0, 1, 0, 1}});
+    m_triangle.setVertex(2, {{-1, 0},
+                             {0,  0, 1, 1}});
 
-    char buf[] {"Loremp ipsum"};
+    char buf[]{"Loremp ipsum"};
 
     strcpy(m_string, buf);
     m_text.setString(m_string);
@@ -39,23 +45,20 @@ void TestTransformable::draw()
     states.view = view;
     states.shader = &m_shader;
 
-    if(auto *tr = dynamic_cast<Transformable*>(m_current))
-    {
+    if (auto *tr = dynamic_cast<Transformable *>(m_current)) {
         tr->setOrigin(m_origin);
         tr->setPosition(m_position);
         tr->setRotation(m_rotation);
         tr->setScale(m_scale);
     }
 
-    if(auto *shape = dynamic_cast<Shape*>(m_current))
-    {
+    if (auto *shape = dynamic_cast<Shape *>(m_current)) {
         shape->setOutlineColor(m_outlineColor);
         shape->setOutlineThickness(m_noOutline ? 0.0f : m_outlineThickness);
         shape->setColor(m_fillColor);
     }
 
-    if(auto *txt = dynamic_cast<Text*>(m_current))
-    {
+    if (auto *txt = dynamic_cast<Text *>(m_current)) {
         txt->setColor(m_fillColor);
 
         txt->setScale(txt->getScale() / txt->getLineHeight());
@@ -65,59 +68,52 @@ void TestTransformable::draw()
     drawGrid(states);
     m_current->draw(states);
 
-    if(m_current == &m_text)
-    {
+    if (m_current == &m_text) {
         Sprite sprite;
         sprite.setScale({m_text.getSize() / m_text.getLineHeight()});
-        sprite.setOrigin({-0.5f,  -0.5f}); // Same origin as the Font
+        sprite.setOrigin({-0.5f, -0.5f}); // Same origin as the Font
         sprite.setColor({0, 1, 0, 0.5});
         sprite.draw(states);
     }
 
     ImGui::SliderFloat("Zoom", &m_zoom, 0.1f, 6.0f);
 
-    if(ImGui::Button("Reset"))
-    {
+    if (ImGui::Button("Reset")) {
     }
 
     {
-        if(ImGui::Selectable("Triangle", m_current == &m_triangle))
-        {
+        if (ImGui::Selectable("Triangle", m_current == &m_triangle)) {
             m_current = &m_triangle;
         }
-        if(ImGui::Selectable("Circle", m_current == &m_circle))
-        {
+        if (ImGui::Selectable("Circle", m_current == &m_circle)) {
             m_current = &m_circle;
         }
-        if(ImGui::Selectable("Text", m_current == &m_text))
-        {
+        if (ImGui::Selectable("Text", m_current == &m_text)) {
             m_current = &m_text;
         }
     }
 
-    if(ImGui::CollapsingHeader("Transformation"))
-    {
+    if (ImGui::CollapsingHeader("Transformation")) {
         ImGui::SliderFloat2("Origin", &m_origin.x, -2.0f, 2.0f);
         ImGui::SliderFloat2("Translation", &m_position.x, -2.0f, 2.0f);
         ImGui::SliderFloat("Rotation", &m_rotation, 0.0f, 2.0f * PI);
         ImGui::SliderFloat2("Scale", &m_scale.x, -2.0f, 2.0f);
     }
 
-    if(ImGui::CollapsingHeader("Fill"))
-    {
-        ImGui::ColorPicker4("Fill color, ", &m_fillColor.r, ImGuiColorEditFlags_PickerHueWheel | ImGuiColorEditFlags_AlphaBar);
+    if (ImGui::CollapsingHeader("Fill")) {
+        ImGui::ColorPicker4("Fill color, ", &m_fillColor.r,
+                            ImGuiColorEditFlags_PickerHueWheel | ImGuiColorEditFlags_AlphaBar);
     }
 
-    if(ImGui::CollapsingHeader("Outline"))
-    {
+    if (ImGui::CollapsingHeader("Outline")) {
         ImGui::SliderFloat("Outline thickness", &m_outlineThickness, -2.0f, 2.0f);
-        ImGui::ColorPicker4("Outline color, ", &m_outlineColor.r, ImGuiColorEditFlags_PickerHueWheel | ImGuiColorEditFlags_AlphaBar);
+        ImGui::ColorPicker4("Outline color, ", &m_outlineColor.r,
+                            ImGuiColorEditFlags_PickerHueWheel | ImGuiColorEditFlags_AlphaBar);
 
         ImGui::Checkbox("Disable outline", &m_noOutline);
     }
 
-    if(ImGui::CollapsingHeader("Text"))
-    {
+    if (ImGui::CollapsingHeader("Text")) {
         ImGui::Text("Text size : %fx%fpx", m_text.getSize().x, m_text.getSize().y);
 
         ImGui::InputText("String", m_string, sizeof(m_string));
@@ -130,17 +126,17 @@ void TestTransformable::run()
 
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
-    ImGuiIO &io = ImGui::GetIO(); (void)io;
+    ImGuiIO &io = ImGui::GetIO();
+    (void) io;
     ImGui::StyleColorsDark();
     ImGui_ImplOpenGL3_Init("#version 330 core");
     ImGui_ImplSDL2_InitForOpenGL(m_window.getHandle(), nullptr);
 
-    sigslot::scoped_connection conn = m_window.onEvent.connect([](const SDL_Event& event, long) {
+    sigslot::scoped_connection conn = m_window.onEvent.connect([](const SDL_Event &event, long) {
         ImGui_ImplSDL2_ProcessEvent(&event);
     });
 
-    while(m_window.isOpen())
-    {
+    while (m_window.isOpen()) {
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -175,8 +171,7 @@ void TestTransformable::drawGrid(RenderStates states)
     // color
     glm::vec4 axis{1, 0, 0, 1}, noaxis{1};
 
-    for(int x = -count; x <= count; ++x)
-    {
+    for (int x = -count; x <= count; ++x) {
         a = {x, -count};
         b = {x, count};
 
@@ -184,11 +179,12 @@ void TestTransformable::drawGrid(RenderStates states)
         line.draw(states);
     }
 
-    for(int y = -count; y <= count; ++y)
-    {
+    for (int y = -count; y <= count; ++y) {
         a = {-count, y};
         b = {count, y};
         line.update(a, b, y == 0 ? axis : noaxis);
         line.draw(states);
     }
+}
+
 }

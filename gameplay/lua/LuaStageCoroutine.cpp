@@ -1,5 +1,6 @@
 #include "LuaStageCoroutine.hpp"
 #include "wrappers/lua/LuaException.hpp"
+#include "process/Process.hpp"
 #include <sol/state_view.hpp>
 
 LuaStageCoroutine::LuaStageCoroutine(lua_State *L, int nargs)

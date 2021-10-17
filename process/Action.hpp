@@ -2,6 +2,8 @@
 
 #include "Process.hpp"
 
+namespace Snow::exe
+{
 /// @brief An Action is a Process that executes only once.
 class Action : public Process
 {
@@ -11,3 +13,7 @@ public:
 protected:
     virtual void action() = 0;
 };
+}
+namespace SpaceNinja::exe
+{
+}

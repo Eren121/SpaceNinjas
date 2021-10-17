@@ -8,6 +8,8 @@
 #include <glm/glm.hpp>
 #include <string>
 
+namespace Snow::media
+{
 /// @brief Window instance.
 class Window
 {
@@ -31,11 +33,11 @@ public:
     /// @brief Get the size of the window in pixel.
     glm::vec2 getSize() const;
 
-    UnifiedInput& getInput();
-    const UnifiedInput& getInput() const;
+    in::UnifiedInput& getInput();
+    const in::UnifiedInput& getInput() const;
 
     SDL_Window* getHandle() const;
-    
+
     long getFrame() const;
 
     /// @name
@@ -49,7 +51,8 @@ public:
 
 private:
     /// @brief Setup the options for OpenGL.
-    void setupGLAttributes();
+
+    static void setupGLAttributes();
 
     /// @brief Creates the window
     void createWindow(const std::string& title, int width, int height);
@@ -58,7 +61,7 @@ private:
     void createContext();
 
     /// @brief Initialize GLEW (should be called after having created the OpenGL context)
-    void initGLEW();
+    static void initGLEW();
 
     SDL_Window *m_window;
     SDL_GLContext m_context;
@@ -75,9 +78,10 @@ public:
 private:
     std::unique_ptr<DebugWindow> m_debugWindow;
 
-    void printGPUInfo();
+    static void printGPUInfo();
 
-    UnifiedInput m_input;
-    unsigned long m_frame{0};
+    in::UnifiedInput m_input;
+    long m_frame{0};
 };
+}
 

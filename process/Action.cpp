@@ -1,7 +1,8 @@
 #include "Action.hpp"
+#include "Process.hpp"
 
-void Action::update()
+void Snow::exe::Action::update()
 {
     action();
-    stop();
+    Process::stop();
 }

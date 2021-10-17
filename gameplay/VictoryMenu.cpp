@@ -48,7 +48,7 @@ task<> VictoryMenu::fadeInVictoryMessage()
     states.view = glm::ortho(0.0f, m_window.getSize().x, 0.0f, m_window.getSize().y);
 
     // Show shade in Victory
-    Wait wait(Time::seconds(5));
+    Snow::exe::Wait wait(Time::seconds(5));
     while (wait())
     {
         float opacity = wait.getProgress();

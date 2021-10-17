@@ -4,6 +4,8 @@
 #include <memory>
 #include <queue>
 
+namespace Snow::exe
+{
 /// @brief A queue of Processes.
 /// @details
 /// This process contains multiple processes that will execute in order. The next process is only executed when
@@ -21,4 +23,5 @@ protected:
 private:
     std::queue<std::shared_ptr<Process>> m_queue;
 };
+}
 

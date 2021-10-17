@@ -4,13 +4,17 @@
 #include "wrappers/gl/Shader.hpp"
 #include "wrappers/freetype/Font.hpp"
 
+namespace SpaceNinja::test
+{
+
 /// @brief Test transformable with a IMGUI interface
 class Test
 {
 public:
     Test();
+
     virtual ~Test() = default;
-    
+
     void run();
 
 protected:
@@ -18,6 +22,8 @@ protected:
 
 protected:
     Font m_font;
-    Window m_window;
+    Snow::media::Window m_window;
     Shader m_shader;
 };
+
+}

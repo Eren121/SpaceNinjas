@@ -4,10 +4,12 @@
 #include <utility/time/Time.hpp>
 #include <functional>
 
+namespace Snow::exe
+{
 /// @brief A process that do nothing but last a specific amount of time.
 /// @details The sleep can be stopped to finish immediately.
 /// @remarks The time point can be customized, it's not obligatorily the real clock time.
-class Wait : public Process
+class Wait : public Snow::exe::Process
 {
 public:
     /// @brief The time source type.
@@ -31,4 +33,5 @@ private:
     Time m_start;
     Time m_end;
 };
+}
 

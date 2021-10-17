@@ -1,6 +1,7 @@
 #include "ProcessQueue.hpp"
+#include "Process.hpp"
 
-void ProcessQueue::update()
+void Snow::exe::ProcessQueue::update()
 {
     // If a process finishes, pass immediately to the next process
     while(!m_queue.empty())
@@ -24,12 +25,12 @@ void ProcessQueue::update()
     }
 }
 
-void ProcessQueue::push(std::shared_ptr<Process> p)
+void Snow::exe::ProcessQueue::push(std::shared_ptr<Process> p)
 {
     m_queue.push(std::move(p));
 }
 
-bool ProcessQueue::empty() const
+bool Snow::exe::ProcessQueue::empty() const
 {
     return m_queue.empty();
 }

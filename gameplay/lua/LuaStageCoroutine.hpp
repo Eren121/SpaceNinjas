@@ -8,7 +8,7 @@
 ///   - pause and wait next world step, by yielding nothing
 ///   - run another Process and wait its completion, by yielding a std::shared_ptr<Process>.
 /// @remarks If a Process is yielded, this Process will run once per world step, like the coroutine.
-class LuaStageCoroutine : public Process
+class LuaStageCoroutine : public Snow::exe::Process
 {
 public:
     /// @remarks Obeys to the same rules as lua_utils::Coroutine constructor.

@@ -2,11 +2,11 @@
 
 #include "LuaAPI.hpp"
 #include "LuaStageCoroutine.hpp"
-
-class Stage;
+#include "process/Process.hpp"
+#include "Fwd.hpp"
 
 /// @brief Manage the Stage scripts
-class LuaEngine : public Process
+class LuaEngine : public Snow::exe::Process
 {
 public:
     /// @brief Run the associated script to the Stage.

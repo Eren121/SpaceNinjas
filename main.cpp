@@ -1,19 +1,15 @@
-#include "media/Window.hpp"
 #include "Game.hpp"
-#include <iostream>
 #include "test/TestTransformable.hpp"
 #include "test/TestTransparent.hpp"
 #include "test/TestInput.hpp"
 #include "utility/macro/unused.hpp"
-#include <spdlog/sinks/stdout_sinks.h>
+#include "utility/logging.hpp"
+#include <cstdlib>
 
-using std::cerr;
-using std::cout;
-using std::endl;
+namespace SpaceNinja
+{
 
-/// @brief Main where all exceptions are caught
-/// @details Better to never use abort(), but instead throwing errors to ensure cleanup of SDL.
-void safe_main()
+void unsafe_main()
 {
     SDL::init();
     SDL::init_image();
@@ -21,9 +17,31 @@ void safe_main()
 //    TestTransformable().run();
 //    TestTransparent().run();
 //    TestInput().run();
-    
+
     Game game;
     game.show();
+}
+
+/// @brief Main where all exceptions are caught
+/// @details Better to never use abort(), but instead throwing errors to ensure cleanup of SDL.
+void safe_main()
+{
+    Logger::pointer logger = Logger::getOrCreate("main");
+
+    try
+    {
+        unsafe_main();
+    }
+    catch(const std::exception& e)
+    {
+        logger->error("Fatal error: {}", e.what());
+    }
+    catch(...)
+    {
+        logger->error("Fatal unkown error, aborting.");
+    }
+}
+
 }
 
 int main(int argc, char* argv[])
@@ -31,22 +49,7 @@ int main(int argc, char* argv[])
     UNUSED(argc);
     UNUSED(argv);
 
-    // Lazyfoo says with SDL, main should have argc and argv arguments to be cross-plateform:
-    // https://lazyfoo.net/tutorials/SDL/01_hello_SDL/index2.php
+    SpaceNinja::safe_main();
 
-    try
-    {
-        safe_main();
-    }
-    catch(const std::exception& e)
-    {
-        cerr << "Fatal error:" << endl;
-        cerr << e.what() << endl;
-    }
-    catch(...)
-    {
-        cerr << "Fatal unkown error, aborting." << endl;
-    }
-
-    return 0;
+    return EXIT_SUCCESS;
 }

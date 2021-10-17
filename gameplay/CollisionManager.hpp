@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Body.hpp"
-#include <wrappers/box2d/World.hpp>
+#include "gameplay/Body.hpp"
+#include "wrappers/box2d/World.hpp"
 #include <map>
 #include <sigslot/signal.hpp>
 

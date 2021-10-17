@@ -3,10 +3,7 @@
 #include "media/scene/SceneNode.hpp"
 #include "process/Process.hpp"
 #include <wrappers/box2d/World.hpp>
-
-class Game;
-class Stage;
-class Window;
+#include "Fwd.hpp"
 
 /// @brief Process for a player behavior.
 /// @details The Process will not update if the world has not player

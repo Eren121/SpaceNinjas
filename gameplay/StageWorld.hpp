@@ -1,16 +1,15 @@
 #pragma once
 
-#include "CollisionManager.hpp"
+#include "gameplay/CollisionManager.hpp"
 #include "wrappers/box2d/World.hpp"
 #include "wrappers/box2d/DebugDraw.hpp"
 #include "media/scene/SceneNode.hpp"
-
-class Game;
+#include "Fwd.hpp"
 
 class StageWorld : public b2::World, public SceneNode
 {
 public:
-    explicit StageWorld(Game& game);
+    explicit StageWorld(SpaceNinja::Game& game);
 
 protected:
     bool updateNode() override;
@@ -23,7 +22,7 @@ private:
     /// @brief Draw a legend to know how much pixel is 1 meter
     void drawLegend(RenderStates states, float pxPerMeter) const;
     
-    Game& m_game;
+    SpaceNinja::Game& m_game;
     bool m_debugDrawEnabled{false};
     b2::DebugDraw m_debugDraw;
     CollisionManager m_collisionner;

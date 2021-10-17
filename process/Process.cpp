@@ -1,27 +1,27 @@
 #include "Process.hpp"
 #include <utility/Guard.hpp>
 
-Process::Process(std::function<bool()> task)
+Snow::exe::Process::Process(function<bool()> task)
     : m_running(true), m_locked(false), m_task(task)
 {
 }
 
-bool Process::isRunning() const
+bool Snow::exe::Process::isRunning() const
 {
     return m_running;
 }
 
-void Process::stop()
+void Snow::exe::Process::stop()
 {
     m_running = false;
 }
 
-bool Process::isLocked() const
+bool Snow::exe::Process::isLocked() const
 {
     return m_locked;
 }
 
-bool Process::operator()()
+bool Snow::exe::Process::operator()()
 {
     m_running = true;
     m_locked = true;
@@ -35,7 +35,7 @@ bool Process::operator()()
     return m_running;
 }
 
-void Process::update()
+void Snow::exe::Process::update()
 {
     if(m_task)
     {
@@ -49,7 +49,7 @@ void Process::update()
     }
 }
 
-task<> Process::operator co_await()
+task<> Snow::exe::Process::operator co_await()
 {
     while((*this)())
     {

@@ -6,14 +6,19 @@
 #include <glm/vec2.hpp>
 #include <map>
 
+namespace Snow::media
+{
 class Window;
+}
 
-/// @brief Same functionalities as those of the library gainput.
+namespace Snow::in
+{
+/// @brief Provides the same basic features as the library 'gainput'.
 class UnifiedInput : public InputListener
 {
 public:
-    explicit UnifiedInput(Window& window);
-    
+    explicit UnifiedInput(media::Window &window);
+
     /// @brief Get the mouse position, in window coordinates, origin in top left.
     glm::vec2 getMouse() const;
 
@@ -24,4 +29,4 @@ public:
     /// Bottom-Left is (-1, -1).
     glm::vec2 getMouseInClipSpace() const;
 };
-
+}

@@ -1,10 +1,10 @@
 cmake_minimum_required(VERSION 3.17)
-project(SDL_OpenGL)
+project(SDL_OpenGL LANGUAGES C CXX)
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/")
 set(CMAKE_CXX_STANDARD 20)
 
-set(THIRD_PARTY_DIR "thirdparty/")
+set(THIRD_PARTY_DIR "${CMAKE_SOURCE_DIR}/thirdparty")
 
 ### Compiler dependant support ########
 
@@ -57,12 +57,10 @@ set(SRC
     Game.hpp
     GameControls.cpp
     GameControls.hpp
-    TextureCache.cpp
-    TextureCache.hpp
-    ViewControl.cpp
-    ViewControl.hpp
-    WindowDebugInfo.cpp
-    WindowDebugInfo.hpp
+        media/TextureCache.cpp
+        media/TextureCache.hpp
+        media/WindowDebugInfo.cpp
+        media/WindowDebugInfo.hpp
     gameplay/Body.cpp
     gameplay/Body.hpp
     gameplay/CollisionManager.cpp
@@ -138,13 +136,6 @@ set(SRC
     test/TestTransformable.hpp
     test/TestTransparent.cpp
     test/TestTransparent.hpp
-    thirdparty/imgui/backends/imgui_impl_opengl3.cpp
-    thirdparty/imgui/backends/imgui_impl_sdl.cpp
-    thirdparty/imgui/imgui.cpp
-    thirdparty/imgui/imgui_demo.cpp
-    thirdparty/imgui/imgui_draw.cpp
-    thirdparty/imgui/imgui_tables.cpp
-    thirdparty/imgui/imgui_widgets.cpp
     ui/Input.cpp
     ui/Input.hpp
     ui/MenuStage.cpp
@@ -251,7 +242,22 @@ set(SRC
     wrappers/lua/LuaGuard.cpp
     wrappers/lua/LuaGuard.hpp
     wrappers/nostd/source_location.cpp
-    wrappers/nostd/source_location.hpp)
+    wrappers/nostd/source_location.hpp Fwd.hpp)
+
+#######################################
+# ImGUI
+
+set(IMGUI_HOME "${THIRD_PARTY_DIR}/imgui")
+set(IMGUI_SRC
+    ${IMGUI_HOME}/backends/imgui_impl_opengl3.cpp
+    ${IMGUI_HOME}/backends/imgui_impl_sdl.cpp
+    ${IMGUI_HOME}/imgui.cpp
+    ${IMGUI_HOME}/imgui_demo.cpp
+    ${IMGUI_HOME}/imgui_draw.cpp
+    ${IMGUI_HOME}/imgui_tables.cpp
+    ${IMGUI_HOME}/imgui_widgets.cpp)
+
+add_library(ImGUI STATIC ${IMGUI_SRC})
 
 #######################################
 # GLEW
@@ -270,7 +276,7 @@ add_definitions(-DGLEW_STATIC) # needed for executable
 
 add_definitions(-DMAKE_LIB) # Do not compile lua interpreter
 set(LUA_HOME "${THIRD_PARTY_DIR}/lua/")
-set(SRC ${SRC} "${LUA_HOME}/onelua.c")
+set(SRC ${SRC} "${LUA_HOME}/onelua.c" media/AudioEngine.cpp media/AudioEngine.hpp)
 include_directories("${LUA_HOME}")
 
 #######################################
@@ -283,7 +289,10 @@ add_executable(SDL_OpenGL ${SRC})
 # Set the variable -DSDL2_DIR on windows to the SDL devel directory
 # More information on https://trenki2.github.io/blog/2017/06/02/using-sdl2-with-cmake/
 
-set(SDL2_DIR "${THIRD_PARTY_DIR}/windows/SDL2-2.0.16")
+if(WIN32)
+    set(SDL2_DIR "${THIRD_PARTY_DIR}/windows/SDL2-2.0.16")
+endif()
+
 find_package(SDL2 REQUIRED)
 include_directories(${SDL2_INCLUDE_DIRS})
 target_link_libraries(SDL_OpenGL ${SDL2_LIBRARIES})
@@ -327,9 +336,34 @@ include_directories("${THIRD_PARTY_DIR}/freetype/include")
 target_link_libraries(SDL_OpenGL freetype)
 
 #######################################
+# FMOD
+
+set(FMOD_HOME "${THIRD_PARTY_DIR}/fmod")
+
+if(WIN32)
+    set(FMOD_LIBS "${FMOD_HOME}/lib/x64")
+    target_link_directories(SDL_OpenGL PRIVATE ${FMOD_LIBS})
+    target_link_libraries(SDL_OpenGL fmodL_vc)
+endif()
+
+include_directories("${FMOD_HOME}/inc")
+
+#######################################
+# Optimize compilation times
+
+# Precompiled headers (for C++ only to avoid some errors)
+target_precompile_headers(SDL_OpenGL PRIVATE
+    "$<$<COMPILE_LANGUAGE:CXX>:${CMAKE_CURRENT_SOURCE_DIR}/pch.hpp>")
+
+
+# Unity builds
+set_target_properties(SDL_OpenGL PROPERTIES UNITY_BUILD ON)
+set_target_properties(SDL_OpenGL PROPERTIES UNITY_BUILD_MODE BATCH UNITY_BUILD_BATCH_SIZE 50)
+
+#######################################
 
 find_package(OpenGL REQUIRED)
-target_link_libraries(SDL_OpenGL ${OPENGL_LIBRARIES})
+target_link_libraries(SDL_OpenGL ${OPENGL_LIBRARIES} ImGUI)
 
 if(NOT WIN32)
     target_link_libraries(SDL_OpenGL dl pthread)

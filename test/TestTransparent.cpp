@@ -1,4 +1,4 @@
-#include "TestTransparent.hpp"
+#include "test/TestTransparent.hpp"
 #include <wrappers/gl/VertexArray.hpp>
 #include <wrappers/gl/ConvexShape.hpp>
 #include <wrappers/gl/Line.hpp>
@@ -7,6 +7,9 @@
 #include <imgui_impl_opengl3.h>
 #include <imgui_impl_sdl.h>
 #include <glm/gtc/matrix_transform.hpp>
+
+namespace SpaceNinja::test
+{
 
 TestTransparent::TestTransparent()
         : m_window("Test transparent", 800, 800)
@@ -42,17 +45,17 @@ void TestTransparent::run()
 
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
-    ImGuiIO &io = ImGui::GetIO(); (void)io;
+    ImGuiIO &io = ImGui::GetIO();
+    (void) io;
     ImGui::StyleColorsDark();
     ImGui_ImplOpenGL3_Init("#version 330 core");
     ImGui_ImplSDL2_InitForOpenGL(m_window.getHandle(), nullptr);
 
-    sigslot::scoped_connection conn = m_window.onEvent.connect([](const SDL_Event& event, long) {
+    sigslot::scoped_connection conn = m_window.onEvent.connect([](const SDL_Event &event, long) {
         ImGui_ImplSDL2_ProcessEvent(&event);
     });
 
-    while(m_window.isOpen())
-    {
+    while (m_window.isOpen()) {
 //        ImGui_ImplOpenGL3_NewFrame();
 //        ImGui_ImplSDL2_NewFrame();
 //        ImGui::NewFrame();
@@ -85,4 +88,6 @@ void TestTransparent::run()
     ImGui::DestroyContext();
 
     exit(0);
+}
+
 }

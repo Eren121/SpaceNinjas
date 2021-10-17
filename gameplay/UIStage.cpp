@@ -1,11 +1,11 @@
-#include "UIStage.hpp"
+#include "gameplay/UIStage.hpp"
 #include "Game.hpp"
 #include <utility/Str.hpp>
 #include <glm/gtx/string_cast.hpp>
 #include <iomanip>
 #include <imgui.h>
 
-UIStage::UIStage(Game& game, Stage& stage)
+UIStage::UIStage(SpaceNinja::Game& game, Stage& stage)
     : m_game(game),
       m_stage(stage)
 {

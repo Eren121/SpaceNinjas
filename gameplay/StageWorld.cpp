@@ -3,7 +3,7 @@
 #include "Body.hpp"
 #include <imgui.h>
 
-StageWorld::StageWorld(Game& game)
+StageWorld::StageWorld(SpaceNinja::Game& game)
     : m_game(game),
       m_collisionner(*this)
 {

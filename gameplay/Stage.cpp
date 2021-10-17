@@ -6,18 +6,19 @@
 #include "utility/Str.hpp"
 #include "utility/macro/unused.hpp"
 #include "wrappers/lua/LuaException.hpp"
+#include "PlayerControl.hpp"
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/string_cast.hpp>
 #include <imgui.h>
 
-Stage::Stage(Game &game, int id)
+Stage::Stage(SpaceNinja::Game &game, int id)
     : m_game(game),
       m_id(id),
       m_player(nullptr),
       m_firstUpdate(false),
       m_world(std::make_shared<StageWorld>(game)),
       m_luaEngine(std::make_shared<LuaEngine>(*this)),
-      m_playerControl(std::make_unique<PlayerControl>(*this)),
+      m_playerControl(std::make_unique<SpaceNinja::PlayerControl>(*this)),
       m_uiRenderer(std::make_shared<UIStage>(game, *this)),
       m_victory(Victory::Running),
       m_logger{Logger::getOrCreate("Stage")}
@@ -118,9 +119,9 @@ void Stage::update()
             // Unlock the next level (if not already unlocked)
             const int nextID{m_id + 1};
             
-            if(m_game.getSave().lastLevelUnlocked < nextID)
+            if(m_game.getSave().getLastLevelUnlocked() < nextID)
             {
-                m_game.getSave().lastLevelUnlocked = nextID;
+                m_game.getSave().setLastLevelUnlocked(nextID);
                 m_game.writeSave();
                 
                 getLogger().debug("Level {} unlocked", nextID);
@@ -160,12 +161,12 @@ const b2::World& Stage::getWorld() const
     return *m_world;
 }
 
-Game& Stage::getGame()
+SpaceNinja::Game& Stage::getGame()
 {
     return m_game;
 }
 
-const Game& Stage::getGame() const
+const SpaceNinja::Game& Stage::getGame() const
 {
     return m_game;
 }

@@ -4,14 +4,14 @@
 
 using namespace std;
 
-CoProcess::CoProcess(std::function<task<>()> functor)
-    : m_functor(std::move(functor)), m_handle()
+Snow::exe::CoProcess::CoProcess(function<task<>()> functor)
+    : m_functor(move(functor)), m_handle()
 {
     // Having the functor is very convenient to restart the process!
     // Plus, even if we don't use it by not restarting, we still need it to not have a dangling pointer.
 }
 
-void CoProcess::update()
+void Snow::exe::CoProcess::update()
 {
     if(!m_handle.is_resumable())
     {
@@ -28,7 +28,7 @@ void CoProcess::update()
     }
 }
 
-task<> CoProcess::coroutine()
+task<> Snow::exe::CoProcess::coroutine()
 {
     if(m_functor) // NOOP if null functor or the child class does not override this function (returns immediately, no wait)
     {

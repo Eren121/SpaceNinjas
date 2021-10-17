@@ -3,13 +3,14 @@
 #include "wrappers/freetype/Text.hpp"
 #include "utility/time/Timer.hpp"
 #include "gameplay/Stage.hpp"
+#include "utility/math.hpp"
+#include "GameControls.hpp"
 #include <imgui.h>
 
-namespace ui
+namespace SpaceNinja::ui
 {
-    MenuStage::MenuStage(Game &game)
-        : m_game{game},
-          m_lastLevelUnlocked{0}
+    MenuStage::MenuStage(SpaceNinja::Game &game)
+        : m_game{game}
     {
     }
     
@@ -17,10 +18,22 @@ namespace ui
     {
         return (*this)();
     }
+
+    int MenuStage::getColumnsCountOnLastRow() const
+    {
+        if(m_lastLevelUnlocked % m_cols != 0)
+        {
+            return m_lastLevelUnlocked % m_cols;
+        }
+        else
+        {
+            return m_cols;
+        }
+    }
     
     task<> MenuStage::coroutine()
     {
-        const GameControls& controls = m_game.getControls();
+        const SpaceNinja::GameControls& controls = m_game.getControls();
     
         // Wait before allowing to move again
         Timer beforeMove;
@@ -50,20 +63,23 @@ namespace ui
                 
                 // Stay in bounds
                 pos.y = glm::clamp(pos.y, 0, m_rows - 1);
-                pos.x = glm::clamp(pos.x, 0, m_columns - 1);
+                pos.x = glm::clamp(pos.x, 0, m_cols - 1);
     
                 // The last row may be incomplete
                 if(pos.y == m_rows - 1)
                 {
-                    pos.x = glm::clamp<int>(pos.x, 0, (m_lastLevelUnlocked % m_columns) - 1);
+                    pos.x = glm::clamp<int>(pos.x, 0, getColumnsCountOnLastRow() - 1);
                 }
-                
+
+                getLogger().debug("Cursor moved: m_lastLevelUnlocked={}, delta={}, previous cursor={}, new cursor={}",
+                    m_lastLevelUnlocked, move, *m_focus, pos);
+
                 // Unfocus previous item and focus new item (if they are the same it's ok)
                 m_items.at(m_focus.getIndex())->setFocused(false);
                 *m_focus = pos;
                 m_items.at(m_focus.getIndex())->setFocused(true);
                 
-                beforeMove = Time::milliseconds(400);
+                beforeMove = Time::milliseconds(100);
             }
             
             if(controls.menuSelect.isJustPressed())
@@ -102,7 +118,7 @@ namespace ui
     void MenuStage::onBecomeTop()
     {
         m_items.clear();
-        m_lastLevelUnlocked = m_game.getSave().lastLevelUnlocked;
+        m_lastLevelUnlocked = m_game.getSave().getLastLevelUnlocked();
         
         const glm::vec2 winSize = m_game.getWindow().getSize();
     
@@ -124,18 +140,18 @@ namespace ui
         const float viewWidth { winSize.x - margin * 2.0f };
     
         // We search how many rects we can fill
-        m_columns = std::floor(viewWidth / itemSize.x); // Columns count (integer)
-        m_rows = std::ceil(static_cast<float>(m_lastLevelUnlocked) / static_cast<float>(m_columns));
+        m_cols = std::floor(viewWidth / itemSize.x); // Columns count (integer)
+        m_rows = std::ceil(static_cast<float>(m_lastLevelUnlocked) / static_cast<float>(m_cols));
         
         // Keep the focused button if there was one
         const GridPosition previousFocus{m_focus};
         
-        m_focus = GridPosition{m_columns};
+        m_focus = GridPosition{m_cols};
         m_focus.setPosition(*previousFocus);
         
-        const float columnWidth = viewWidth / static_cast<float>(m_columns);
+        const float columnWidth = viewWidth / static_cast<float>(m_cols);
     
-        GridPosition gridPos(m_columns);
+        GridPosition gridPos(m_cols);
     
         for(int i = 0; i < static_cast<int>(m_lastLevelUnlocked); ++i)
         {
@@ -152,6 +168,8 @@ namespace ui
         }
     
         m_items.at(m_focus.getIndex())->setFocused(true);
+
+        getLogger().debug("onBecomeTop(): row={}, col={}", m_rows, m_cols);
     }
     
     MenuStage::Item::Item(glm::vec2 size, const Font& font, int id)

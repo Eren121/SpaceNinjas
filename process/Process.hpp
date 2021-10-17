@@ -4,6 +4,8 @@
 #include <functional>
 #include <task.hpp>
 
+namespace Snow::exe
+{
 /// @brief Tool for managing the animation / game logic synchronization.
 /// @remarks Implementation of https://gamedev.stackexchange.com/a/26887.
 class Process
@@ -38,7 +40,7 @@ public:
 
     /// @brief Check if the Process is currently inside an update
     [[nodiscard]] bool isLocked() const;
-    
+
     /// @brief Wait until the Process completion.
     task<> operator co_await();
 
@@ -58,3 +60,4 @@ private:
 
     Task m_task;
 };
+}

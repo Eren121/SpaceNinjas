@@ -1,21 +1,22 @@
 #pragma once
 
-#include "Victory.hpp"
-#include "PlayerControl.hpp"
-#include "PlayerShoot.hpp"
-#include "CollisionManager.hpp"
-#include "StageWorld.hpp"
-#include "UIStage.hpp"
+#include "gameplay/Victory.hpp"
+#include "gameplay/PlayerControl.hpp"
+#include "gameplay/PlayerShoot.hpp"
+#include "gameplay/CollisionManager.hpp"
+#include "gameplay/StageWorld.hpp"
+#include "gameplay/UIStage.hpp"
 #include "gameplay/lua/LuaEngine.hpp"
 #include "process/ProcessPool.hpp"
+#include "process/Process.hpp"
+#include "process/ProcessPool.hpp"
+#include "Fwd.hpp"
 #include <utility/logging.hpp>
 
-class Game;
-
-class Stage : public SceneNode, public Process, public Loggable<"Stage">
+class Stage : public SceneNode, public Snow::exe::Process, public Loggable<"Stage">
 {
 public:
-    explicit Stage(Game& game, int id);
+    explicit Stage(SpaceNinja::Game& game, int id);
     ~Stage() override;
     
 protected:
@@ -33,8 +34,8 @@ public:
     b2::World& getWorld();
     const b2::World& getWorld() const;
     
-    Game& getGame();
-    const Game& getGame() const;
+    SpaceNinja::Game& getGame();
+    const SpaceNinja::Game& getGame() const;
     
     /// @brief When getting the player, you must ensure the player exists (not dead).
     bool hasPlayer() const;
@@ -60,7 +61,7 @@ private:
     void initPlayer();
     void initVoid();
 
-    Game& m_game;
+    SpaceNinja::Game& m_game;
     int m_id;
 
     b2Body *m_player;
@@ -72,14 +73,14 @@ private:
     Time m_start;
     
     std::shared_ptr<LuaEngine> m_luaEngine;
-    std::shared_ptr<PlayerControl> m_playerControl;
+    std::shared_ptr<SpaceNinja::PlayerControl> m_playerControl;
     std::shared_ptr<PlayerShoot> m_playerShoot;
     std::shared_ptr<UIStage> m_uiRenderer;
     
     Victory m_victory;
     
 public:
-    ProcessPool eachStep; ///< Processes to run each step
+    Snow::exe::ProcessPool eachStep; ///< Processes to run each step
     
 private:
     Logger::pointer m_logger;

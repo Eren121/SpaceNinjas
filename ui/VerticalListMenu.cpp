@@ -1,22 +1,24 @@
-#include "VerticalListMenu.hpp"
+#include "ui/VerticalListMenu.hpp"
 #include "Game.hpp"
 #include "media/input/Axis.hpp"
 #include "process/Wait.hpp"
 #include "utility/math.hpp"
 #include "utility/time/Timer.hpp"
 #include "wrappers/freetype/Text.hpp"
+#include "media/Window.hpp"
+#include "GameControls.hpp"
 #include <imgui.h>
 
-namespace ui
+namespace SpaceNinja::ui
 {
-    VerticalListMenu::VerticalListMenu(Game& game)
+    VerticalListMenu::VerticalListMenu(SpaceNinja::Game& game)
         : m_game(game)
     {
     }
     
     void VerticalListMenu::drawNode(RenderStates states) const
     {
-        const Window& window = m_game.getWindow();
+        const Snow::media::Window& window = m_game.getWindow();
         const glm::vec2 winSize = window.getSize();
         
         states.model = glm::mat4(1.0f);
@@ -24,13 +26,13 @@ namespace ui
     
         int charSize = 64;
         
-        for(int i = 0; i < static_cast<int>(m_inputs.size()); ++i)
+        for(int i = 0; i < count(); ++i)
         {
             const Input& input = m_inputs.at(i);
             
             glm::vec2 pos;
             pos.x = winSize.x / 2.0f;
-            pos.y = winSize.y / (m_inputs.size() + 1.0f) * static_cast<float>(i + 1);
+            pos.y = winSize.y / (static_cast<float>(count()) + 1.0f) * static_cast<float>(i + 1);
             pos.y = winSize.y - pos.y;
             
             Text text;
@@ -66,7 +68,7 @@ namespace ui
     
     task<> VerticalListMenu::coroutine()
     {
-        const GameControls& controls = m_game.getControls();
+        const SpaceNinja::GameControls& controls = m_game.getControls();
     
         // Wait before allowing to move again
         Timer beforeMove;
@@ -76,9 +78,11 @@ namespace ui
             if(beforeMove.elapsed())
             {
                 const glm::vec2 move = controls.menuMove.getValue();
-    
+
                 if(move.y != 0)
                 {
+                    const int prevFocus = m_focus;
+
                     if(m_focus == Unfocused)
                     {
                         // Treat specifically the case it's the first user input
@@ -100,13 +104,19 @@ namespace ui
                     {
                         // Move the cursor depending of the player movement
                         // As the menu origin is top, -y add one element, so we have to negate the sign
-                        m_focus += -math::sgn(move.y);
+                        m_focus += -math::sgn(static_cast<int>(move.y));
     
                         // Stay in the range [0;nbItem-1]
-                        m_focus = math::positive_mod<int>(m_focus, m_inputs.size());
+                        m_focus = math::positive_mod<int>(m_focus, count());
+                    }
+
+                    if(prevFocus != m_focus)
+                    {
+                        // Cursor has moved
+                        m_game.getAudio().playSound("../assets/sounds/jaguar.wav");
                     }
                     
-                    beforeMove = Time::milliseconds(400);
+                    beforeMove = Time::milliseconds(180);
                 }
             }
             
@@ -129,7 +139,7 @@ namespace ui
     
     void VerticalListMenu::onClick()
     {
-        if(m_focus >= 0 && m_focus < static_cast<int>(m_inputs.size()))
+        if(m_focus >= 0 && m_focus < count())
         {
             const auto& callback = m_inputs.at(m_focus).onClick;
             

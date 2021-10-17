@@ -4,6 +4,7 @@
 #include "gameplay/Stage.hpp"
 #include "gameplay/Body.hpp"
 #include "process/Wait.hpp"
+#include "process/Process.hpp"
 #include <utility/math.hpp>
 #include <box2d/box2d.h>
 #include <spdlog/spdlog.h>
@@ -107,7 +108,7 @@ int LuaAPI::ennemyCount() const
     return m_ennemyCount;
 }
 
-std::shared_ptr<Process> LuaAPI::wait(int millis) const
+std::shared_ptr<Snow::exe::Process> LuaAPI::wait(int millis) const
 {
     getLogger().debug("Calling wait({})", millis);
     
@@ -115,6 +116,6 @@ std::shared_ptr<Process> LuaAPI::wait(int millis) const
         return m_stage.getWorld().getTime();
     };
     
-    auto process = std::make_shared<Wait>(Time::milliseconds(millis), source);
+    auto process = std::make_shared<Snow::exe::Wait>(Time::milliseconds(millis), source);
     return process;
 }

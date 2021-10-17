@@ -1,9 +1,14 @@
+#pragma once
+
 #include "media/Window.hpp"
 #include <wrappers/gl/RenderStates.hpp>
 #include <wrappers/gl/Shape.hpp>
 #include <wrappers/gl/ConvexShape.hpp>
 #include <wrappers/gl/Circle.hpp>
 #include <wrappers/freetype/Text.hpp>
+
+namespace SpaceNinja::test
+{
 
 class TestTransparent
 {
@@ -16,6 +21,8 @@ protected:
     void draw();
 
 private:
-    Window m_window;
+    Snow::media::Window m_window;
     Shader m_shader;
 };
+
+}

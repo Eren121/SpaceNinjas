@@ -1,5 +1,7 @@
 #include "VectorAction.hpp"
 
+namespace Snow::in
+{
 void VectorAction::setInput(UnifiedInput *input)
 {
     m_input = input;
@@ -22,4 +24,5 @@ void VectorAction::bindKeys(Key x_minus, Key x_plus, Key y_minus, Key y_plus)
 glm::vec2 VectorAction::getValue() const
 {
     return {m_actionX.asFloat(), m_actionY.asFloat()};
+}
 }

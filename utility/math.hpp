@@ -12,6 +12,20 @@
 #include <algorithm>
 #include <random>
 #include <glm/vec2.hpp>
+#include <glm/gtx/string_cast.hpp>
+#include <ostream>
+
+namespace glm
+{
+    /// @brief Make glm vectors types supports printing.
+    /// @remarks Use template for logging for spdlog support.
+    /// @remarks In namespace glm for using ADL is important for the compiler to find the function, see https://github.com/gabime/spdlog/issues/39.
+    template<typename OStream, typename T, glm::length_t dim, glm::qualifier q>
+    OStream &operator<<(OStream &lhs, const glm::vec<dim, T, q> &rhs)
+    {
+        return lhs << glm::to_string(rhs);
+    }
+}
 
 namespace math
 {

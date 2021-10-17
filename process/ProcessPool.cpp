@@ -1,6 +1,7 @@
 #include "ProcessPool.hpp"
+#include "Process.hpp"
 
-void ProcessPool::update()
+void Snow::exe::ProcessPool::update()
 {
     for(auto it = m_processes.begin(); it != m_processes.end();)
     {
@@ -24,12 +25,12 @@ void ProcessPool::update()
     }
 }
 
-void ProcessPool::add(std::shared_ptr<Process> p)
+void Snow::exe::ProcessPool::add(shared_ptr<Process> p)
 {
     m_processes.push_back(p);
 }
 
-void ProcessPool::remove(std::shared_ptr<Process> p)
+void Snow::exe::ProcessPool::remove(shared_ptr<Process> p)
 {
     m_processes.remove(p);
 }

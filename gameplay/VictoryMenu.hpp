@@ -3,9 +3,10 @@
 #include "Game.hpp"
 #include "Victory.hpp"
 #include "process/CoProcess.hpp"
+#include "media/Window.hpp"
 
 /// @brief Process to show the end stage menu.
-class VictoryMenu : public CoProcess
+class VictoryMenu : public Snow::exe::CoProcess
 {
 public:
     /// @param stage the stage that just finished.
@@ -18,7 +19,7 @@ protected:
     task<> goToNextLevel();
 
 private:
-    Game& m_game;
-    Window& m_window;
+    SpaceNinja::Game& m_game;
+    Snow::media::Window& m_window;
     std::shared_ptr<Stage> m_stage;
 };

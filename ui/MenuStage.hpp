@@ -5,13 +5,19 @@
 #include "process/CoProcess.hpp"
 #include "wrappers/gl/Sprite.hpp"
 #include "utility/GridPosition.hpp"
+#include "utility/logging.hpp"
+#include "process/CoProcess.hpp"
+#include "Game.hpp"
 
+namespace Snow
+{
 class Game;
+}
 
-namespace ui
+namespace SpaceNinja::ui
 {
     /// @brief The menu to choose a Stage among the unlocked Stages.
-    class MenuStage : public SceneNode, private CoProcess
+    class MenuStage : public SceneNode, private Snow::exe::CoProcess, public Loggable<"MenuStage">
     {
     public:
         /// @brief VerticalListMenu Stage item
@@ -27,10 +33,13 @@ namespace ui
         private:
             Text m_label;
         };
+
+        /// @brief The last row may be incomplete if nb_levels % nb_cols != 0
+        int getColumnsCountOnLastRow() const;
         
     public:
         /// @param stages The vector of all stage to render. true means the stage is unlocked.
-        explicit MenuStage(Game& game);
+        explicit MenuStage(SpaceNinja::Game& game);
 
         void onBecomeTop() override;
         
@@ -42,12 +51,11 @@ namespace ui
         task<> coroutine() override;
         
     private:
-        Game& m_game;
-        
-        /// @brief Count of items on each row
-        int m_columns;
-        int m_rows;
-        int m_lastLevelUnlocked;
+        SpaceNinja::Game& m_game;
+
+        int m_cols{0};
+        int m_rows{0};
+        int m_lastLevelUnlocked{0};
         
         GridPosition m_focus;
         std::vector<std::shared_ptr<Item>> m_items;

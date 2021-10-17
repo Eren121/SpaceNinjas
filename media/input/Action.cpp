@@ -2,6 +2,9 @@
 #include "Action.hpp"
 #include "media/Window.hpp"
 
+namespace Snow::in
+{
+
 bool Action::isPressed() const
 {
     return m_currentValue != 0;
@@ -60,4 +63,6 @@ float Action::asFloat(int intValue)
 int Action::asInt(float floatValue)
 {
     return static_cast<int>(floatValue * static_cast<float>(Max));
+}
+
 }

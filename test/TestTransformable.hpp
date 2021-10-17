@@ -1,9 +1,14 @@
+#pragma once
+
 #include "media/Window.hpp"
 #include <wrappers/gl/RenderStates.hpp>
 #include <wrappers/gl/Shape.hpp>
 #include <wrappers/gl/ConvexShape.hpp>
 #include <wrappers/gl/Circle.hpp>
 #include <wrappers/freetype/Text.hpp>
+
+namespace SpaceNinja::test
+{
 
 /// @brief Test transformable with a IMGUI interface
 class TestTransformable
@@ -19,7 +24,7 @@ protected:
     void drawGrid(RenderStates states);
 
 private:
-    Window m_window;
+    Snow::media::Window m_window;
     Shader m_shader;
 
     float m_zoom{3.0f};
@@ -45,3 +50,5 @@ private:
 
     bool m_noOutline{false};
 };
+
+}

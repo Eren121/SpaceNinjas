@@ -3,6 +3,8 @@
 #include "Process.hpp"
 #include <task.hpp>
 
+namespace Snow::exe
+{
 /// A coroutine Process.
 /// A coroutine Process is a coroutine that is marked as finished only when the coroutine ends,
 /// and returns from the operator() at each suspension.
@@ -46,3 +48,7 @@ private:
     std::function<task<>()> m_functor;
     task<> m_handle;
 };
+}
+namespace SpaceNinja::exe
+{
+}

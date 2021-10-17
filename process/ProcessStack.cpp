@@ -1,7 +1,8 @@
 #include "ProcessStack.hpp"
+#include "Process.hpp"
 
 
-void ProcessStack::update()
+void Snow::exe::ProcessStack::update()
 {
     // If a process finishes, pass immediately to the next process
     while(!m_stack.empty())
@@ -25,12 +26,12 @@ void ProcessStack::update()
     }
 }
 
-void ProcessStack::push(std::shared_ptr<Process> p)
+void Snow::exe::ProcessStack::push(std::shared_ptr<Snow::exe::Process> p)
 {
     m_stack.push(std::move(p));
 }
 
-bool ProcessStack::empty() const
+bool Snow::exe::ProcessStack::empty() const
 {
     return m_stack.empty();
 }

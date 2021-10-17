@@ -1,9 +1,11 @@
 #include "Window.hpp"
-#include "utility/Str.hpp"
 #include "OpenGL.hpp"
 #include <iostream>
 
-Window::Window(const std::string& title, int width, int height)
+namespace Snow::media
+{
+
+Window::Window(const std::string &title, int width, int height)
     : m_window(nullptr), m_context(nullptr), m_running(false), m_input(*this)
 {
     setupGLAttributes();
@@ -22,7 +24,7 @@ Window::~Window()
     SDL_GL_DeleteContext(m_context), m_context = nullptr;
 }
 
-void Window::createWindow(const std::string& title, int width, int height)
+void Window::createWindow(const std::string &title, int width, int height)
 {
     assert(!m_window);
 
@@ -31,8 +33,7 @@ void Window::createWindow(const std::string& title, int width, int height)
 
     Uint32 flags = SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE;
     m_window = SDL_CreateWindow(title.c_str(), x, y, width, height, flags);
-    if(!m_window)
-    {
+    if (!m_window) {
         throw SDL::Exception("Failed to create the window");
     }
 
@@ -42,8 +43,7 @@ void Window::createWindow(const std::string& title, int width, int height)
 void Window::createContext()
 {
     m_context = SDL_GL_CreateContext(m_window);
-    if(!m_context)
-    {
+    if (!m_context) {
         throw SDL::Exception("Failed to create an OpenGL context inside the window");
     }
 
@@ -55,8 +55,7 @@ void Window::initGLEW()
     glewExperimental = true;
     GLenum err = glewInit();
 
-    if(err != GLEW_OK)
-    {
+    if (err != GLEW_OK) {
         throw Exception(Str{} << "Glew initialization failed: " << glewGetErrorString(err));
     }
 }
@@ -67,7 +66,7 @@ void Window::setupGLAttributes()
     int major = 3;
     int minor = 3;
 
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, major);;
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, major);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, minor);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE); // version 3.1 core
 }
@@ -80,18 +79,16 @@ bool Window::isOpen() const
 void Window::handleEvents()
 {
     m_frame++;
-    
+
     // Process all pending events in the event queue leaving the queue empty
     SDL_Event e;
-    while(SDL_PollEvent(&e) != 0)
-    {
-        switch(e.type)
-        {
+    while (SDL_PollEvent(&e) != 0) {
+        switch (e.type) {
             case SDL_QUIT:
                 m_running = false;
                 break;
         }
-        
+
         m_debugWindow->onEvent(e);
         onEvent(e, m_frame);
     }
@@ -107,8 +104,6 @@ void Window::display()
     SDL_GL_SwapWindow(m_window);
 }
 
-#include <glm/gtx/string_cast.hpp>
-
 glm::vec2 Window::getSize() const
 {
     int w, h;
@@ -119,12 +114,12 @@ glm::vec2 Window::getSize() const
     return {w, h};
 }
 
-UnifiedInput& Window::getInput()
+in::UnifiedInput &Window::getInput()
 {
     return m_input;
 }
 
-const UnifiedInput& Window::getInput() const
+const in::UnifiedInput &Window::getInput() const
 {
     return m_input;
 }
@@ -149,12 +144,9 @@ bool Window::isFullscreen() const
     Uint32 mode = SDL_GetWindowFlags(m_window);
     bool ret;
 
-    if((mode & SDL_WINDOW_FULLSCREEN_DESKTOP) || (mode & SDL_WINDOW_FULLSCREEN))
-    {
+    if ((mode & SDL_WINDOW_FULLSCREEN_DESKTOP) || (mode & SDL_WINDOW_FULLSCREEN)) {
         ret = true;
-    }
-    else
-    {
+    } else {
         ret = false;
     }
 
@@ -165,17 +157,13 @@ void Window::setFullscreen(bool flag)
 {
     Uint32 mode;
 
-    if(flag)
-    {
+    if (flag) {
         mode = SDL_WINDOW_FULLSCREEN_DESKTOP; // "fake" fullscreen, allow fast alt-tab
-    }
-    else
-    {
+    } else {
         mode = 0; // 0 == not fullscreen
     }
 
-    if(SDL_SetWindowFullscreen(m_window, mode) != 0)
-    {
+    if (SDL_SetWindowFullscreen(m_window, mode) != 0) {
         throw SDL::Exception("SDL_SetWindowFullscreen()");
     }
 }
@@ -193,4 +181,6 @@ long Window::getFrame() const
 void Window::close()
 {
     m_running = false;
+}
+
 }

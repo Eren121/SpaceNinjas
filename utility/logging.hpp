@@ -2,6 +2,7 @@
 
 #include "utility/string_litteral.hpp"
 #include <spdlog/logger.h>
+#include <spdlog/fmt/ostr.h> // To provide {}-format support for types overloading operator<<()
 #include <memory>
 #include <unordered_map>
 

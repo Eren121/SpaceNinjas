@@ -1,9 +1,8 @@
 #pragma once
 
-#include "PlayerProcess.hpp"
-#include <utility/time/Clock.hpp>
-
-class Game;
+#include "gameplay/PlayerProcess.hpp"
+#include "utility/time/Clock.hpp"
+#include "Fwd.hpp"
 
 class PlayerShoot : public PlayerProcess
 {

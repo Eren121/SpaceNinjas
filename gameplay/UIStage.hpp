@@ -1,19 +1,16 @@
 #pragma once
 
-#include "media/Window.hpp"
 #include "media/scene/SceneNode.hpp"
 #include <wrappers/freetype/Text.hpp>
 #include <utility/time/Clock.hpp>
 #include <utility/time/FPSCounter.hpp>
-
-class Game;
-class Stage;
+#include "Fwd.hpp"
 
 /// @remarks Inherits sigslot::observer to ensure all connections are destroyed when the object is destroyed.
 class UIStage : public SceneNode, public sigslot::observer
 {
 public:
-    explicit UIStage(Game& game, Stage& stage);
+    explicit UIStage(SpaceNinja::Game& game, Stage& stage);
     
 protected:
     bool updateNode() override;
@@ -21,7 +18,7 @@ protected:
     void debugNode() override;
     
 private:
-    Game& m_game;
+    SpaceNinja::Game& m_game;
     Stage& m_stage;
 
     /// @brief Store the total count of frames drew, incremented at each frame.

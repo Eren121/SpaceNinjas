@@ -1,7 +1,10 @@
 #pragma once
 
-#include "PlayerProcess.hpp"
+#include "gameplay/PlayerProcess.hpp"
 #include <SDL_keycode.h>
+
+namespace SpaceNinja
+{
 
 class Game;
 class Window;
@@ -31,4 +34,5 @@ protected:
 
     glm::vec2 convertClipSpaceToSimulationSpace(const glm::vec2& clipCoords) const;
 };
+}
 

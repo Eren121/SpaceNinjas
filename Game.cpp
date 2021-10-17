@@ -1,5 +1,5 @@
 #include "Game.hpp"
-#include "WindowDebugInfo.hpp"
+#include "media/WindowDebugInfo.hpp"
 #include "process/CoProcess.hpp"
 #include "process/Wait.hpp"
 #include "ui/VerticalListMenu.hpp"
@@ -8,9 +8,14 @@
 #include <wrappers/gl/Shader.hpp>
 #include <wrappers/gl/Texture.hpp>
 #include "OpenGL.hpp"
+#include "GameControls.hpp"
 #include <imgui.h>
 #include <cereal/archives/json.hpp>
 #include <fstream>
+#include "gameplay/Stage.hpp"
+
+namespace SpaceNinja
+{
 
 Game::Game()
     : m_window("Haaa", 800, 600),
@@ -21,60 +26,58 @@ Game::Game()
 
     {
         const std::filesystem::path savePath{getRoot() / "save.json"};
-        
-        if(!std::filesystem::exists(savePath))
-        {
+
+        if (!std::filesystem::exists(savePath)) {
             // Create default one
             // To check it was successfully constructed, also read it again even if it's not-necessary
-            
+
             std::ofstream jsonOut{savePath};
             cereal::JSONOutputArchive ar{jsonOut};
             ar(*m_save);
         }
-        
+
         std::ifstream jsonIn{savePath};
         cereal::JSONInputArchive ar{jsonIn};
         ar(*m_save);
     }
-    
+
     std::filesystem::path assets = std::filesystem::current_path() / "../assets";
     m_shader.load(assets / "vert.glsl", assets / "frag.glsl");
 
     auto fontPath = getRoot() / "fonts" / "monofonto.ttf";
     m_font = Font(fontPath);
-    
+
     SDL::printVersion("FreeType", Font::getFreetypeCompiledVersion(), m_font.getFreetypeLinkedVersion());
-    
+
     m_userControls = std::make_shared<GameControls>(m_window.getInput());
-    
+
     m_debugNode.addChild(m_save);
     m_debugNode.addChild(m_userControls);;
-    m_debugNode.addChild(std::make_shared<WindowDebugInfo>(m_window));
+    m_debugNode.addChild(std::make_shared<Snow::media::WindowDebugInfo>(m_window));
 }
 
 void Game::showMainMenu()
 {
     auto menu = std::make_shared<ui::VerticalListMenu>(*this);
-    
+
     menu->addOption("Play", [this] {
         scene.push(std::make_shared<ui::MenuStage>(*this));
     });
-    
+
     menu->addOption("Settings");
-    
+
     menu->addOption("Quit", [this] {
         m_window.close();
     });
-    
+
     scene.push(menu);
 }
 
 void Game::show()
 {
     showMainMenu();
-    
-    while(m_window.isOpen())
-    {
+
+    while (m_window.isOpen()) {
         // We will need blending
         // Default blending
         glEnable(GL_BLEND);
@@ -91,16 +94,16 @@ void Game::show()
 
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        
+
         // Handle window resizing
         glm::vec2 size = m_window.getSize();
         glViewport(0.0f, 0.0f, size.x, size.y);
-        
+
         m_window.handleEvents();
 
         update();
         draw();
-        
+
         m_window.display();
     }
 }
@@ -108,7 +111,7 @@ void Game::show()
 void Game::pushSceneStage(int id)
 {
     std::cout << "Starting level " << id << std::endl;
-    
+
     std::shared_ptr<Stage> stage = std::make_shared<Stage>(*this, id);
     scene.push(stage);
 }
@@ -117,7 +120,7 @@ void Game::draw()
 {
     RenderStates states;
     states.shader = &m_shader;
-    
+
     scene->draw(states);
     m_debugNode.draw(states);
 }
@@ -125,11 +128,11 @@ void Game::draw()
 void Game::update()
 {
     static bool printDebugInfo{false};
-    if(m_userControls->showDebugWindow.isJustPressed())
-    {
+    if (m_userControls->showDebugWindow.isJustPressed()) {
         printDebugInfo = !printDebugInfo;
     }
-    
+
+    m_audio.update();
     scene.update(printDebugInfo);
     m_debugNode.update(printDebugInfo);
 }
@@ -140,22 +143,22 @@ std::filesystem::path Game::getRoot() const
     return root;
 }
 
-Window& Game::getWindow()
+Snow::media::Window &Game::getWindow()
 {
     return m_window;
 }
 
-const Window& Game::getWindow() const
+const Snow::media::Window &Game::getWindow() const
 {
     return m_window;
 }
 
-Font& Game::getFont()
+Font &Game::getFont()
 {
     return m_font;
 }
 
-const Font& Game::getFont() const
+const Font &Game::getFont() const
 {
     return m_font;
 }
@@ -180,12 +183,12 @@ glm::mat4 Game::getViewMatrix() const
     return topixel * glm::ortho(view.left(), view.right(), view.bottom(), view.top());
 }
 
-const Shader& Game::getShader() const
+const Shader &Game::getShader() const
 {
     return m_shader;
 }
 
-Shader& Game::getShader()
+Shader &Game::getShader()
 {
     return m_shader;
 }
@@ -201,7 +204,7 @@ float Game::getPixelPerMeter() const
     return 30.0f;
 }
 
-const GameControls& Game::getControls() const
+const GameControls &Game::getControls() const
 {
     return *m_userControls;
 }
@@ -209,17 +212,16 @@ const GameControls& Game::getControls() const
 void Game::writeSave() const
 {
     const std::filesystem::path savePath{getRoot() / "save.json"};
-    
-    if(!std::filesystem::exists(savePath))
-    {
+
+    if (!std::filesystem::exists(savePath)) {
         std::cerr << "Creating a new save file " << savePath << "..." << std::endl;
-    }
-    else
-    {
+    } else {
         std::cerr << "Overwriting save file " << savePath << "..." << std::endl;
     }
-    
+
     std::ofstream jsonOut{savePath};
     cereal::JSONOutputArchive ar{jsonOut};
     ar(*m_save);
+}
+
 }
