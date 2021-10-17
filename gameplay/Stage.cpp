@@ -17,7 +17,7 @@ Stage::Stage(SpaceNinja::Game &game, int id)
       m_player(nullptr),
       m_firstUpdate(false),
       m_world(std::make_shared<StageWorld>(game)),
-      m_luaEngine(std::make_shared<LuaEngine>(*this)),
+      m_luaEngine(std::make_shared<SpaceNinja::script::LuaEngine>(*this)),
       m_playerControl(std::make_unique<SpaceNinja::PlayerControl>(*this)),
       m_uiRenderer(std::make_shared<UIStage>(game, *this)),
       m_victory(Victory::Running),

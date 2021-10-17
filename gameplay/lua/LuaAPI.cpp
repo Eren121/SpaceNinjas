@@ -9,7 +9,7 @@
 #include <box2d/box2d.h>
 #include <spdlog/spdlog.h>
 
-LuaAPI::LuaAPI(Stage& stage)
+SpaceNinja::script::LuaAPI::LuaAPI(Stage& stage)
     : m_stage(stage)
 {
     getLogger().set_level(spdlog::level::debug);
@@ -27,7 +27,7 @@ LuaAPI::LuaAPI(Stage& stage)
 }
 
 
-void LuaAPI::createNewType(sol::state& L)
+void SpaceNinja::script::LuaAPI::createNewType(sol::state& L)
 {
     auto type = L.new_usertype<LuaAPI>("LuaAPI");
     
@@ -42,9 +42,11 @@ void LuaAPI::createNewType(sol::state& L)
     LINK_API(run);
     LINK_API(ennemyCount);
     LINK_API(wait);
+
+#undef LINK_API
 }
 
-b2Body& LuaAPI::spawnEnnemy(float x, float y, float velX, float velY)
+b2Body& SpaceNinja::script::LuaAPI::spawnEnnemy(float x, float y, float velX, float velY)
 {
     getLogger().debug("Calling spawnEnnemy({}, {}, {}, {})", x, y, velX, velY);
     
@@ -68,21 +70,21 @@ b2Body& LuaAPI::spawnEnnemy(float x, float y, float velX, float velY)
     return body;
 }
 
-void LuaAPI::win()
+void SpaceNinja::script::LuaAPI::win()
 {
     getLogger().debug("Calling win()");
     
     m_stage.stopStage(Victory::Win);
 }
 
-void LuaAPI::defeat()
+void SpaceNinja::script::LuaAPI::defeat()
 {
     getLogger().debug("Calling defeat()");
     
     m_stage.stopStage(Victory::Loss);
 }
 
-void LuaAPI::run(const sol::function& function)
+void SpaceNinja::script::LuaAPI::run(const sol::function& function)
 {
     getLogger().debug("Calling run(<function>)");
     
@@ -101,14 +103,14 @@ void LuaAPI::run(const sol::function& function)
     m_stage.eachStep.add(coro);
 }
 
-int LuaAPI::ennemyCount() const
+int SpaceNinja::script::LuaAPI::ennemyCount() const
 {
     getLogger().debug("Calling ennemyCount() (returns: {})", m_ennemyCount);
     
     return m_ennemyCount;
 }
 
-std::shared_ptr<Snow::exe::Process> LuaAPI::wait(int millis) const
+std::shared_ptr<Snow::exe::Process> SpaceNinja::script::LuaAPI::wait(int millis) const
 {
     getLogger().debug("Calling wait({})", millis);
     

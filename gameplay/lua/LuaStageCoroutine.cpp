@@ -3,12 +3,12 @@
 #include "process/Process.hpp"
 #include <sol/state_view.hpp>
 
-LuaStageCoroutine::LuaStageCoroutine(lua_State *L, int nargs)
+SpaceNinja::script::LuaStageCoroutine::LuaStageCoroutine(lua_State *L, int nargs)
     : m_coro(L, nargs)
 {
 }
 
-void LuaStageCoroutine::update()
+void SpaceNinja::script::LuaStageCoroutine::update()
 {
     if(m_yielded)
     {

@@ -72,7 +72,7 @@ private:
     /// @brief Simulation starting time, to synchronize the simulation with IRL.
     Time m_start;
     
-    std::shared_ptr<LuaEngine> m_luaEngine;
+    std::shared_ptr<SpaceNinja::script::LuaEngine> m_luaEngine;
     std::shared_ptr<SpaceNinja::PlayerControl> m_playerControl;
     std::shared_ptr<PlayerShoot> m_playerShoot;
     std::shared_ptr<UIStage> m_uiRenderer;

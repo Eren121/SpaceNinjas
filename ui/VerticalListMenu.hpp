@@ -4,14 +4,10 @@
 #include "Input.hpp"
 #include "process/CoProcess.hpp"
 #include "Game.hpp"
+#include "Fwd.hpp"
 #include <SDL_events.h>
 
-namespace SpaceNinja
-{
-
-class Game;
-
-namespace ui
+namespace SpaceNinja::ui
 {
 
 /// @brief A vertical list, equally spaced, of options.
@@ -55,7 +51,5 @@ private:
     /// @remarks -1 if no element is focused.
     int m_focus{Unfocused};
 };
-
-}
 
 }

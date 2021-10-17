@@ -8,11 +8,7 @@
 #include "utility/logging.hpp"
 #include "process/CoProcess.hpp"
 #include "Game.hpp"
-
-namespace Snow
-{
-class Game;
-}
+#include "Fwd.hpp"
 
 namespace SpaceNinja::ui
 {

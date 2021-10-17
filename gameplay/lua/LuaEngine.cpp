@@ -2,14 +2,15 @@
 #include "LuaStageCoroutine.hpp"
 #include "../Stage.hpp"
 #include "wrappers/lua/LuaGuard.hpp"
+#include "LuaAPI.hpp"
 
-LuaEngine::LuaEngine(Stage& stage)
+SpaceNinja::script::LuaEngine::LuaEngine(Stage& stage)
     : m_stage(stage), m_api(stage)
 {
     m_L.open_libraries(sol::lib::base, sol::lib::math, sol::lib::io, sol::lib::coroutine);
     
     // Link the LuaAPI type
-    LuaAPI::createNewType(m_L);
+    SpaceNinja::script::LuaAPI::createNewType(m_L);
     
     // Link the LuaAPI instance
     // Link to the script BY REFERENCE by linking &m_api (by pointer) and not m_api (by value => copy)
@@ -19,7 +20,7 @@ LuaEngine::LuaEngine(Stage& stage)
     initMain();
 }
 
-void LuaEngine::initMain()
+void SpaceNinja::script::LuaEngine::initMain()
 {
     LuaGuard guard(m_L);
     
@@ -36,7 +37,7 @@ void LuaEngine::initMain()
     m_stageCoro = std::make_shared<LuaStageCoroutine>(m_L, 1);
 }
 
-void LuaEngine::update()
+void SpaceNinja::script::LuaEngine::update()
 {
     (*m_stageCoro)();
 }
