@@ -3,6 +3,7 @@
 
 #pragma once
 
+#include "gameplay/Body.hpp"
 #include <stdarg.h>
 #include <stdint.h>
 
@@ -19,16 +20,7 @@
 // User data
 
 /// You can define this to inject whatever data you want in b2Body
-struct B2_API b2BodyUserData
-{
-	b2BodyUserData()
-	{
-		pointer = 0;
-	}
-
-	/// For legacy compatibility
-	uintptr_t pointer;
-};
+using b2BodyUserData = Body;
 
 /// You can define this to inject whatever data you want in b2Fixture
 struct B2_API b2FixtureUserData

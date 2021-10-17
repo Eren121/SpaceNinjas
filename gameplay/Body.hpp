@@ -3,6 +3,7 @@
 #include <wrappers/gl/Texture.hpp>
 #include <wrappers/gl/Sprite.hpp>
 #include <wrappers/box2d/box2d.hpp>
+#include <wrappers/box2d/Fwd.hpp>
 
 /// @brief User data for b2::Body
 /// @details Contains all data needed for rendering plus object data.

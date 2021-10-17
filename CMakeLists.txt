@@ -242,7 +242,7 @@ set(SRC
     wrappers/lua/LuaGuard.cpp
     wrappers/lua/LuaGuard.hpp
     wrappers/nostd/source_location.cpp
-    wrappers/nostd/source_location.hpp Fwd.hpp)
+    wrappers/nostd/source_location.hpp Fwd.hpp wrappers/box2d/Fwd.hpp)
 
 #######################################
 # ImGUI
