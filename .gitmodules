@@ -10,9 +10,6 @@
 [submodule "thirdparty/CPP20Coroutines"]
 	path = thirdparty/CPP20Coroutines
 	url = git@github.com:Eren121/CPP20Coroutines.git
-[submodule "thirdparty/box2d"]
-	path = thirdparty/box2d
-	url = https://github.com/erincatto/box2d
 [submodule "thirdparty/spdlog"]
 	path = thirdparty/spdlog
 	url = https://github.com/gabime/spdlog.git
