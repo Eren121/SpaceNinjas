@@ -12,7 +12,7 @@ namespace Snow::in
 class Action : public sigslot::observer
 {
 public:
-    /// @brief Range for analog inputs. Buttons can only be either 0 or 1.
+    /// @brief Range for analog inputs. For buttons, use 0 for false and Max for true.
     enum {
         Min = -32768,
         Max = 32767

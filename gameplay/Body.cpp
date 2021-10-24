@@ -1,4 +1,5 @@
 #include "Body.hpp"
+#include "wrappers/box2d/box2d.hpp"
 #include <glm/gtx/transform.hpp>
 
 Body::Body(Body::Type type, b2Body& body, const glm::vec2& h)

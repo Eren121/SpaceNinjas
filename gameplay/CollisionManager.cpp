@@ -45,8 +45,8 @@ void CollisionManager::setCollisionEnabled(Body::Type a, Body::Type b, bool canC
 
 void CollisionManager::onCollide(b2Body& a, b2Body& b)
 {
-    auto userDataA = b2::getUserData<Body>(a);
-    auto userDataB = b2::getUserData<Body>(b);
+    Body *userDataA = a.GetUserData();
+    Body *userDataB = b.GetUserData();
 
     // Callbacks for any type
     if(userDataA)
@@ -82,8 +82,8 @@ void CollisionManager::onCollide(b2Body& a, b2Body& b)
 
 bool CollisionManager::ShouldCollide(b2Fixture *fixtureA, b2Fixture *fixtureB)
 {
-    Body *userA = b2::getUserData<Body>(*fixtureA->GetBody());
-    Body *userB = b2::getUserData<Body>(*fixtureB->GetBody());
+    Body *userA = fixtureA->GetBody()->GetUserData();
+    Body *userB = fixtureB->GetBody()->GetUserData();
 
     if(userA && userB)
     {

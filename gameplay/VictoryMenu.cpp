@@ -3,6 +3,7 @@
 #include "utility/Str.hpp"
 #include "process/Wait.hpp"
 #include "process/ProcessQueue.hpp"
+#include "wrappers/freetype/Text.hpp"
 #include <glm/gtc/matrix_transform.hpp>
 
 VictoryMenu::VictoryMenu(std::shared_ptr<Stage> stage)

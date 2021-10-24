@@ -25,6 +25,8 @@
 
 #include "b2_api.h"
 #include "b2_joint.h"
+#include "b2_body.h"
+
 
 /// Friction joint definition.
 struct B2_API b2FrictionJointDef : public b2JointDef

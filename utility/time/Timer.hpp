@@ -2,6 +2,8 @@
 
 #include "Clock.hpp"
 
+/// @brief IRL Time Timer.
+/// @details Can be restarted by calling copy constructor.
 class Timer
 {
 public:

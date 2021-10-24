@@ -2,7 +2,6 @@
 
 #include <wrappers/gl/Texture.hpp>
 #include <wrappers/gl/Sprite.hpp>
-#include <wrappers/box2d/box2d.hpp>
 #include <wrappers/box2d/Fwd.hpp>
 
 /// @brief User data for b2::Body
@@ -22,6 +21,7 @@ public:
 
         Count ///< Do not use, to know the count of Types
     } const type;
+
 
     /// @brief Create a body data from a body that should be a box.
     /// @param hx,hy Same parameters as b2PolygonShape::SetAsBox().

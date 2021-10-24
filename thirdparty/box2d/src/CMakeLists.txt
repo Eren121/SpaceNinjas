@@ -106,7 +106,7 @@ target_include_directories(box2d
 )
 
 set_target_properties(box2d PROPERTIES
-	CXX_STANDARD 11
+	# CXX_STANDARD 20 # Comment to use parent project version
     CXX_STANDARD_REQUIRED YES
     CXX_EXTENSIONS NO
     VERSION ${PROJECT_VERSION}

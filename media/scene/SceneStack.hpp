@@ -34,9 +34,7 @@ public:
     /// @}
     
     void update(bool printDebugInfo);
-    
-    const auto& getContainer() const { return m_stack; }
-    
+
 private:
     void flush();
     

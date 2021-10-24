@@ -60,13 +60,13 @@ void Game::showMainMenu()
 {
     auto menu = std::make_shared<ui::VerticalListMenu>(*this);
 
-    menu->addOption("Play", [this] {
+    menu->addOption("Play", [this](SceneNode&) {
         scene.push(std::make_shared<ui::MenuStage>(*this));
     });
 
     menu->addOption("Settings");
 
-    menu->addOption("Quit", [this] {
+    menu->addOption("Quit", [this](SceneNode&) {
         m_window.close();
     });
 

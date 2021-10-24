@@ -30,20 +30,16 @@ World::~World()
     cleanupDestroyedBodies(false);
 }
 
-Time World::dt()
-{
-    return Time::seconds(1.0f / 180.0f);
-}
-
 void World::step()
 {
-    auto stepSize = dt();
-
-    m_simulationTime += stepSize;
+    m_simulationTime += m_delta;
 
     // The valus are for internal box2D engines; tutorial suggest 6 and 2
+    const int velocityIterations = 6;
+    const int positionIterations = 2;
+
     // here: https://box2d.org/documentation/md__d_1__git_hub_box2d_docs_hello.html
-    this->Step(stepSize.asSeconds(), 6, 2);
+    this->Step(m_delta.asSeconds(), velocityIterations, positionIterations);
 
     // Cleanup destroyed bodies at the end of the step
     cleanupDestroyedBodies(true);
@@ -83,7 +79,7 @@ Time World::getTime() const
     return m_simulationTime;
 }
 
-    [[maybe_unused]] int World::getIteration() const
+int World::getIteration() const
 {
     return m_iteration;
 }
@@ -100,13 +96,11 @@ void World::cleanupDestroyedBodies(bool callDestroyCallback)
         }
 
         // Deallocate user data if there is
-        void* &userData = b2::getUserData(*body);
-        if (userData && deleter)
+        b2BodyUserData& userData = body->GetUserData();
+        if (deleter)
         {
             deleter(userData);
         }
-
-        userData = nullptr; // Safety
 
         // Remove effectively the body from the world
         DestroyBody(body);
@@ -115,12 +109,10 @@ void World::cleanupDestroyedBodies(bool callDestroyCallback)
     m_toDestroy.clear();
 }
 
-b2Body* World::createBody(b2BodyDef *def, void *userData)
+b2Body& World::createBody(b2BodyDef &def)
 {
-    auto body = CreateBody(def);
-    getUserData(*body) = userData;
-
-    return body;
+    b2Body *body = CreateBody(&def);
+    return *body;
 }
 
 void World::BeginContact(b2Contact *contact)

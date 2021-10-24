@@ -53,17 +53,14 @@ namespace SpaceNinja::ui
         }
     }
     
-    void VerticalListMenu::addOption(const std::string& label, std::function<void()> onClick)
+    void VerticalListMenu::addOption(const std::string& label, Callback onClick)
     {
-        m_inputs.push_back(Input{
-            .label = label,
-            .onClick = std::move(onClick)
-        });
+        m_inputs.push_back(Input{label, std::move(onClick)});
     }
     
     bool VerticalListMenu::updateNode()
     {
-        return (*this)();
+        return run();
     }
     
     task<> VerticalListMenu::coroutine()
@@ -113,7 +110,6 @@ namespace SpaceNinja::ui
                     if(prevFocus != m_focus)
                     {
                         // Cursor has moved
-                        m_game.getAudio().playSound("../assets/sounds/jaguar.wav");
                     }
                     
                     beforeMove = Time::milliseconds(180);
@@ -145,7 +141,7 @@ namespace SpaceNinja::ui
             
             if(callback)
             {
-                callback();
+                callback(*this);
             }
         }
     }

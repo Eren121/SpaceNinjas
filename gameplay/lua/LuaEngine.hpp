@@ -1,29 +1,31 @@
 #pragma once
 
-#include "LuaAPI.hpp"
-#include "LuaStageCoroutine.hpp"
-#include "process/Process.hpp"
+#include "gameplay/lua/LuaAPI.hpp"
+#include "gameplay/lua/ProcessCoroutine.hpp"
+#include "gameplay/StageSceneNode.hpp"
 #include "Fwd.hpp"
 
 namespace SpaceNinja::script
 {
-    /// @brief Manage the Stage scripts
-    class LuaEngine : public Snow::exe::Process
+    /// @brief Manage the Stage scripts.
+    /// @details Each step will run one step of the engine's script.
+    class LuaEngine : public StageSceneNode
     {
     public:
         /// @brief Run the associated script to the Stage.
         explicit LuaEngine(Stage& stage);
 
-        /// @brief Run a script step.
-        void update();
+        void onStep();
+
+        /// @brief Register math types (glm library).
+        static void createMathTypes(sol::state& l);
 
     private:
-        void initMain();
+        void startMainFunction();
 
-        sol::state m_L;
-        Stage& m_stage;
+        sol::state L;
         LuaAPI m_api;
-        std::shared_ptr<LuaStageCoroutine> m_stageCoro;
+        std::shared_ptr<ProcessCoroutine> m_stageCoro;
     };
 }
 

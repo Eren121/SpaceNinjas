@@ -15,6 +15,11 @@ void SceneNode::draw(RenderStates states) const
 
 bool SceneNode::update(bool printDebugInfo)
 {
+    if(m_removed)
+    {
+        return false;
+    }
+
     if(updateNode()) // Only update children if the node should continue
     {
         if(printDebugInfo)

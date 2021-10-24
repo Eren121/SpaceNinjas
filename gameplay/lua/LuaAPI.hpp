@@ -39,8 +39,17 @@ namespace SpaceNinja::script
         /// and not return any value.
         void run(const sol::function& function);
 
+        /// @brief Get the current iteration of the simulation
+        int getIteration() const;
+
+        // @brief Get simulation time (in milliseconds)
+        long getTime() const;
+
         void win();
         void defeat();
+
+        /// @remarks returns zero if there is no player
+        glm::vec2 getPlayerPos() const;
 
         std::shared_ptr<Snow::exe::Process> wait(int millis) const;
 

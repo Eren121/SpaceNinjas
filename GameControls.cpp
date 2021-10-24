@@ -17,16 +17,17 @@ SpaceNinja::GameControls::GameControls(Snow::in::UnifiedInput &input)
 
     shoot.bindAxis(SDL_CONTROLLER_AXIS_TRIGGERRIGHT);
     shoot.bindKey(SDLK_SPACE);
+    shoot.bindMouse(SDL_BUTTON_LEFT);
 
     move.bindAxes(SDL_CONTROLLER_AXIS_LEFTX, SDL_CONTROLLER_AXIS_LEFTY);
     turn.bindAxes(SDL_CONTROLLER_AXIS_RIGHTX, SDL_CONTROLLER_AXIS_RIGHTY);
 
-    menuMove.bindKeys(SDLK_LEFT, SDLK_RIGHT, SDLK_DOWN, SDLK_UP);
+    menuMove.bindKeys(SDLK_q, SDLK_d, SDLK_s, SDLK_z);
     menuSelect.bindKey(SDLK_SPACE);
     menuBack.bindKey(SDLK_ESCAPE);
 
     for (auto &x : {&move, &turn}) {
-        x->bindKeys(SDLK_LEFT, SDLK_RIGHT, SDLK_DOWN, SDLK_UP);
+        x->bindKeys(SDLK_q, SDLK_d, SDLK_s, SDLK_z);
     }
 }
 

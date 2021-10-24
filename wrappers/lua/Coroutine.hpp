@@ -25,8 +25,7 @@ namespace lua_utils
         /// @param nargs The count of arguments to give to the coroutine. You must push yourself the function, then
         /// the arguments to L, the arguments will be moved to the new thread. The function and the arguments will be
         /// cleaned from the stack.
-        /// @details The coroutine will pushSceneStage immediately.
-        Coroutine(lua_State *L, int nargs = 0);
+        explicit Coroutine(lua_State *L, int nargs = 0);
 
         /// @brief The destructor.
         /// @details It will stop the coroutine if there is one.

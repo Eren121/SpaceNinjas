@@ -21,7 +21,8 @@ Logger::pointer Logger::getOrCreate(const std::string& name)
 Logger::pointer Logger::create(const std::string& name)
 {
     auto ret = spdlog::stdout_logger_st(name);
-    ret->set_level(spdlog::level::trace);
+    //ret->set_level(spdlog::level::trace);
+    ret->set_level(spdlog::level::debug);
     return ret;
 }
 

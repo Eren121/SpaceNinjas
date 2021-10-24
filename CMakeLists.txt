@@ -57,28 +57,28 @@ set(SRC
     Game.hpp
     GameControls.cpp
     GameControls.hpp
-        media/TextureCache.cpp
-        media/TextureCache.hpp
-        media/WindowDebugInfo.cpp
-        media/WindowDebugInfo.hpp
+    media/TextureCache.cpp
+    media/TextureCache.hpp
+    media/WindowDebugInfo.cpp
+    media/WindowDebugInfo.hpp
+    gameplay/StageSceneNode.cpp
+    gameplay/StageSceneNode.hpp
     gameplay/Body.cpp
     gameplay/Body.hpp
     gameplay/CollisionManager.cpp
     gameplay/CollisionManager.hpp
-    gameplay/PlayerControl.cpp
-    gameplay/PlayerControl.hpp
-    gameplay/PlayerProcess.cpp
-    gameplay/PlayerProcess.hpp
-    gameplay/PlayerShoot.cpp
-    gameplay/PlayerShoot.hpp
+    gameplay/player/PlayerControl.cpp
+    gameplay/player/PlayerControl.hpp
+    gameplay/player/PlayerSceneNode.cpp
+    gameplay/player/PlayerSceneNode.hpp
+    gameplay/player/PlayerShoot.cpp
+    gameplay/player/PlayerShoot.hpp
     gameplay/Save.cpp
     gameplay/Save.hpp
     gameplay/Stage.cpp
     gameplay/Stage.hpp
     gameplay/StageWorld.cpp
     gameplay/StageWorld.hpp
-    gameplay/UIStage.cpp
-    gameplay/UIStage.hpp
     gameplay/Victory.hpp
     gameplay/VictoryMenu.cpp
     gameplay/VictoryMenu.hpp
@@ -86,8 +86,8 @@ set(SRC
     gameplay/lua/LuaAPI.hpp
     gameplay/lua/LuaEngine.cpp
     gameplay/lua/LuaEngine.hpp
-    gameplay/lua/LuaStageCoroutine.cpp
-    gameplay/lua/LuaStageCoroutine.hpp
+    gameplay/lua/ProcessCoroutine.cpp
+    gameplay/lua/ProcessCoroutine.hpp
     main.cpp
     media/ResourceCache.hpp
     media/Window.cpp
@@ -242,7 +242,8 @@ set(SRC
     wrappers/lua/LuaGuard.cpp
     wrappers/lua/LuaGuard.hpp
     wrappers/nostd/source_location.cpp
-    wrappers/nostd/source_location.hpp Fwd.hpp wrappers/box2d/Fwd.hpp)
+    wrappers/nostd/source_location.hpp Fwd.hpp wrappers/box2d/Fwd.hpp
+        media/AudioEngine.cpp media/AudioEngine.hpp)
 
 #######################################
 # ImGUI
@@ -255,7 +256,7 @@ set(IMGUI_SRC
     ${IMGUI_HOME}/imgui_demo.cpp
     ${IMGUI_HOME}/imgui_draw.cpp
     ${IMGUI_HOME}/imgui_tables.cpp
-    ${IMGUI_HOME}/imgui_widgets.cpp)
+    ${IMGUI_HOME}/imgui_widgets.cpp utility/fmt.hpp utility/version.hpp utility/version.cpp ui/StoryMessage.cpp ui/StoryMessage.hpp)
 
 add_library(ImGUI STATIC ${IMGUI_SRC})
 
@@ -275,10 +276,12 @@ add_definitions(-DGLEW_STATIC) # needed for executable
 # Add sources in project
 
 add_definitions(-DMAKE_LIB) # Do not compile lua interpreter
-set(LUA_HOME "${THIRD_PARTY_DIR}/lua/")
-set(SRC ${SRC} "${LUA_HOME}/onelua.c" media/AudioEngine.cpp media/AudioEngine.hpp)
+set(LUA_HOME "${THIRD_PARTY_DIR}/lua")
+set(LUA_SRC "${LUA_HOME}/onelua.c")
+set(SRC ${SRC} ${LUA_SRC})
 include_directories("${LUA_HOME}")
 
+# compile Lua in C++
 #######################################
 
 add_executable(SDL_OpenGL ${SRC})
@@ -322,6 +325,8 @@ include_directories("${THIRD_PARTY_DIR}/CPP20Coroutine/include")
 # To simplify custom user data for Box2D, directly binding to our class
 add_definitions(-DB2_USER_SETTINGS)
 
+set(BOX2D_BUILD_TESTBED OFF)
+set(BOX2D_BUILD_UNIT_TESTS OFF)
 set(box2d_HOME "${THIRD_PARTY_DIR}/box2d")
 add_subdirectory("${box2d_HOME}" "${PROJECT_BINARY_DIR}/box2d")
 include_directories("${box2d_HOME}/include")

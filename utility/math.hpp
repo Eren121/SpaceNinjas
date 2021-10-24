@@ -8,6 +8,7 @@
 #define TAU (2.0f * PI)
 #define SQRT2 1.41421356237309504880f
 
+#include "utility/fmt.hpp"
 #include <cmath>
 #include <algorithm>
 #include <random>
@@ -17,15 +18,19 @@
 
 namespace glm
 {
-    /// @brief Make glm vectors types supports printing.
-    /// @remarks Use template for logging for spdlog support.
-    /// @remarks In namespace glm for using ADL is important for the compiler to find the function, see https://github.com/gabime/spdlog/issues/39.
-    template<typename OStream, typename T, glm::length_t dim, glm::qualifier q>
-    OStream &operator<<(OStream &lhs, const glm::vec<dim, T, q> &rhs)
-    {
-        return lhs << glm::to_string(rhs);
-    }
+    template<typename T>
+    void glm_check_inside_namespace(const T&) {}
 }
+
+/// @brief Check if a type belongs to the 'glm' library.
+template<typename T>
+concept glm_type = requires(T t)
+{
+    glm_check_inside_namespace(t);
+};
+
+/// @brief Make 'glm' library types supports fmt::format().
+SNOW_DEFINE_USER_FMT(glm_type);
 
 namespace math
 {

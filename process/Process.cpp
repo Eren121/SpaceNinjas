@@ -1,58 +1,71 @@
-#include "Process.hpp"
-#include <utility/Guard.hpp>
+#include "process/Process.hpp"
+#include "utility/Guard.hpp"
 
-Snow::exe::Process::Process(function<bool()> task)
-    : m_running(true), m_locked(false), m_task(task)
+namespace Snow::exe
 {
-}
-
-bool Snow::exe::Process::isRunning() const
-{
-    return m_running;
-}
-
-void Snow::exe::Process::stop()
-{
-    m_running = false;
-}
-
-bool Snow::exe::Process::isLocked() const
-{
-    return m_locked;
-}
-
-bool Snow::exe::Process::operator()()
-{
-    m_running = true;
-    m_locked = true;
-
-    WhenLeaveScope {
-        m_locked = false;
-    };
-
-    update();
-
-    return m_running;
-}
-
-void Snow::exe::Process::update()
-{
-    if(m_task)
+    Process::Process(std::function<bool()> task)
+        : m_task(task)
     {
-        // Execute the task if it exists
+    }
 
-        if(!m_task())
+    bool Process::isRunning() const
+    {
+        return m_running;
+    }
+
+    void Process::stop()
+    {
+        m_running = false;
+    }
+
+    bool Process::isLocked() const
+    {
+        return m_locked;
+    }
+
+    bool Process::isFirstUpdate() const
+    {
+        return m_isFirstUpdate;
+    }
+
+    bool Process::run()
+    {
+        m_running = true;
+        m_locked = true;
+
+        WhenLeaveScope {
+            m_locked = false;
+
+            if(m_isFirstUpdate)
+            {
+                m_isFirstUpdate = false;
+            }
+        };
+
+        update();
+
+        return m_running;
+    }
+
+    void Process::update()
+    {
+        if(m_task)
         {
-            // Stop when the task stops
-            stop();
+            // Execute the task if it exists
+
+            if(!m_task())
+            {
+                // Stop when the task stops
+                stop();
+            }
         }
     }
-}
 
-task<> Snow::exe::Process::operator co_await()
-{
-    while((*this)())
+    task<> Process::operator co_await()
     {
-        co_await std::suspend_always{};
+        while((*this)())
+        {
+            co_await std::suspend_always{};
+        }
     }
 }

@@ -12,6 +12,9 @@ public:
 
     void bindKey(Key key);
 
+    /// @param button e.g. SDL_BUTTON_LEFT.
+    void bindMouse(int button);
+
     void bindAxis(SDL_GameControllerAxis axis, float deadZone = 0.15f);
 
 private:

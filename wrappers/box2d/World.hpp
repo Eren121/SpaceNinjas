@@ -83,21 +83,12 @@ public:
     /// @remarks Will check if the body is deleted twice in the same time step, but not between two different timesteps.
     void markForDestroy(b2Body *body);
 
-    /// @brief Create a body with user data
-    b2Body* createBody(b2BodyDef *def, void *userData = nullptr);
+    /// @brief Create a body
+    b2Body& createBody(b2BodyDef &def);
 
     /// @brief Utility to create a body only composed of a Box fixture
     /// @param box The size and the position of the body.
     b2Body& createBoxBody(const Rect& box, b2BodyType type = b2_dynamicBody, float density = 1.0f, bool bullet = false);
-
-    /// @details
-    ///      Tutorial suggests to have a constant simulation timestep (dependant from framerate)
-    ///      However, we may use what is called a "semi-fixed" timestep
-    ///      See https://gafferongames.com/post/fix_your_timestep/ for more information, implemented here
-    ///      However we may have a non-constant timestep but for debugging purposes only.
-    ///      Time step of physics, in seconds
-    /// @remarks The reason this is a function and not a constexpr variable is that sf::Time is not constexpr.
-    Time dt();
 
     /// @brief Advance the simulation.
     /// @details Performs a semi-fixed step. Always performs only one step. You have to do {} while loop it if you
@@ -107,7 +98,19 @@ public:
 
     /// @brief Deleter for user data.
     /// @details If not null, will be called when each body is destroyed, as well for each body when the world is destroyed.
-    std::function<void(void*)> deleter;
+    std::function<void(b2BodyUserData&)> deleter;
+
+protected:
+    /// @brief How much time to advance at each step.
+    /// @details
+    ///      Publicly settable.
+    ///      Tutorial suggests to have a constant simulation timestep (dependant from framerate)
+    ///      However, we may use what is called a "semi-fixed" timestep
+    ///      See https://gafferongames.com/post/fix_your_timestep/ for more information, implemented here
+    ///      However we may have a non-constant timestep but for debugging purposes only.
+    ///      Time step of physics, in seconds
+    /// @remarks protected so can be set if needed by child classes, but to prevent it it's not public.
+    Time m_delta{Time::seconds(1.0f / 180.0f)};
 };
 
 }

@@ -22,7 +22,11 @@ public:
     /// - When this is just pushed to the stack.
     /// - When this node was the sub-top node, and the top node is popped, making this the top node again.
     virtual void onBecomeTop() {}
-    
+
+    /// @brief To force to remove the node.
+    /// @details When removed, update() will returns false and will not run if the node was removed externally.
+    void removeNode() { m_removed = true; }
+
 protected:
     virtual void drawNode(RenderStates states) const {}
     
@@ -47,7 +51,8 @@ private:
             return std::tie(lhs->m_z, lhs) < std::tie(rhs->m_z, rhs);
         }
     };
-    
+
+    bool m_removed{false};
     int m_z{0}; ///< z-index
     std::set<Child, comparator> m_children;
 };

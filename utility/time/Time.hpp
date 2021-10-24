@@ -11,7 +11,7 @@ public:
     /// @brief Construct a Time representing Zero.
     Time();
 
-    /// @brief Get the elapsed time since an arbitrary origin, constant during all the program.
+    /// @brief Get the elapsed time since an arbitrary origin, which is constant during all the program.
     static Time now();
 
     /// @name

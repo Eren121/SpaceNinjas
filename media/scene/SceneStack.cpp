@@ -9,12 +9,18 @@ SceneStack::SceneStack()
 void SceneStack::pop()
 {
     m_pendings.push([](SceneStack& self) {
-        
-        self.m_stack.pop();
-        
-        if(!self.m_stack.empty())
+
+        // The very bottom of the stack is an empty scene
+        // Do not remove it if it is the last scene.
+        // To avoid having to care of null pointers (Null Object Pattern)
+        if(self.m_stack.size() > 1)
         {
-            self.m_stack.top()->onBecomeTop();
+            self.m_stack.pop();
+
+            if(!self.m_stack.empty())
+            {
+                self.m_stack.top()->onBecomeTop();
+            }
         }
     });
 }

@@ -1,12 +1,13 @@
-#include "Stage.hpp"
-#include "Body.hpp"
+#include "gameplay/Stage.hpp"
+#include "gameplay/Body.hpp"
+#include "gameplay/VictoryMenu.hpp"
+#include "gameplay/player/PlayerControl.hpp"
+#include "gameplay/player/PlayerShoot.hpp"
+#include "ui/VerticalListMenu.hpp"
 #include "Game.hpp"
-#include "VictoryMenu.hpp"
+#include "wrappers/lua/LuaException.hpp"
 #include "utility/Exception.hpp"
 #include "utility/Str.hpp"
-#include "utility/macro/unused.hpp"
-#include "wrappers/lua/LuaException.hpp"
-#include "PlayerControl.hpp"
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/string_cast.hpp>
 #include <imgui.h>
@@ -15,24 +16,22 @@ Stage::Stage(SpaceNinja::Game &game, int id)
     : m_game(game),
       m_id(id),
       m_player(nullptr),
-      m_firstUpdate(false),
       m_world(std::make_shared<StageWorld>(game)),
-      m_luaEngine(std::make_shared<SpaceNinja::script::LuaEngine>(*this)),
-      m_playerControl(std::make_unique<SpaceNinja::PlayerControl>(*this)),
-      m_uiRenderer(std::make_shared<UIStage>(game, *this)),
-      m_victory(Victory::Running),
-      m_logger{Logger::getOrCreate("Stage")}
+      m_victory(Victory::Running)
 {
-    initPlayer();
-    initVoid();
+    spawnPlayer();
+    spawnVoid();
     
     addChild(m_world);
-    addChild(m_uiRenderer);
-    
-    eachStep.add(m_luaEngine);
+
+    addChild(std::make_unique<SpaceNinja::PlayerControl>(*this));
+    addChild(std::make_unique<SpaceNinja::PlayerShoot>(*this));
+    addChild(std::make_shared<SpaceNinja::script::LuaEngine>(*this));
 }
 
-void Stage::initPlayer()
+Stage::~Stage() = default;
+
+void Stage::spawnPlayer()
 {
     Rect coords; // pos and size of the player
     coords.size = {2.0f, 2.0f};
@@ -42,14 +41,9 @@ void Stage::initPlayer()
     m_player = &player;
 
     Body *userData = new Body(Body::Player, player, coords.radius());
-    b2::setUserData(player, userData);
+    player.GetUserData() = userData;
 
     userData->setTexture(&m_game.textures("player.png"));
-
-    addChild(m_playerControl);
-
-    m_playerShoot = std::make_shared<PlayerShoot>(*this);
-    addChild(m_playerShoot);
 
     // End the stage when the player is killed
     m_world->onDestroy.connect([this](b2Body& body) {
@@ -61,7 +55,7 @@ void Stage::initPlayer()
     });
 }
 
-void Stage::initVoid()
+void Stage::spawnVoid()
 {
     // Rect radius, further bodies will instantly be destroyed
     float worldRadius = 50.0f;
@@ -86,31 +80,20 @@ void Stage::initVoid()
         b2Body& body = m_world->createBoxBody(rect, b2_staticBody);
 
         Body *userData = new Body(Body::Void, body, rect.size / 2.0f);
-        b2::setUserData(body, userData);
+        body.GetUserData() = userData;
         userData->setTexture(&m_game.textures("container.jpg"));
     }
 }
 
 bool Stage::updateNode()
 {
-    return operator()();
-}
-
-void Stage::update()
-{
-    if(m_firstUpdate)
-    {
-        m_firstUpdate = false;
-        m_start = Time::now();
-    }
-
-    syncWorld();
+    bool ret = true;
 
     if(m_victory != Victory::Running)
     {
         // The player has win or lost
-        // In either way we stop the process
-        stop();
+        // In either way we stop the Stage
+        ret = false;
         
         getLogger().debug("Level finished by the player. Result: {}", to_string(m_victory));
         
@@ -136,18 +119,45 @@ void Stage::update()
         //m_game.scene.addChild(std::make_shared<VictoryMenu>(m_game.getStagePtr()));
         ///TODO
     }
+
+    updateUI();
+
+    return ret;
 }
 
-void Stage::syncWorld()
+void Stage::updateUI()
 {
-    // We don't need to be synchronized (not a mutliplayer game)
-    // We do one step per frame
-    // However, all the timers are sync with the world clock
-
-    //while(m_world.getTime() + m_world.dt() <= (Time::now() - m_start))
+    if(m_game.getControls().menuBack.isJustPressed())
     {
-        m_world->step();
-        eachStep();
+        // Create the menu
+        auto menu = std::make_shared<
+            SpaceNinja::ui::VerticalListMenu>(m_game);
+
+        // Add the option to resume
+        menu->addOption("Resume", [this](SceneNode& menu) {
+
+            // Close the menu
+            menu.removeNode();
+
+            // Resume the simulation
+            m_world->getClock().setPaused(false);
+        });
+
+        // Add the option to bring back to menu stage selection
+        menu->addOption("Abandon", [this](SceneNode& menu) {
+
+            // Close the menu
+            menu.removeNode();
+
+            // Stops the simulation
+            this->removeNode();
+        });
+
+        // Show the menu
+        addChild(menu);
+
+        // Pause the simulation
+        m_world->getClock().setPaused(true);
     }
 }
 
@@ -201,8 +211,6 @@ int Stage::getID() const
     return m_id;
 }
 
-Stage::~Stage() = default;
-
 glm::vec2 Stage::clipToWorldSpace(const glm::vec2 clipPos) const
 {
     // Reverse MVP projection
@@ -212,6 +220,28 @@ glm::vec2 Stage::clipToWorldSpace(const glm::vec2 clipPos) const
            * glm::vec4(clipPos, 0.0f, 1.0f);
 }
 
+glm::vec2 Stage::worldToClipSpace(glm::vec2 worldPos) const
+{
+    return m_game.getProjectionMatrix() * m_game.getViewMatrix() * glm::vec4(worldPos, 0.0f, 1.0f);
+}
+
 void Stage::debugNode()
 {
+    const ImGuiInputTextFlags readOnly = ImGuiInputTextFlags_ReadOnly;
+
+    if(ImGui::CollapsingHeader(getLogger().name().c_str()))
+    {
+        ImGui::InputInt("Stage ID", &m_id, 1, 0, readOnly);
+
+        if (hasPlayer())
+        {
+            b2Body& player = getPlayer();
+            glm::vec2 pos = b2::toGLM(player.GetPosition());
+
+            if (ImGui::InputFloat2("Player position", &pos.x))
+            {
+                b2::setPosition(player, pos);
+            }
+        }
+    }
 }

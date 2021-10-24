@@ -377,6 +377,7 @@ public:
 
 	/// Get the user data pointer that was provided in the body definition.
 	b2BodyUserData& GetUserData();
+    const b2BodyUserData& GetUserData() const;
 
 	/// Set the user data. Use this to store your application specific data.
 	void SetUserData(void* data);
@@ -734,6 +735,11 @@ inline const b2Body* b2Body::GetNext() const
 inline b2BodyUserData& b2Body::GetUserData()
 {
 	return m_userData;
+}
+
+inline const b2BodyUserData& b2Body::GetUserData() const
+{
+    return m_userData;
 }
 
 inline void b2Body::ApplyForce(const b2Vec2& force, const b2Vec2& point, bool wake)

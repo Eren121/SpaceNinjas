@@ -1,16 +1,19 @@
 #include "Game.hpp"
-#include "StageWorld.hpp"
-#include "Body.hpp"
+#include "gameplay/StageWorld.hpp"
+#include "gameplay/Body.hpp"
 #include <imgui.h>
 
-StageWorld::StageWorld(SpaceNinja::Game& game)
+StageWorld::StageWorld(SpaceNinja::Game& game, Time delta)
     : m_game(game),
-      m_collisionner(*this)
+      m_collisionner(*this),
+      m_defaultDelta(delta)
 {
+    m_delta = m_defaultDelta;
+
     SetDebugDraw(&m_debugDraw);
     
-    this->deleter = [](void *userData) {
-        delete reinterpret_cast<Body*>(userData);
+    this->deleter = [](Body *userData) {
+        delete userData;
     };
     
     initCollisions();
@@ -44,7 +47,28 @@ void StageWorld::initCollisions()
 
 bool StageWorld::updateNode()
 {
-    step();
+    if(!m_firstIterationReached)
+    {
+        const Time elapsed = m_sinceStart.getElapsedTime();
+        getLogger().debug("First update; loading time = {}", elapsed);
+
+        m_sinceStart.restart();
+        m_firstIterationReached = true;
+    }
+
+    // Never run faster than real-time simulation, but can run slower if CPU is too slow
+    // And never run more than 1 step per frame in case of CPU bottleneck (if() and not while())
+
+    if(m_sinceStart.getElapsedTime() >= getTime())
+    {
+        constexpr const char *msgFormat = "pre-step {}; simulation time = {}; time since start = {}";
+        const int nextIt = getIteration() + 1;
+        getLogger().trace(msgFormat, nextIt, getTime(), m_sinceStart.getElapsedTime());
+
+        step();
+        m_stepsPerSec.onFrame();
+    }
+
     return true;
 }
 
@@ -66,7 +90,7 @@ void StageWorld::drawNode(RenderStates states) const
     
     for(const auto& b2body : *this)
     {
-        const Body *body = b2::getUserData<Body>(b2body);
+        const Body *body = b2body.GetUserData();
 
         if (body)
         {
@@ -86,8 +110,52 @@ void StageWorld::drawNode(RenderStates states) const
 
 void StageWorld::debugNode()
 {
+    const ImGuiInputTextFlags readOnly = ImGuiInputTextFlags_ReadOnly;
+
     if(ImGui::CollapsingHeader("StageWorld"))
     {
+        int iteration = getIteration();
+        float time = getTime().asSeconds();
+        float fps = m_stepsPerSec.getFPS();
+
+        ImGui::InputInt("Iteration", &iteration, 0, 0, readOnly);
+        ImGui::InputFloat("Time", &time, 0.0f, 0.0f, "%.3fs", readOnly);
+        ImGui::InputFloat("Steps/s", &fps, 0.0f, 0.0f, "%.3f", readOnly);
+
+        struct Range
+        {
+            float min;
+            float max;
+        };
+
+        static const Range deltaRange{1.0f / 300.0f, 1.0};
+        static const Range timeScaleRange{0.1f, 10.0f};
+
+        float delta_as_sec = m_delta.asSeconds();
+        if(ImGui::SliderFloat("Lockstep delta", &delta_as_sec, deltaRange.min, deltaRange.max, "%.5f"))
+        {
+            // Modified by user
+            m_delta = Time::seconds(delta_as_sec);
+        }
+
+        float time_scale = m_sinceStart.getSpeed();
+        if(ImGui::SliderFloat("Time scale", &time_scale, timeScaleRange.min, timeScaleRange.max, "%.5f"))
+        {
+            m_sinceStart.setSpeed(time_scale);
+        }
+
+        bool paused  = m_sinceStart.isPaused();
+        if(ImGui::Checkbox("Pause", &paused))
+        {
+            m_sinceStart.setPaused(paused);
+        }
+
+        ImGui::SameLine();
+        if(ImGui::Button("Reset"))
+        {
+            m_delta = m_defaultDelta;
+        }
+
         ImGui::Checkbox("Debug Draw", &m_debugDrawEnabled);
     }
 }

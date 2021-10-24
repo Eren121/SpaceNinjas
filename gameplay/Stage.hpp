@@ -1,35 +1,22 @@
 #pragma once
 
 #include "gameplay/Victory.hpp"
-#include "gameplay/PlayerControl.hpp"
-#include "gameplay/PlayerShoot.hpp"
 #include "gameplay/CollisionManager.hpp"
 #include "gameplay/StageWorld.hpp"
-#include "gameplay/UIStage.hpp"
 #include "gameplay/lua/LuaEngine.hpp"
 #include "process/ProcessPool.hpp"
-#include "process/Process.hpp"
-#include "process/ProcessPool.hpp"
 #include "Fwd.hpp"
-#include <utility/logging.hpp>
+#include "utility/logging.hpp"
 
-class Stage : public SceneNode, public Snow::exe::Process, public Loggable<"Stage">
+class Stage : public SceneNode, public Loggable<"Stage">
 {
 public:
     explicit Stage(SpaceNinja::Game& game, int id);
     ~Stage() override;
     
 protected:
-    /// @remarks Wraps the Process update()
     bool updateNode() override;
-    
-    void update() override;
-    
-private:
-    /// @brief Synchronize IRL and the simulation
-    /// @details That is run the simulation until the clock are synchronized.
-    void syncWorld();
-    
+
 public:
     b2::World& getWorld();
     const b2::World& getWorld() const;
@@ -42,6 +29,9 @@ public:
     
 protected:
     void debugNode() override;
+
+    /// @brief Check UI inputs like to open main menu, etc.
+    void updateUI();
 
 public:
     b2Body& getPlayer();
@@ -56,33 +46,19 @@ public:
     /// @details
     /// For example, clipPos = (0, 0) will map to world point that is on the center of the window
     glm::vec2 clipToWorldSpace(glm::vec2 clipPos) const;
-    
+    glm::vec2 worldToClipSpace(glm::vec2 worldPos) const;
+
 private:
-    void initPlayer();
-    void initVoid();
+    void spawnPlayer();
+    void spawnVoid();
 
     SpaceNinja::Game& m_game;
     int m_id;
 
     b2Body *m_player;
-    bool m_firstUpdate;
     
     std::shared_ptr<StageWorld> m_world;
-
-    /// @brief Simulation starting time, to synchronize the simulation with IRL.
-    Time m_start;
-    
-    std::shared_ptr<SpaceNinja::script::LuaEngine> m_luaEngine;
-    std::shared_ptr<SpaceNinja::PlayerControl> m_playerControl;
-    std::shared_ptr<PlayerShoot> m_playerShoot;
-    std::shared_ptr<UIStage> m_uiRenderer;
     
     Victory m_victory;
-    
-public:
-    Snow::exe::ProcessPool eachStep; ///< Processes to run each step
-    
-private:
-    Logger::pointer m_logger;
 };
 

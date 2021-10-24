@@ -14,14 +14,14 @@ namespace Snow::exe
 class ProcessStack : public Snow::exe::Process
 {
 public:
-    void push(shared_ptr<Process> p);
+    void push(std::shared_ptr<Process> p);
     [[nodiscard]] bool empty() const;
 
 protected:
     void update() override;
 
 private:
-    stack<shared_ptr<Process>> m_stack;
+    std::stack<std::shared_ptr<Process>> m_stack;
 };
 }
 

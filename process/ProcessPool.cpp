@@ -25,12 +25,12 @@ void Snow::exe::ProcessPool::update()
     }
 }
 
-void Snow::exe::ProcessPool::add(shared_ptr<Process> p)
+void Snow::exe::ProcessPool::add(std::shared_ptr<Process> p)
 {
     m_processes.push_back(p);
 }
 
-void Snow::exe::ProcessPool::remove(shared_ptr<Process> p)
+void Snow::exe::ProcessPool::remove(std::shared_ptr<Process> p)
 {
     m_processes.remove(p);
 }

@@ -23,7 +23,7 @@ Coroutine::Coroutine(lua_State *L, int nargs)
         if(!m_thread)
         {
             lua_pop(L, 1); // pop light user data
-            throw LuaException("Failed to allocate Lua thread");
+            throw LuaException(L, "Failed to allocate Lua thread");
         }
 
         addToRegistry(true);
@@ -119,12 +119,16 @@ bool Coroutine::operator()(int *nres)
 
         default:
             // Error
-            // In try block to because we can't close then try because then the thread would be null
             std::string error = lua_tostring(m_thread, -1);
             lua_pop(m_thread, 1);
 
+
+            LuaException e = LuaException(m_thread, error);
+
             close();
-            throw LuaException(error);
+
+            // create the error, close then throw
+            throw e;
     }
 
     return m_resumable;

@@ -1,9 +1,13 @@
 #pragma once
 
 // All necessary forward declaration (not all)
-// It is better than putting an ugly namespace with a forward declaration in many files
+// It is better than putting an ugly namespace with only a forward declaration in many files
 
+#include "wrappers/box2d/Fwd.hpp"
+
+class Body;
 class Stage;
+class SceneNode;
 
 namespace SpaceNinja
 {

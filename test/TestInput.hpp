@@ -2,6 +2,7 @@
 
 #include "test/Test.hpp"
 #include "media/Window.hpp"
+#include "GameControls.hpp"
 #include "wrappers/gl/Shader.hpp"
 #include "wrappers/freetype/Font.hpp"
 
