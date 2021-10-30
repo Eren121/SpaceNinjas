@@ -1,5 +1,6 @@
 #include "Transformable.hpp"
 #include <glm/gtx/matrix_transform_2d.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
 Transformable::Transformable()
     : m_matrix(1.0f), m_needUpdate(false),
@@ -92,4 +93,14 @@ void Transformable::update() const
     m_matrix[1] = glm::vec4(matrix[1][0], matrix[1][1], 0.0f, matrix[1][2]);
     m_matrix[2] = glm::vec4(0.0f, 0.0f, 1.0f, 0.0f);
     m_matrix[3] = glm::vec4(matrix[2][0], matrix[2][1], 0.0f, matrix[2][2]);
+}
+
+void Transformable::translate(glm::mat4 &m, const glm::vec3 &tr)
+{
+    m = glm::translate(m, tr);
+}
+
+void Transformable::scale(glm::mat4 &m, const glm::vec3 &sc)
+{
+    m = glm::scale(m, sc);
 }

@@ -6,7 +6,7 @@
 #include "wrappers/freetype/Text.hpp"
 #include <glm/gtc/matrix_transform.hpp>
 
-VictoryMenu::VictoryMenu(std::shared_ptr<Stage> stage)
+VictoryMenu::VictoryMenu(std::shared_ptr<SpaceNinja::Stage> stage)
         : m_game(stage->getGame()),
           m_window(m_game.getWindow()),
           m_stage(stage)

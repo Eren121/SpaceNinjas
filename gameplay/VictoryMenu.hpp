@@ -10,7 +10,7 @@ class VictoryMenu : public Snow::exe::CoProcess
 {
 public:
     /// @param stage the stage that just finished.
-    VictoryMenu(std::shared_ptr<Stage> stage);
+    VictoryMenu(std::shared_ptr<SpaceNinja::Stage> stage);
 
 protected:
     task<> coroutine() override;
@@ -21,5 +21,5 @@ protected:
 private:
     SpaceNinja::Game& m_game;
     Snow::media::Window& m_window;
-    std::shared_ptr<Stage> m_stage;
+    std::shared_ptr<SpaceNinja::Stage> m_stage;
 };

@@ -15,7 +15,6 @@ generator<b2Fixture*> iterateFixtures(b2Body *body)
 World::World(b2Vec2 gravity)
     : b2World(gravity), m_iteration(0)
 {
-    SetContactListener(this);
 }
 
 World::~World()
@@ -113,11 +112,6 @@ b2Body& World::createBody(b2BodyDef &def)
 {
     b2Body *body = CreateBody(&def);
     return *body;
-}
-
-void World::BeginContact(b2Contact *contact)
-{
-    onCollide(*contact->GetFixtureA()->GetBody(), *contact->GetFixtureB()->GetBody());
 }
 
 b2Body& World::createBoxBody(const Rect& rect, b2BodyType type, float density, bool bullet)

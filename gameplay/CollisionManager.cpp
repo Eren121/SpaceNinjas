@@ -1,37 +1,26 @@
 #include "CollisionManager.hpp"
+#include <box2d/b2_contact.h>
 
-CollisionManager::CollisionManager(b2::World& world)
+CollisionManager::TypePair::TypePair(Body::Type a, Body::Type b, bool *swapped)
+    : typeA(a), typeB(b)
 {
-    world.onCollide.connect(&CollisionManager::onCollide, this);
-    world.SetContactFilter(this);
-}
-
-CollisionManager::TypePair CollisionManager::make_pair(Body::Type a, Body::Type b, bool *swapped)
-{
-    CollisionManager::TypePair ret;
     bool swappedLocal = false;
 
     if(a > b)
     {
-        ret = {b, a};
+        std::swap(typeA, typeB);
         swappedLocal = true;
-    }
-    else
-    {
-        ret = {a, b};
     }
 
     if(swapped)
     {
         *swapped = swappedLocal;
     }
-
-    return ret;
 }
 
 void CollisionManager::setCollisionEnabled(Body::Type a, Body::Type b, bool canCollide)
 {
-    TypePair pair = make_pair(a, b);
+    const TypePair pair{a, b};
 
     if(canCollide)
     {
@@ -43,57 +32,77 @@ void CollisionManager::setCollisionEnabled(Body::Type a, Body::Type b, bool canC
     }
 }
 
-void CollisionManager::onCollide(b2Body& a, b2Body& b)
+void CollisionManager::onEvent(b2Body& a, b2Body& b, EventType type)
 {
-    Body *userDataA = a.GetUserData();
-    Body *userDataB = b.GetUserData();
+    Body *const userDataA = a.GetUserData();
+    Body *const userDataB = b.GetUserData();
 
     // Callbacks for any type
     if(userDataA)
     {
-        Body::Type typeA = userDataA->type;
-        m_anyCallbacks[typeA](a, b);
+        const Body::Type typeA = userDataA->type;
+        const EventKey key{typeA, Body::None, type};
+        m_anyCallbacks[key](a, b);
     }
     if(userDataB)
     {
-        Body::Type typeB = userDataB->type;
-        m_anyCallbacks[typeB](b, a);
+        const Body::Type typeB = userDataB->type;
+        const EventKey key{typeB, Body::None, type};
+        m_anyCallbacks[key](b, a);
     }
 
     // Callback for specific collision fo both a and b
     // Ignore if we can't get the type of both
     if(userDataA && userDataB)
     {
-        Body::Type typeA = userDataA->type;
-        Body::Type typeB = userDataB->type;
+        const Body::Type typeA = userDataA->type;
+        const Body::Type typeB = userDataB->type;
 
-        // Re-order is necessary (if typeA == typeB, it is also OK)
-        if(typeA > typeB)
+        bool swapped{};
+        const EventKey key{typeA, typeB, type, &swapped};
+
+        if(swapped)
         {
-            // Swap order
-            m_callbacks[std::make_pair(typeB, typeA)](b, a);
+            m_exactCallbacks[key](b, a);
         }
         else
         {
-            m_callbacks[std::make_pair(typeA, typeB)](a, b);
+            m_exactCallbacks[key](a, b);
         }
     }
 }
 
 bool CollisionManager::ShouldCollide(b2Fixture *fixtureA, b2Fixture *fixtureB)
 {
-    Body *userA = fixtureA->GetBody()->GetUserData();
-    Body *userB = fixtureB->GetBody()->GetUserData();
+    const Body *const userA = fixtureA->GetBody()->GetUserData();
+    const Body *const userB = fixtureB->GetBody()->GetUserData();
 
     if(userA && userB)
     {
-        Body::Type typeA = userA->type;
-        Body::Type typeB = userB->type;
-        return !m_cannotCollide.contains(make_pair(typeA, typeB));
+        const Body::Type typeA = userA->type;
+        const Body::Type typeB = userB->type;
+        const TypePair key{typeA, typeB};
+        return !m_cannotCollide.contains(key);
     }
     else
     {
         // No user data, default collision filtering
         return b2ContactFilter::ShouldCollide(fixtureA, fixtureB);
     }
+}
+
+void CollisionManager::BeginContact(b2Contact *contact)
+{
+    const EventType type{Begin};
+    b2Body& a{*contact->GetFixtureA()->GetBody()};
+    b2Body& b{*contact->GetFixtureB()->GetBody()};
+    onEvent(a, b, type);
+}
+
+void CollisionManager::EndContact(b2Contact *contact)
+{
+    const EventType type{End};
+    b2Body& a{*contact->GetFixtureA()->GetBody()};
+    b2Body& b{*contact->GetFixtureB()->GetBody()};
+    onEvent(a, b, type);
 }

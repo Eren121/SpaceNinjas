@@ -6,13 +6,13 @@
 #include "wrappers/box2d/Fwd.hpp"
 
 class Body;
-class Stage;
 class SceneNode;
 
 namespace SpaceNinja
 {
     class Game;
     class GameControls;
+    class Stage;
 }
 
 namespace Snow

@@ -13,9 +13,11 @@ class Body : public Sprite
 {
 public:
     enum Type {
+        None,
         Player,
         Ennemy,
-        Void, ///< Barriers at the limit of the world, to garbage collect entities colliding with it
+        PlayerLimits, ///< Barriers at the limit of the world, to garbage collect entities colliding with it
+        Universe, ///< Everything that end collision with this body is destroyed
 
         PlayerMissile,
 
@@ -24,9 +26,9 @@ public:
 
 
     /// @brief Create a body data from a body that should be a box.
-    /// @param hx,hy Same parameters as b2PolygonShape::SetAsBox().
-    Body(Type type, b2Body& body, float hx, float hy);
-    Body(Type type, b2Body& body, const glm::vec2& h);
+    /// @param rx,ry Same parameters as b2PolygonShape::SetAsBox().
+    Body(Type type, b2Body& body, float rx, float ry);
+    Body(Type type, b2Body& body, const glm::vec2& radius);
 
     void draw(RenderStates states) const;
 

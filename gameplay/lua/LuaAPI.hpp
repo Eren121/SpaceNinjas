@@ -48,12 +48,23 @@ namespace SpaceNinja::script
         void win();
         void defeat();
 
+        float getTimeScale() const;
+        void setTimeScale(float timeScale);
+
         /// @remarks returns zero if there is no player
         glm::vec2 getPlayerPos() const;
 
         std::shared_ptr<Snow::exe::Process> wait(int millis) const;
 
         int ennemyCount() const;
+
+        /// @returns A task that send a story message to the player in a box on the screen.
+        /// @remarks
+        ///     The task returns only when the player closes the dialog, either by clicking on a skip button o
+        ///     if time is elapsed.
+        /// @param msg The message to print.
+        /// @param millis The maximum duration of the message.
+        std::shared_ptr<Snow::exe::Process> sendMessage(const std::string& msg, int millis);
 
     private:
 

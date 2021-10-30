@@ -15,6 +15,15 @@ struct tRect
     {
     }
 
+    static tRect fromCorners(const vec& lower, const vec& upper)
+    {
+        tRect ret;
+        ret.origin = lower;
+        ret.size = upper - lower;
+
+        return ret;
+    }
+
     vec size { static_cast<T>(0) };
     vec origin { static_cast<T>(0) };
 

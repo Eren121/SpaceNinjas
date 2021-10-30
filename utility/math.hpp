@@ -34,6 +34,13 @@ SNOW_DEFINE_USER_FMT(glm_type);
 
 namespace math
 {
+    /// @brief Convert a signed normalized range [-1;1] to unsigned normalized range [0;1].
+    auto normCoordsToUnsigned(const auto& vec)
+    {
+        using T = typename std::remove_reference_t<decltype(vec)>::value_type;
+        return (vec + static_cast<T>(1)) / static_cast<T>(2);
+    }
+
     using std::clamp;
 
     /// @brief Inverse error function

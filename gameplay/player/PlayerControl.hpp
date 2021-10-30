@@ -25,9 +25,6 @@ namespace SpaceNinja
 
         void onStep(b2Body& player) override;
 
-        /// @brief Force the player to stay in the window view by clamping its coordinates
-        void clampPlayer(b2Body& player);
-
         glm::vec2 convertClipSpaceToSimulationSpace(const glm::vec2& clipCoords) const;
     };
 }

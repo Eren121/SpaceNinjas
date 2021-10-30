@@ -3,9 +3,8 @@
 #include "gameplay/Body.hpp"
 #include <imgui.h>
 
-StageWorld::StageWorld(SpaceNinja::Game& game, Time delta)
-    : m_game(game),
-      m_collisionner(*this),
+StageWorld::StageWorld(SpaceNinja::Stage& stage, Time delta)
+    : m_stage(stage),
       m_defaultDelta(delta)
 {
     m_delta = m_defaultDelta;
@@ -19,30 +18,43 @@ StageWorld::StageWorld(SpaceNinja::Game& game, Time delta)
     initCollisions();
 }
 
+SpaceNinja::Stage& StageWorld::getStage() { return m_stage; }
+SpaceNinja::Game& StageWorld::getGame() { return m_stage.getGame(); }
+const SpaceNinja::Stage& StageWorld::getStage() const { return m_stage; }
+const SpaceNinja::Game& StageWorld::getGame() const { return m_stage.getGame(); }
+
 void StageWorld::initCollisions()
 {
-    m_collisionner.connect(Body::Void, [this](b2Body&, b2Body& any) {
-        
-        // "Garbage collect" entities that go too far away
-        markForDestroy(&any);
-    });
-    
-    m_collisionner.connect(Body::PlayerMissile, Body::Ennemy, [this](b2Body& missile, b2Body& ennemy) {
-        
+    m_collisionner.onEvent(Body::PlayerMissile, Body::Ennemy, CollisionManager::Begin,
+                    [this](b2Body &missile, b2Body &ennemy) {
         // Kill ennemy with shots
         markForDestroy(&missile);
         markForDestroy(&ennemy);
     });
-    
-    m_collisionner.connect(Body::Player, Body::Ennemy, [this](b2Body& player, b2Body&) {
-        
+
+    m_collisionner.onEvent(Body::Player, Body::Ennemy, CollisionManager::Begin,
+                           [this](b2Body &player, b2Body &) {
         // Kill player on collision with ennemies
         markForDestroy(&player);
     });
-    
+
+    m_collisionner.onEvent(Body::Universe, CollisionManager::End, [this](b2Body&, b2Body& any) {
+
+        Body::Type type{Body::None};
+        if(any.GetUserData()) type = any.GetUserData()->type;
+
+        getLogger().trace("Destroyed body out of bounds, type={}", type);
+
+        markForDestroy(&any);
+    });
+
+    m_collisionner.setCollisionEnabled(Body::PlayerLimits, Body::Ennemy, false);
+    m_collisionner.setCollisionEnabled(Body::PlayerLimits, Body::PlayerMissile, false);
     m_collisionner.setCollisionEnabled(Body::Player, Body::PlayerMissile, false);
     m_collisionner.setCollisionEnabled(Body::Ennemy, Body::Ennemy, false);
     m_collisionner.setCollisionEnabled(Body::PlayerMissile, Body::PlayerMissile, false);
+    SetContactFilter(&m_collisionner);
+    SetContactListener(&m_collisionner);
 }
 
 bool StageWorld::updateNode()
@@ -56,8 +68,11 @@ bool StageWorld::updateNode()
         m_firstIterationReached = true;
     }
 
-    // Never run faster than real-time simulation, but can run slower if CPU is too slow
-    // And never run more than 1 step per frame in case of CPU bottleneck (if() and not while())
+    // When using IF statement:
+    //      Never run faster than real-time simulation, but can run slower if CPU is too slow
+    //      And never run more than 1 step per frame in case of CPU bottleneck (if() and not while())
+
+    // Using WHILE can freeze the gameif the cpu is too slow, care
 
     if(m_sinceStart.getElapsedTime() >= getTime())
     {
@@ -74,20 +89,8 @@ bool StageWorld::updateNode()
 
 void StageWorld::drawNode(RenderStates states) const
 {
-    // m_view is in meters, we want in pixels
-    // m => px
-    // m * (px/m) = px
-    
-    const glm::vec2 windowSize = m_game.getWindow().getSize();
-    
-    // Get the view size in meters (but based on the size of the window)
-    Rect view(windowSize / m_game.getPixelPerMeter());
-    view.setCenter({0.0f, 0.0f});
-    
-    // convert the view in [-1;1] to windowSize coordinates
-    
-    states.view = glm::ortho(view.left(), view.right(), view.bottom(), view.top());
-    
+    states.view =  getStage().getViewMatrix();
+
     for(const auto& b2body : *this)
     {
         const Body *body = b2body.GetUserData();
@@ -103,8 +106,8 @@ void StageWorld::drawNode(RenderStates states) const
     {
         m_debugDraw.states = states;
         const_cast<StageWorld*>(this)->DebugDraw();
-        
-        drawLegend(states, m_game.getPixelPerMeter());
+
+        drawLegend(states);
     }
 }
 
@@ -160,15 +163,19 @@ void StageWorld::debugNode()
     }
 }
 
-void StageWorld::drawLegend(RenderStates states, float pxPerMeter) const
+void StageWorld::drawLegend(RenderStates states) const
 {
-    glm::vec2 a { 0.0f, 0.0f};
-    glm::vec2 b {1.0f, 0.0f};
+    // Since we are in world coordinates (meter), we just draw 1 unit (1 meter)...
+
+    // We define the position in NDC, for the position of the line to be independant from the view
+    const glm::vec2 p1_ndc{-0.9f, -0.9f};
+
+    glm::vec2 p1{glm::inverse(states.view) * glm::vec4{p1_ndc, 0.0f, 1.0f}};
+    glm::vec2 p2 {p1 + glm::vec2{1.0f, 0.0f}};
+
     glm::vec4 color {0.0f, 0.0f, 1.0f, 1.0f};
     
     Line line;
-    line.update(a, b, color);
-    line.setPosition({10.0f, 10.0f});
-    line.setScale({pxPerMeter, 1.0f});
+    line.update(p1, p2, color);
     line.draw(states);
 }

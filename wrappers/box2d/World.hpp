@@ -20,7 +20,7 @@ generator<b2Fixture*> iterateFixtures(b2Body *body);
 
 /// @brief Box2D world (inherits b2World) but with QOL features.
 /// @remarks Since the base class has no virtual destructor, this class shall not be deleted via a base class pointer.
-class World : public b2World, private b2ContactListener
+class World : public b2World
 {
 private:
     /// @brief Bodies to destroy at the end of the step.
@@ -35,15 +35,9 @@ private:
     /// @brief Effectively destroy all the bodies marked for destroying. Should not be called when locked.
     void cleanupDestroyedBodies(bool callDestroyCallback);
 
-    void BeginContact(b2Contact *contact) override;
-
 public:
     explicit World(b2Vec2 gravity = {0.0f, 0.0f});
     virtual ~World();
-
-    /// @brief Callback when two bodies collides, registering and dispatching the unique ContactListener.
-    /// @details This is called during world lock. Do not register too many bodies or it will lag.
-    sigslot::signal<b2Body&, b2Body&> onCollide;
 
     /// @brief Callback when a body is destroyed.
     /// @details The callback is called just before the body is destroyed, at the same frame.

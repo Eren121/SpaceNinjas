@@ -17,9 +17,10 @@ namespace Snow::in
     void BoolAction::bindAxis(SDL_GameControllerAxis axis, float deadZone)
     {
         auto conn = m_input->onAxisChanged[axis].connect([this, deadZone]
-            (SDL_GameControllerAxis, int value, long frame, SDL_GameController *) {
-                update(applyDeadZone(value, deadZone) ? Max : 0, frame);
-            }
+                                                                 (SDL_GameControllerAxis, int value, long frame,
+                                                                  SDL_GameController *) {
+                                                             update(applyDeadZone(value, deadZone) ? Max : 0, frame);
+                                                         }
         );
 
         m_connections.emplace_back(conn);
@@ -33,21 +34,19 @@ namespace Snow::in
     void BoolAction::bindMouse(int button)
     {
         auto conn1 = m_input->onEventType[SDL_MOUSEBUTTONDOWN].connect(
-        [this, button](const UnifiedInput::Source &source) {
-                if(source.event.button.button == button)
-                {
-                    update(Max, source.frame);
+                [this, button](const UnifiedInput::Source &source) {
+                    if (source.event.button.button == button) {
+                        update(Max, source.frame);
+                    }
                 }
-            }
         );
 
         auto conn2 = m_input->onEventType[SDL_MOUSEBUTTONUP].connect(
-        [this, button](const UnifiedInput::Source &source) {
-                if(source.event.button.button == button)
-                {
-                    update(0, source.frame);
+                [this, button](const UnifiedInput::Source &source) {
+                    if (source.event.button.button == button) {
+                        update(0, source.frame);
+                    }
                 }
-            }
         );
 
         m_connections.emplace_back(conn1);

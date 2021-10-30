@@ -24,6 +24,8 @@ public:
 
     Snow::in::BoolAction showDebugWindow;
 
+    Snow::in::BoolAction switchFullscreen;
+
 private:
     void listenGameControllerChange(Snow::in::UnifiedInput &input);
 

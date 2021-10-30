@@ -5,6 +5,11 @@
 #include <vector>
 #include <utility>
 
+/// @brief Macro to expand vectors, since some OpenGL functions take consecutive parameters instead of one vector.
+#define glVec2(v) (v).x, (v).y
+#define glVec3(v) (v).x, (v).y, (v).z
+#define glVec4(v) (v).x, (v).y, (v).z, (v).w
+
 /// @brief Utility classes, functions and RAII for OpenGL objects.
 namespace GL
 {

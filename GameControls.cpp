@@ -5,13 +5,15 @@ SpaceNinja::GameControls::GameControls(Snow::in::UnifiedInput &input)
 {
     listenGameControllerChange(input);
 
-    for (auto *action : {&shoot, &menuSelect, &menuBack, &showDebugWindow}) {
+    for (auto *action : {&shoot, &menuSelect, &menuBack, &showDebugWindow, &switchFullscreen}) {
         action->setInput(&input);
     }
 
     for (auto *action : {&move, &turn, &menuMove}) {
         action->setInput(&input);
     }
+
+    switchFullscreen.bindKey(SDLK_F11);
 
     showDebugWindow.bindKey(SDLK_F12);
 

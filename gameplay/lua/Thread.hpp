@@ -12,11 +12,11 @@ namespace SpaceNinja::script
     ///   - pause and wait next world step, by yielding nothing
     ///   - run another Process and wait its completion, by yielding a std::shared_ptr<Process>.
     /// @remarks If a Process is yielded, this Process will run once per world step, like the coroutine.
-    class ProcessCoroutine : public Snow::exe::Process, public Loggable<"ProcessCoroutine">
+    class Thread : public Snow::exe::Process, public Loggable<"ProcessCoroutine">
     {
     public:
         /// @remarks See lua_utils::Coroutine::Coroutine(), this constructor has the same prerequisites for the Lua stack.
-        explicit ProcessCoroutine(lua_State *L, int nargs = 0);
+        explicit Thread(lua_State *L, int nargs = 0);
 
     protected:
         void update() override;

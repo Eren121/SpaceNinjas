@@ -86,8 +86,8 @@ set(SRC
     gameplay/lua/LuaAPI.hpp
     gameplay/lua/LuaEngine.cpp
     gameplay/lua/LuaEngine.hpp
-    gameplay/lua/ProcessCoroutine.cpp
-    gameplay/lua/ProcessCoroutine.hpp
+        gameplay/lua/Thread.cpp
+        gameplay/lua/Thread.hpp
     main.cpp
     media/ResourceCache.hpp
     media/Window.cpp
@@ -362,8 +362,8 @@ target_precompile_headers(SDL_OpenGL PRIVATE
 
 
 # Unity builds
-set_target_properties(SDL_OpenGL PROPERTIES UNITY_BUILD ON)
-set_target_properties(SDL_OpenGL PROPERTIES UNITY_BUILD_MODE BATCH UNITY_BUILD_BATCH_SIZE 50)
+# set_target_properties(SDL_OpenGL PROPERTIES UNITY_BUILD ON)
+# set_target_properties(SDL_OpenGL PROPERTIES UNITY_BUILD_MODE BATCH UNITY_BUILD_BATCH_SIZE 50)
 
 #######################################
 

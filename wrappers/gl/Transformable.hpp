@@ -39,6 +39,13 @@ public:
     void setRotation(float rotation);
     float getRotation() const;
 
+
+    /// @{
+    /// @brief GLM wrappers for shorter code
+    static void translate(glm::mat4& m, const glm::vec3& tr);
+    static void scale(glm::mat4& m, const glm::vec3& sc);
+    /// @}
+
 private:
     /// @brief Update the matrix based on parameters. Const to allow to be called from getTransform().
     void update() const;

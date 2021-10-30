@@ -1,6 +1,7 @@
 #include "Texture.hpp"
 #include <wrappers/SDL.hpp>
 #include <utility/IO.hpp>
+#include <glm/vec4.hpp>
 
 Texture::Texture()
 {
@@ -14,6 +15,23 @@ void Texture::load1x1White()
 
     glBindTexture(GL_TEXTURE_2D, m_texture);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 1, 1, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
+    glGenerateMipmap(GL_TEXTURE_2D);
+}
+
+void Texture::loadMissingTexture()
+{
+    const glm::ivec2 size {2, 2};
+    const glm::vec4 pink {0.5f, 0, 0.5f, 1};
+    const glm::vec4 black{0, 0, 0, 1};
+    const Recti rect{size};
+
+    std::vector<glm::vec4> pixels(size.x * size.y, black);
+    pixels[0] = pink;
+    pixels[3] = pink;
+
+    load(size);
+    load(rect, pixels.data(), GL_RGBA, GL_FLOAT);
+    setFilter(Nearest);
     glGenerateMipmap(GL_TEXTURE_2D);
 }
 

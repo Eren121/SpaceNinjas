@@ -10,9 +10,6 @@ namespace SpaceNinja
 
         //tryRotateWithKeys(player);
         tryRotateFollowMouse(player);
-
-        // Restrict the player to the visible area
-        clampPlayer(player);
     }
 
     void PlayerControl::tryMove(b2Body& player)
@@ -22,7 +19,7 @@ namespace SpaceNinja
         if(moveDirection.x != 0.0f || moveDirection.y != 0.0f) // Use different because we know the default is really exact 0.0f
         {
             // Quantity of force applied
-            float force = 200.0f;
+            float force = 1000.0f;
 
             // NOT use impulse
             // Because impulse is dependant of how much time I call it.
@@ -32,21 +29,20 @@ namespace SpaceNinja
 
             //player.ApplyLinearImpulseToCenter(b2::fromGLM(momentum * move), true);
             player.ApplyForceToCenter(b2::fromGLM(force * moveDirection), true);
-        }
-    }
 
-    void PlayerControl::clampPlayer(b2Body& player)
-    {
-        glm::vec2 pos = b2::getPosition(player);
+            const float maxSpeed = 20.0f;
 
-        glm::vec2 posMin = convertClipSpaceToSimulationSpace({-1.0f, -1.0f});
-        glm::vec2 posMax = convertClipSpaceToSimulationSpace({1.0f, 1.0f});
+            if(player.GetLinearVelocity().LengthSquared() > maxSpeed * maxSpeed)
+            {
+                auto speed = player.GetLinearVelocity();
+                speed.Normalize();
+                speed.x *= maxSpeed;
+                speed.y *= maxSpeed;
 
-        glm::vec2 clampedPos = glm::clamp(pos, posMin, posMax);
+                player.SetLinearVelocity(speed);
+            }
 
-        if(pos != clampedPos)
-        {
-            b2::setPosition(player, clampedPos);
+            player.SetLinearDamping(0.2f);
         }
     }
 
@@ -84,9 +80,7 @@ namespace SpaceNinja
 
     glm::vec2 PlayerControl::convertClipSpaceToSimulationSpace(const glm::vec2& clipCoords) const
     {
-        auto& game = getStage().getGame();
-        return glm::inverse(game.getViewMatrix())
-             * glm::inverse(game.getProjectionMatrix())
+        return glm::inverse(getStage().getViewMatrix())
              * glm::vec4(clipCoords, 0.0f, 1.0f);
     }
 

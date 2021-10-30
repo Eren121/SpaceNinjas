@@ -14,6 +14,9 @@ public:
     /// @brief Set the texture as 1x1 opaque white
     void load1x1White();
 
+    /// @brief Set the texture as 2x2 pink - black texture
+    void loadMissingTexture();
+
     /// @brief Load from an image file on the disk.
     void load(const std::filesystem::path& path);
 

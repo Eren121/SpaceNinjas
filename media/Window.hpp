@@ -10,78 +10,77 @@
 
 namespace Snow::media
 {
-/// @brief Window instance.
-class Window
-{
-public:
-    Window(const std::string& title, int width, int height);
+    /// @brief Window instance.
+    class Window
+    {
+    public:
+        Window(const std::string& title, int width, int height);
 
-    /// @brief Deletes the window and the OpenGL context
-    ~Window();
+        /// @brief Deletes the window and the OpenGL context
+        ~Window();
 
-    /// @returns False when user want to quit the window (ALT+F4, icon, etc...).
-    bool isOpen() const;
-    void close();
+        /// @returns False when user want to quit the window (ALT+F4, icon, etc...).
+        bool isOpen() const;
+        void close();
 
-    /// @brief Handle the window events.
-    /// @remarks Call it one time per frame, at the beginning of the frame.
-    void handleEvents();
+        /// @brief Handle the window events.
+        /// @remarks Call it one time per frame, at the beginning of the frame.
+        void handleEvents();
 
-    /// @brief Render the window by swapping OpenGL buffers.
-    void display();
+        /// @brief Render the window by swapping OpenGL buffers.
+        void display();
 
-    /// @brief Get the size of the window in pixel.
-    glm::vec2 getSize() const;
+        /// @brief Get the size of the window in pixel.
+        glm::vec2 getSize() const;
 
-    in::UnifiedInput& getInput();
-    const in::UnifiedInput& getInput() const;
+        in::UnifiedInput& getInput();
+        const in::UnifiedInput& getInput() const;
 
-    SDL_Window* getHandle() const;
+        SDL_Window* getHandle() const;
 
-    long getFrame() const;
+        long getFrame() const;
 
-    /// @name
-    /// @brief Fullscreen mode
-    /// @{
-    bool isFullscreen() const;
-    void setFullscreen(bool flag);
-    /// @}
+        /// @name
+        /// @brief Fullscreen mode
+        /// @{
+        bool isFullscreen() const;
+        void setFullscreen(bool flag);
+        /// @}
 
-    SDL_Window* getHandle();
+        SDL_Window* getHandle();
 
-private:
-    /// @brief Setup the options for OpenGL.
+    private:
+        /// @brief Setup the options for OpenGL.
 
-    static void setupGLAttributes();
+        static void setupGLAttributes();
 
-    /// @brief Creates the window
-    void createWindow(const std::string& title, int width, int height);
+        /// @brief Creates the window
+        void createWindow(const std::string& title, int width, int height);
 
-    /// @brief Creates the OpenGL context
-    void createContext();
+        /// @brief Creates the OpenGL context
+        void createContext();
 
-    /// @brief Initialize GLEW (should be called after having created the OpenGL context)
-    static void initGLEW();
+        /// @brief Initialize GLEW (should be called after having created the OpenGL context)
+        static void initGLEW();
 
-    SDL_Window *m_window;
-    SDL_GLContext m_context;
-    bool m_running;
+        SDL_Window *m_window;
+        SDL_GLContext m_context;
+        bool m_running;
 
-public:
-    /// @brief Called when each event is intercepted.
-    /// @remarks The long parameter is the frame
-    sigslot::signal<const SDL_Event&, long> onEvent;
+    public:
+        /// @brief Called when each event is intercepted.
+        /// @remarks The long parameter is the frame
+        sigslot::signal<const SDL_Event&, long> onEvent;
 
-    /// @brief Called at each frame.
-    sigslot::signal<> onNewFrame;
+        /// @brief Called at each frame.
+        sigslot::signal<> onNewFrame;
 
-private:
-    std::unique_ptr<DebugWindow> m_debugWindow;
+    private:
+        std::unique_ptr<DebugWindow> m_debugWindow;
 
-    static void printGPUInfo();
+        static void printGPUInfo();
 
-    in::UnifiedInput m_input;
-    long m_frame{0};
-};
+        in::UnifiedInput m_input;
+        long m_frame{0};
+    };
 }
-

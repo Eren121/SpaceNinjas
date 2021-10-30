@@ -169,7 +169,7 @@ namespace SpaceNinja::ui
     
         m_items.at(m_focus.getIndex())->setFocused(true);
 
-        getLogger().debug("onBecomeTop(): row={}, col={}", m_rows, m_cols);
+        getLogger().debug("onBecomeTop(): rows={}, cols={}", m_rows, m_cols);
     }
     
     MenuStage::Item::Item(glm::vec2 size, const Font& font, int id)

@@ -50,6 +50,12 @@ public:
         }
     }
 
+    /// @brief Force to load a resource from an external source.
+    void forceLoad(const std::string& id, std::function<void(T&)> loader)
+    {
+        loader(m_cache[id]);
+    }
+
 private:
     /// @brief All already loaded assets.
     std::unordered_map<std::string, T> m_cache;

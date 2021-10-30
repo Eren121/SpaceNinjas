@@ -8,7 +8,7 @@ namespace SpaceNinja
     class PlayerShoot : public PlayerSceneNode
     {
     public:
-        explicit PlayerShoot(Stage &stage, Time delay = Time::milliseconds(400));
+        explicit PlayerShoot(Stage &stage, Time delay = Time::milliseconds(200));
 
         void setDelay(Time delay);
         Time getDelay() const;

@@ -54,10 +54,9 @@ void DebugDraw::DrawSolidPolygon(const b2Vec2 *vertices, int32 vertexCount, cons
 
 void DebugDraw::DrawCircle(const b2Vec2& center, float radius, const b2Color& color)
 {
-    UNUSED(radius);
-
     RenderStates child = this->states;
     child.model = glm::translate(child.model, {center.x, center.y, 0.0f});
+    child.model = glm::scale(child.model, glm::vec3{radius});
 
     {
         glm::vec4 shapeColor = b2::toGLM(color);
@@ -70,10 +69,9 @@ void DebugDraw::DrawCircle(const b2Vec2& center, float radius, const b2Color& co
 
 void DebugDraw::DrawSolidCircle(const b2Vec2& center, float radius, const b2Vec2& axis, const b2Color& color)
 {
-    UNUSED(radius);
-
     RenderStates child = this->states;
     child.model = glm::translate(child.model, {center.x, center.y, 0.0f});
+    child.model = glm::scale(child.model, glm::vec3{radius});
 
     {
         glm::vec4 shapeColor = b2::toGLM(color);

@@ -62,78 +62,21 @@ end
 
 -- Wait an amount of milliseconds
 function wait(ms)
-    local end_time = api.time + ms
-
-    while end_time > api.time do
-        coroutine.yield()
-    end
+    coroutine.yield(api:wait(ms))
 end
 
--- Starts a process concurrently (returns immediately)
-function run(f)
-    lua_api:run(f)
+-- Send a message to the player, wait until it finishes
+function message(msg, ms)
+    if ms == nil then ms = 250 end
+
+    coroutine.yield(api:message(msg, ms))
 end
-
--- Extension of the API in pure Lua
--- You don't have to use its functions, they are wrapped in global functions like run()
-lua_api = {}
-
-function registerApiExtensions()
-    
-    -- List of processes to run at each step
-    local ps = {}
-
-    -- api.run(f): Register the function f as a new coroutine each step until its end
-    function lua_api:run(f)
-        -- Insert f as a new coroutine into ps
-        table.insert(ps, coroutine.create(f))
-    end
-    
-    -- The real main, the global function main() is just the "bootloader"
-    -- api.main(function stageF)
-    -- The parameter stageF is the main coroutine of the stage associated to the ID.
-    function lua_api:main(stageF)
-        -- Add the main coroutine
-        self:run(stageF)
-
-        -- Run until all coroutines are dead
-        while true do
-
-            -- SIMULATION STEP
-
-            -- Run all processes once for this step
-            for key, coro in pairs(ps) do
-                
-                coroutine.resume(coro)
-                local running = (coroutine.status(coro) ~= "dead")
-                
-                if not running then
-                    -- Coroutine stopped, remove it from the list
-                    -- Assigning to nil in Lua effectively remove the value
-                    ps[key] = nil
-                end
-            end
-            
-            -- Stop the loop if there is no more processes
-            local empty = (next(ps) == nil)
-            
-            if empty then
-                break
-            end
-    
-            -- Wait next step if there are still processes
-            coroutine.yield()
-        end
-    end
-end
-
-
 
 function main(stage_id)
 
     package.path = "../assets/scripts/?.lua"
 
-    -- Argument checking: void main(int stageID)
+    -- Argument checking: void main(int stage_id)
     if(type(stage_id) ~= "number") then
         error("id type is not int")
     end
@@ -143,6 +86,9 @@ function main(stage_id)
     local module_name = "stage" .. stage_id
     local status, stage_module = pcall(require, module_name)
     if(not status) then
+        -- then second return value is error_msg
+        error_msg = stage_module
+        print(error_msg)
         print("No module associated to the stage (searched module '" .. module_name .. "')")
     end
 
@@ -156,11 +102,9 @@ function main(stage_id)
         return
     end
 
-    -- Register API hooks in Lua
-    registerApiExtensions()
-
     print("Starting level " .. stage_id)
 
-    -- Relay to the API main function
-    lua_api:main(stage_coro)
+    -- Relay to the stage procedure
+
+    stage_coro()
 end

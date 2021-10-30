@@ -41,11 +41,6 @@ public:
 
     Shader &getShader();
 
-    /// @brief Build the view matrix from the view Rect.
-    glm::mat4 getViewMatrix() const;
-
-    glm::mat4 getProjectionMatrix() const;
-
     /// @brief Get the default global font
     Font &getFont();
 
@@ -57,8 +52,6 @@ public:
     // !!!Order of member variable is important: for example we need OpenGL context before almost everything
 
     Snow::media::Window m_window;
-
-    float getPixelPerMeter() const;
 
     const GameControls &getControls() const;
 
@@ -84,7 +77,18 @@ public:
 
     Snow::media::AudioEngine &getAudio() { return m_audio; }
 
+    float getAspectRatio() const { return m_aspectRatio; }
+
 private:
+    /// @brief Calls to glViewport() before every frame.
+    /// @details
+    ///     The game is designed in 16:9.
+    ///         - When the window is 16:9, the content is zoomed
+    ///         - When the window is not 16:9, there are black borders in one dimension, depending which one is the largest.
+    void applyAspectRatio();
+
+    void debug();
+
     std::shared_ptr<Save> m_save;
     Shader m_shader;
     Font m_font;
@@ -96,6 +100,9 @@ private:
     SceneNode m_debugNode;
 
     Snow::media::AudioEngine m_audio;
+
+    bool m_showWindowBorders{false};
+    float m_aspectRatio{16.0f / 9.0f};
 };
 
 }
