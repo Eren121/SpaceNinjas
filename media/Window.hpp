@@ -14,6 +14,16 @@ namespace Snow::media
     class Window
     {
     public:
+
+        enum FullscreenState
+        {
+            Windowed = 0, ///< Not fullscreen
+            Fullscreen, ///< True fullscreen
+            BorderlessFullscreen, /// "Fake" fullscreen (borderless window with maximum size)
+
+            Count /// Do not use, to count enum values
+        };
+
         Window(const std::string& title, int width, int height);
 
         /// @brief Deletes the window and the OpenGL context
@@ -43,8 +53,8 @@ namespace Snow::media
         /// @name
         /// @brief Fullscreen mode
         /// @{
-        bool isFullscreen() const;
-        void setFullscreen(bool flag);
+        FullscreenState getFullscreenState() const;
+        void setFullscreenState(FullscreenState state);
         /// @}
 
         SDL_Window* getHandle();

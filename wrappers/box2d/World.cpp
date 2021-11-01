@@ -78,7 +78,7 @@ Time World::getTime() const
     return m_simulationTime;
 }
 
-int World::getIteration() const
+long World::getIteration() const
 {
     return m_iteration;
 }
@@ -119,7 +119,7 @@ b2Body& World::createBoxBody(const Rect& rect, b2BodyType type, float density, b
     b2BodyDef def;
     def.type = type;
     def.bullet = bullet;
-    def.position = b2::fromGLM(rect.center());
+    def.position = b2::fromGLM(rect.getCenter());
 
     b2Body *body = CreateBody(&def);
 

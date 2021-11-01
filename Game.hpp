@@ -79,6 +79,17 @@ public:
 
     float getAspectRatio() const { return m_aspectRatio; }
 
+    /// @details
+    ///     The UI coordinates are always 1920x1080. They are scaled if the window has a different size.
+    ///     Black borders are on both sides to always keep the aspect ratio the same.
+    ///     Also, in UI code, the font size is optimized for 1920x1080, that is there are normally no font scaling
+    ///     when rendering in 1080p.
+    glm::vec2 getUISize() const;
+
+    /// @brief Get the orthographic matrix from 0 to <UI size>.
+    glm::mat4 getUIViewMatrix() const;
+
+
 private:
     /// @brief Calls to glViewport() before every frame.
     /// @details

@@ -27,9 +27,9 @@ namespace SpaceNinja::script
         /// returned type for yields should be std::shared_ptr<Process> and not std::shared_ptr<SubProcessType>.
         static void createNewType(sol::state& L);
 
-        /// @brief Spawn an ennemy
-        /// @param x, y The position of the ennemy in clip space
-        b2Body& spawnEnnemy(float clipX, float clipY, float velX, float velY);
+        /// @brief Spawn an enemy in the world.
+        /// @return The spawned body.
+        b2Body& spawnEnemy(const glm::vec2& pos);
 
         /// @brief Starts an asynchronous task.
         /// @details The task will pushSceneStage immediately after invoking run(), after the next sleep of the script but
@@ -40,38 +40,51 @@ namespace SpaceNinja::script
         void run(const sol::function& function);
 
         /// @brief Get the current iteration of the simulation
-        int getIteration() const;
+        long getIteration() const;
 
-        // @brief Get simulation time (in milliseconds)
+        /// @brief Get simulation time (in milliseconds).
         long getTime() const;
 
-        void win();
-        void defeat();
+        /// @brief Stop the stage, the play won.
+        void triggerWin();
 
+        /// @brief Stop the stage, the player lost.
+        void triggerLoss();
+
+        /// @brief Set the speed of the game.
+        /// @details
+        ///     This does not change the internal step of the physics, that is always the same, but it can perform
+        ///     more (if accelerated) or less steps each frame to simulated speed change but keeping right physics
+        ///     simulation.
         float getTimeScale() const;
         void setTimeScale(float timeScale);
+
+        /// @brief Get the playable area (viewport and move) of the player, in world unit.
+        Rect getBounds() const;
 
         /// @remarks returns zero if there is no player
         glm::vec2 getPlayerPos() const;
 
+        /// @return A process that wait the desired amount and then finishes.
         std::shared_ptr<Snow::exe::Process> wait(int millis) const;
 
-        int ennemyCount() const;
+        /// @brief Return the count of remaining living enemies in the world.
+        int getEnemyCount() const;
 
-        /// @returns A task that send a story message to the player in a box on the screen.
+        /// @returns A process that send a story message to the player in a box on the screen.
         /// @remarks
-        ///     The task returns only when the player closes the dialog, either by clicking on a skip button o
-        ///     if time is elapsed.
+        ///     The task stops only when the player closes the dialog, either by clicking on a skip button o
+        ///     if the maximum duration is elapsed.
         /// @param msg The message to print.
-        /// @param millis The maximum duration of the message.
-        std::shared_ptr<Snow::exe::Process> sendMessage(const std::string& msg, int millis);
+        /// @param duration The maximum duration of the message (in milliseconds).
+        std::shared_ptr<Snow::exe::Process> sendMessage(const std::string& msg, int duration);
 
     private:
 
         Stage& m_stage;
 
-        /// @brief Count of remaining living ennemies.
-        int m_ennemyCount{0};
+        /// @brief Counter of remaining living enemies.
+        int m_enemyCount{0};
     };
 }
 

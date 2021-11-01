@@ -52,10 +52,10 @@ namespace SpaceNinja
 
             Rect box;
             box.size = {fixedSizeX, fixedSizeX * ratio};
-            box.setCenter(b2::toGLM(player.GetPosition()) + direction);
+            box.setOriginFromCenter(b2::toGLM(player.GetPosition()) + direction);
 
             auto &missile = world.createBoxBody(box, b2_dynamicBody, 1.0f, true);
-
+            missile.GetFixtureList()->SetSensor(true); // To never collide (better implement eventually to collide with some objects...)
             missile.SetLinearVelocity(b2::fromGLM(direction * speed));
             b2::setAngle(missile, player.GetAngle());
 

@@ -20,16 +20,16 @@ function stage4()
 
     -- Radius of the circle to spawn units
     -- sqrt(2) so always spawn in a hidden position centered on the screen, at closest
-    local r = math.sqrt(2)
+    local r = api.bounds.size.x / 2
 
-    -- Length of the velocity of ennemies to spawn (defines the speed of ennemies)
+    -- Length of the velocity of enemies to spawn (defines the speed of enemies)
     local velocity_length = 9
 
-    -- Count of ennemies to spawn
+    -- Count of enemies to spawn
     local n = 100
 
     for i = 1, n do
-        local angle = math.random() * 2 * math.pi
+        local angle = math.random() * 2 * M_PI
 
         local target = api:playerPos()
         local spawn_x = math.cos(angle) * r
@@ -39,7 +39,8 @@ function stage4()
         -- Compute direction from origin and target
         local velocity = velocity_length * (target - spawn):normalize()
 
-        api:spawnEnnemy(spawn.x, spawn.y, velocity.x, velocity.y)
+        local body = api:spawnEnemy(spawn)
+        body.velocity = velocity
         wait(100)
     end
 end

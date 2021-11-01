@@ -25,16 +25,16 @@ const SpaceNinja::Game& StageWorld::getGame() const { return m_stage.getGame(); 
 
 void StageWorld::initCollisions()
 {
-    m_collisionner.onEvent(Body::PlayerMissile, Body::Ennemy, CollisionManager::Begin,
-                    [this](b2Body &missile, b2Body &ennemy) {
-        // Kill ennemy with shots
-        markForDestroy(&missile);
-        markForDestroy(&ennemy);
+    m_collisionner.onEvent(Body::PlayerMissile, Body::Enemy, CollisionManager::Begin,
+                    [this](b2Body &missile, b2Body &enemy) {
+        // Kill enemy with shots
+        //markForDestroy(&missile);
+        markForDestroy(&enemy);
     });
 
-    m_collisionner.onEvent(Body::Player, Body::Ennemy, CollisionManager::Begin,
+    m_collisionner.onEvent(Body::Player, Body::Enemy, CollisionManager::Begin,
                            [this](b2Body &player, b2Body &) {
-        // Kill player on collision with ennemies
+        // Kill player on collision with enemies
         markForDestroy(&player);
     });
 
@@ -48,10 +48,10 @@ void StageWorld::initCollisions()
         markForDestroy(&any);
     });
 
-    m_collisionner.setCollisionEnabled(Body::PlayerLimits, Body::Ennemy, false);
+    m_collisionner.setCollisionEnabled(Body::PlayerLimits, Body::Enemy, false);
     m_collisionner.setCollisionEnabled(Body::PlayerLimits, Body::PlayerMissile, false);
     m_collisionner.setCollisionEnabled(Body::Player, Body::PlayerMissile, false);
-    m_collisionner.setCollisionEnabled(Body::Ennemy, Body::Ennemy, false);
+    m_collisionner.setCollisionEnabled(Body::Enemy, Body::Enemy, false);
     m_collisionner.setCollisionEnabled(Body::PlayerMissile, Body::PlayerMissile, false);
     SetContactFilter(&m_collisionner);
     SetContactListener(&m_collisionner);

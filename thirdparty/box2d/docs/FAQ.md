@@ -120,7 +120,7 @@ Box2D does not have any support for coordinate frame wrapping. You would likely 
 
 For the same input, and same binary, Box2D will reproduce any simulation. Box2D does not use any random numbers nor base any computation on random events (such as timers, etc).
 
-However, people often want more stringent determinism. People often want to know if Box2D can produce identical results on different binaries and on different platforms. The answer is no. The reason for this answer has to do with how floating point math is implemented in many compilers and processors. I recommend reading this article if you are curious: http://www.yosefk.com/blog/consistency-how-to-defeat-the-purpose-of-ieee-floating-point.html
+However, people often want more stringent determinism. People often want to know if Box2D can produce identical results on different binaries and on different platforms. The answer is no. The reason for this answer has to do with how floating point math is implemented in many compilers and processors. I recommend reading this article if you are curious: http://www.yosefk.com/blog/consistency-how-to-triggerLoss-the-purpose-of-ieee-floating-point.html
 
 ### But I really want determinism
 

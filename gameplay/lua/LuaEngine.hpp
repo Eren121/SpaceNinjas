@@ -20,6 +20,12 @@ namespace SpaceNinja::script
         /// @brief Register math types (glm library).
         static void createMathTypes(sol::state& L);
 
+        /// @brief Register b2Body type.
+        static void createBodyType(sol::state& L);
+
+        /// @brief Register Rect type.
+        static void createRectType(sol::state& L);
+
         /// @brief Add a script to the stage.
         void addScript(std::shared_ptr<Thread>& script);
 

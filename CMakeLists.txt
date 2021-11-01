@@ -16,7 +16,7 @@ elseif(MSVC)
     message(STATUS "MSVC Compiler detected")
 
     # using MSVC
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /await:strict")
+    add_compile_options("/await:strict")
 
     # fix msvc warning about exceptions
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /EHsc")

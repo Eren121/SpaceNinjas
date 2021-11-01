@@ -22,10 +22,10 @@ namespace SpaceNinja::script
         world.onDestroy.connect([this](b2Body& b2body) {
             Body *body = b2body.GetUserData();
 
-            if(body->type == Body::Ennemy)
+            if(body->type == Body::Enemy)
             {
-                m_ennemyCount--;
-                getLogger().trace("Ennemy destroyed (remaining: {})", m_ennemyCount);
+                m_enemyCount--;
+                getLogger().trace("Enemy destroyed (remaining: {})", m_enemyCount);
             }
         });
     }
@@ -41,61 +41,54 @@ namespace SpaceNinja::script
         // Register methods
         // Do not add constructors, to forbid to construct it (anyway the constructor is not accessible)
 
-        api["spawnEnnemy"] = &LuaAPI::spawnEnnemy;
-        api["win"] = &LuaAPI::win;
-        api["defeat"] = &LuaAPI::defeat;
+        api["spawnEnemy"] = &LuaAPI::spawnEnemy;
+        api["win"] = &LuaAPI::triggerWin;
+        api["defeat"] = &LuaAPI::triggerLoss;
         api["run"] = &LuaAPI::run;
-        api["ennemyCount"] = &LuaAPI::ennemyCount;
+        api["enemyCount"] = &LuaAPI::getEnemyCount;
         api["wait"] = &LuaAPI::wait;
         api["message"] = &LuaAPI::sendMessage;
         api["playerPos"] = &LuaAPI::getPlayerPos;
 
         api["timeScale"] = sol::property(&LuaAPI::getTimeScale, &LuaAPI::setTimeScale);
-
-        UNUSED(api);
-
-    #undef LINK_API
+        api["bounds"] = sol::property(&LuaAPI::getBounds);
     }
 
-    b2Body& LuaAPI::spawnEnnemy(float x, float y, float velX, float velY)
+    b2Body& LuaAPI::spawnEnemy(const glm::vec2& pos)
     {
-        getLogger().trace("Calling spawnEnnemy({}, {}, {}, {})", x, y, velX, velY);
+        getLogger().debug("Calling spawnEnemy(pos={})", pos);
 
-        m_ennemyCount++;
+        m_enemyCount++;
 
-        glm::vec2 velocity = {velX, velY};
-
-        const Texture *playerTexture = &m_stage.getGame().textures("ennemy.png");
+        const Texture *playerTexture = &m_stage.getGame().textures("enemy.png");
         const glm::vec2 playerTextureSize = playerTexture->getSize();
         const float ratio = playerTextureSize.y / playerTextureSize.x;
         const float fixedSizeX = 2.0f;
 
         Rect box;
-        box.setCenter(m_stage.mapPointNormToWorld({x, y}));
         box.size = {fixedSizeX, fixedSizeX * ratio};
+        box.setOriginFromCenter(pos);
 
         auto& world = m_stage.getWorld();
         auto& body = world.createBoxBody(box);
-        body.SetLinearVelocity(b2::fromGLM(velocity));
-        b2::setAngle(body, math::vec2angle(velocity));
 
-        Body *user = new Body(Body::Ennemy, body, box.size / 2.0f);
+        Body *user = new Body(Body::Enemy, body, box.size / 2.0f);
         user->setTexture(playerTexture);
         body.GetUserData() = user;
 
         return body;
     }
 
-    void LuaAPI::win()
+    void LuaAPI::triggerWin()
     {
         getLogger().trace("Calling win()");
 
         m_stage.stopStage(Victory::Win);
     }
 
-    void LuaAPI::defeat()
+    void LuaAPI::triggerLoss()
     {
-        getLogger().trace("Calling defeat()");
+        getLogger().trace("Calling triggerLoss()");
 
         m_stage.stopStage(Victory::Loss);
     }
@@ -120,11 +113,11 @@ namespace SpaceNinja::script
         m_stage.getScriptEngine().addScript(coro);
     }
 
-    int LuaAPI::ennemyCount() const
+    int LuaAPI::getEnemyCount() const
     {
-        getLogger().trace("Calling ennemyCount() (returns: {})", m_ennemyCount);
+        getLogger().trace("Calling getEnemyCount() (returns: {})", m_enemyCount);
 
-        return m_ennemyCount;
+        return m_enemyCount;
     }
 
     std::shared_ptr<Snow::exe::Process> LuaAPI::wait(int millis) const
@@ -139,7 +132,7 @@ namespace SpaceNinja::script
         return process;
     }
 
-    int LuaAPI::getIteration() const
+    long LuaAPI::getIteration() const
     {
         return m_stage.getWorld().getIteration();
     }
@@ -154,7 +147,7 @@ namespace SpaceNinja::script
         if(m_stage.hasPlayer())
         {
             glm::vec2 worldPos = b2::toGLM(m_stage.getPlayer().GetPosition());
-            return m_stage.worldToClipSpace(worldPos);
+            return worldPos;
         }
         else
         {
@@ -162,10 +155,10 @@ namespace SpaceNinja::script
         }
     }
 
-    std::shared_ptr<Snow::exe::Process> LuaAPI::sendMessage(const std::string& msg, int millis)
+    std::shared_ptr<Snow::exe::Process> LuaAPI::sendMessage(const std::string& msg, int duration)
     {
         auto task = std::make_shared<SpaceNinja::ui::StoryMessage>(m_stage);
-        task->setDuration(Time::milliseconds(millis));
+        task->setDuration(Time::milliseconds(duration));
         task->setMessage(msg);
 
         return task;
@@ -179,5 +172,10 @@ namespace SpaceNinja::script
     void LuaAPI::setTimeScale(float timeScale)
     {
         m_stage.getWorld().getClock().setSpeed(timeScale);
+    }
+
+    Rect LuaAPI::getBounds() const
+    {
+        return m_stage.getBounds();
     }
 }

@@ -36,7 +36,7 @@ namespace SpaceNinja
         void debugNode() override;
 
         /// @brief Check UI inputs like to open main menu, etc.
-        void updateUI();
+        void openMenuIfAsked();
 
     public:
         b2Body &getPlayer();
@@ -62,6 +62,8 @@ namespace SpaceNinja
 
         /// @brief Build the view matrix from the viewport bounds.
         glm::mat4 getViewMatrix() const;
+
+        const Rect& getBounds() const { return m_bounds; }
 
     private:
         void spawnPlayer();
@@ -92,5 +94,7 @@ namespace SpaceNinja
         // Set for debugging purposes and maybe effects in game.
         // Do not affects bounds, but only the view matrix.
         float m_zoom{1.0f};
+
+        bool m_inMenu{false};
     };
 }

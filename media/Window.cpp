@@ -15,6 +15,9 @@ Window::Window(const std::string &title, int width, int height)
     // GLEW should be initialized after creating the window context!!!
     initGLEW();
 
+    // On laptop test, the FPS was 30... probably because vsync was enabled by default
+    SDL_GL_SetSwapInterval(0);
+
     m_debugWindow = std::make_unique<DebugWindow>(m_window);
 }
 
@@ -32,6 +35,9 @@ void Window::createWindow(const std::string &title, int width, int height)
     int y = SDL_WINDOWPOS_CENTERED;
 
     Uint32 flags = SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE;
+
+    flags |= SDL_WINDOW_ALLOW_HIGHDPI;
+
     m_window = SDL_CreateWindow(title.c_str(), x, y, width, height, flags);
     if (!m_window) {
         throw SDL::Exception("Failed to create the window");
@@ -139,31 +145,67 @@ SDL_Window *Window::getHandle() const
     return m_window;
 }
 
-bool Window::isFullscreen() const
+Window::FullscreenState Window::getFullscreenState() const
 {
     Uint32 mode = SDL_GetWindowFlags(m_window);
-    bool ret;
+    FullscreenState ret;
 
-    if ((mode & SDL_WINDOW_FULLSCREEN_DESKTOP) || (mode & SDL_WINDOW_FULLSCREEN)) {
-        ret = true;
-    } else {
-        ret = false;
+    if(mode & SDL_WINDOW_FULLSCREEN_DESKTOP)
+    {
+        ret = FullscreenState::BorderlessFullscreen;
+    }
+    else if(mode & SDL_WINDOW_FULLSCREEN)
+    {
+        ret = FullscreenState::Fullscreen;
+    }
+    else
+    {
+        ret = FullscreenState::Windowed;
     }
 
     return ret;
 }
 
-void Window::setFullscreen(bool flag)
+void Window::setFullscreenState(FullscreenState state)
 {
-    Uint32 mode;
+    Uint32 flags;
 
-    if (flag) {
-        mode = SDL_WINDOW_FULLSCREEN_DESKTOP; // "fake" fullscreen, allow fast alt-tab
-    } else {
-        mode = 0; // 0 == not fullscreen
+    switch(state)
+    {
+        case FullscreenState::BorderlessFullscreen:
+            flags = SDL_WINDOW_FULLSCREEN_DESKTOP;
+            break;
+
+        case FullscreenState::Fullscreen:
+            flags = SDL_WINDOW_FULLSCREEN;
+            break;
+
+        case FullscreenState::Windowed:
+        default:
+            // 0 == not fullscreen
+            flags = 0;
+            break;
     }
 
-    if (SDL_SetWindowFullscreen(m_window, mode) != 0) {
+    if(flags & SDL_WINDOW_FULLSCREEN)
+    {
+        // When set to fullscreen, the window is not "resized" and when queried, the size is still the old one.
+        // Thus we need to also update the size.
+
+        SDL_DisplayMode mode;
+
+        if(SDL_GetDesktopDisplayMode(0, &mode) != 0)
+        {
+            throw SDL::Exception("SDL_GetDesktopDisplayMode");
+        }
+
+        if(SDL_SetWindowDisplayMode(m_window, &mode) != 0)
+        {
+            throw SDL::Exception("SDL_SetWindowDisplayMode()");
+        }
+    }
+
+    if (SDL_SetWindowFullscreen(m_window, flags) != 0) {
         throw SDL::Exception("SDL_SetWindowFullscreen()");
     }
 }

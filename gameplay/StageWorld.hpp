@@ -12,7 +12,7 @@
 class StageWorld : public b2::World, public SceneNode, public Loggable<"StageWorld">
 {
 public:
-    explicit StageWorld(SpaceNinja::Stage& stage, Time delta = Time::seconds(1.0f / 500.0f));
+    explicit StageWorld(SpaceNinja::Stage& stage, Time delta = Time::seconds(1.0f / 60.0f));
 
     Time getDefaultDelta() const { return m_defaultDelta; }
     Clock& getClock() { return m_sinceStart; }

@@ -1,18 +1,12 @@
 #include "Game.hpp"
 #include "media/WindowDebugInfo.hpp"
+#include "media/Window.hpp"
 #include "process/CoProcess.hpp"
-#include "process/Wait.hpp"
 #include "ui/VerticalListMenu.hpp"
 #include "ui/MenuStage.hpp"
-#include <wrappers/gl/Circle.hpp>
-#include <wrappers/gl/Shader.hpp>
-#include <wrappers/gl/Texture.hpp>
-#include "OpenGL.hpp"
-#include "GameControls.hpp"
 #include <imgui.h>
 #include <cereal/archives/json.hpp>
 #include <fstream>
-#include "gameplay/Stage.hpp"
 
 namespace SpaceNinja
 {
@@ -127,7 +121,6 @@ namespace SpaceNinja
 
             glClear(GL_DEPTH_BUFFER_BIT);
 
-
             m_window.handleEvents();
 
             update();
@@ -174,7 +167,18 @@ namespace SpaceNinja
 
         if(getControls().switchFullscreen.isJustPressed())
         {
-            m_window.setFullscreen(!m_window.isFullscreen());
+            using Snow::media::Window;
+
+            // Toggle fake fullscreen / windowed
+
+            if(m_window.getFullscreenState() == Window::Windowed)
+            {
+                m_window.setFullscreenState(Window::BorderlessFullscreen);
+            }
+            else
+            {
+                m_window.setFullscreenState(Window::Windowed);
+            }
         }
     }
 
@@ -276,7 +280,42 @@ namespace SpaceNinja
     {
         if(ImGui::CollapsingHeader("General"))
         {
+            {
+                // To explore ImGui possibilities, integrate a demo window
+                static bool showDemoWindow{false};
+                ImGui::Checkbox("Show ImGUI demo window", &showDemoWindow);
+                if (showDemoWindow) { ImGui::ShowDemoWindow(&showDemoWindow); }
+            }
+            {
+                using Snow::media::Window;
+
+                // Window fullscreen fs_state
+                static int fs_state{Window::Windowed};
+
+                // pressed == if any radio is newly pressed this frame
+                bool pressed{false};
+                pressed |= ImGui::RadioButton("Windowed", &fs_state, Window::Windowed); ImGui::SameLine();
+                pressed |= ImGui::RadioButton("True Fullscreen", &fs_state, Window::Fullscreen); ImGui::SameLine();
+                pressed |= ImGui::RadioButton("Fake fullscreen", &fs_state, Window::BorderlessFullscreen);
+
+                if(pressed)
+                {
+                    m_window.setFullscreenState(static_cast<Window::FullscreenState>(fs_state));
+                }
+            }
+
             ImGui::Checkbox("Show window borders", &m_showWindowBorders);
         }
+    }
+
+    glm::mat4 Game::getUIViewMatrix() const
+    {
+        const glm::vec2 uiSize{getUISize()};
+        return glm::ortho(0.0f, uiSize.x, 0.0f, uiSize.y);
+    }
+
+    glm::vec2 Game::getUISize() const
+    {
+        return {1920.0f, 1080.0f};
     }
 }

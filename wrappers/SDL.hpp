@@ -8,6 +8,13 @@
 #include <glm/vec4.hpp>
 #include <string>
 
+/// @brief Check SDL errors.
+/// @details
+///     It may not work will all SDL functions, but most of the SDL functions return 0 on success or different than
+///     0 on error,
+///     and this check does that.
+#define SDL_Check(expr) do { if((expr) != 0) { throw SDL::Exception(#expr); } } while(0)
+
 /// @brief SDL wrapper and utility functions
 namespace SDL
 {

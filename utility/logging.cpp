@@ -4,6 +4,7 @@
 namespace
 {
     bool ENABLE_DEBUGGING = false;
+    //bool ENABLE_DEBUGGING = true;
 }
 
 std::unordered_map<std::string, Logger::pointer> Logger::m_registeredLoggers;

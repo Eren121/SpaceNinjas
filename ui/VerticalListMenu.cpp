@@ -5,7 +5,6 @@
 #include "utility/math.hpp"
 #include "utility/time/Timer.hpp"
 #include "wrappers/freetype/Text.hpp"
-#include "media/Window.hpp"
 #include "GameControls.hpp"
 #include <imgui.h>
 
@@ -18,11 +17,10 @@ namespace SpaceNinja::ui
     
     void VerticalListMenu::drawNode(RenderStates states) const
     {
-        const Snow::media::Window& window = m_game.getWindow();
-        const glm::vec2 winSize = window.getSize();
+        const glm::vec2 winSize = m_game.getUISize();
         
         states.model = glm::mat4(1.0f);
-        states.view = glm::ortho(0.0f, winSize.x, 0.0f, winSize.y);
+        states.view = m_game.getUIViewMatrix();
     
         int charSize = 64;
         
@@ -40,7 +38,7 @@ namespace SpaceNinja::ui
             text.setCharacterSize(charSize);
             text.setString(input.label);
             text.setPosition(pos);
-            text.setOrigin(Text::Centered); // Centerize the text vertically and horizontally
+            text.setOrigin(Text::Centered);
             text.setOutline(true);
             text.setOutlineColor({1.0f, 0.0f, 1.0f, 0.5f});
             
@@ -127,7 +125,7 @@ namespace SpaceNinja::ui
     
     void VerticalListMenu::debugNode()
     {
-        if(ImGui::CollapsingHeader("Main menu"))
+        if(ImGui::CollapsingHeader("VerticalListMenu"))
         {
             ImGui::InputInt("Focus", &m_focus, 1, 100);
         }

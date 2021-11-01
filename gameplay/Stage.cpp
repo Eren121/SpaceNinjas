@@ -23,7 +23,7 @@ namespace SpaceNinja
         const float viewportWidth{50.0f};
 
         m_bounds = Rect{{viewportWidth, viewportWidth / m_game.getAspectRatio()}};
-        m_bounds.setCenter({0.0f, 0.0f});
+        m_bounds.setOriginFromCenter({0.0f, 0.0f});
 
         spawnUniverse();
         spawnPlayerLimits();
@@ -47,7 +47,7 @@ namespace SpaceNinja
 
         Rect coords; // pos and size of the player
         coords.size = {fixedSizeX, fixedSizeX * ratio};
-        coords.setCenter(clipToWorldSpace({0.0f, 0.0f}));
+        coords.setOriginFromCenter(clipToWorldSpace({0.0f, 0.0f}));
 
         auto& player = m_world->createBoxBody(coords, b2_dynamicBody, 5.0f);
         m_player = &player;
@@ -74,19 +74,20 @@ namespace SpaceNinja
         const float thickness{10.0f};
 
         const Rect bounds{m_bounds};
-        const glm::vec2 center{bounds.center()};
+        const glm::vec2 center{bounds.getCenter()};
 
         Rect leftBox{{thickness, bounds.size.y}};
-        leftBox.setCenter(center - glm::vec2{bounds.size.x / 2.0f, 0.0f} - glm::vec2{thickness / 2.0f, 0.0f});
+        leftBox.setOriginFromCenter(center - glm::vec2{bounds.size.x / 2.0f, 0.0f} - glm::vec2{thickness / 2.0f, 0.0f});
 
         Rect rightBox{{thickness, bounds.size.y}};
-        rightBox.setCenter(center + glm::vec2{bounds.size.x / 2.0f, 0.0f} + glm::vec2{thickness / 2.0f, 0.0f});
+        rightBox.setOriginFromCenter(center + glm::vec2{bounds.size.x / 2.0f, 0.0f} + glm::vec2{thickness / 2.0f, 0.0f});
 
         Rect topBox{{bounds.size.x, thickness}};
-        topBox.setCenter(center + glm::vec2{0.0f, bounds.size.y / 2.0f} + glm::vec2{0.0f, thickness / 2.0f});
+        topBox.setOriginFromCenter(center + glm::vec2{0.0f, bounds.size.y / 2.0f} + glm::vec2{0.0f, thickness / 2.0f});
 
         Rect bottomBox{{bounds.size.x, thickness}};
-        bottomBox.setCenter(center - glm::vec2{0.0f, bounds.size.y / 2.0f} - glm::vec2{0.0f, thickness / 2.0f});
+        bottomBox.setOriginFromCenter(
+                center - glm::vec2{0.0f, bounds.size.y / 2.0f} - glm::vec2{0.0f, thickness / 2.0f});
 
         for(const Rect& rect : {leftBox, rightBox, topBox, bottomBox})
         {
@@ -107,11 +108,11 @@ namespace SpaceNinja
         const glm::vec2 margin{20.0f};
 
         Rect bounds{{m_bounds.size + margin}};
-        bounds.setCenter(m_bounds.center());
+        bounds.setOriginFromCenter(m_bounds.getCenter());
 
         b2BodyDef def;
         def.type = b2_staticBody;
-        def.position.Set(glVec2(m_bounds.center()));
+        def.position.Set(glVec2(m_bounds.getCenter()));
         b2Body& body = m_world->createBody(def);
 
         b2PolygonShape shape;
@@ -158,15 +159,19 @@ namespace SpaceNinja
             ///TODO
         }
 
-        updateUI();
+        if(!m_inMenu) {
+            openMenuIfAsked();
+        }
 
         return ret;
     }
 
-    void Stage::updateUI()
+    void Stage::openMenuIfAsked()
     {
         if(m_game.getControls().menuBack.isJustPressed())
         {
+            m_inMenu = true;
+            
             // Create the menu
             auto menu = std::make_shared<
                 ui::VerticalListMenu>(m_game);
@@ -179,6 +184,8 @@ namespace SpaceNinja
 
                 // Resume the simulation
                 m_world->getClock().setPaused(false);
+
+                m_inMenu = false;
             });
 
             // Add the option to bring back to menu stage selection
@@ -253,7 +260,7 @@ namespace SpaceNinja
     {
         // Zoom is opposite of scale so divide and not multiply
         Rect bounds{m_bounds.size / m_zoom};
-        bounds.setCenter(m_bounds.center());
+        bounds.setOriginFromCenter(m_bounds.getCenter());
 
         return glm::ortho(bounds.left(), bounds.right(), bounds.bottom(), bounds.top());
     }

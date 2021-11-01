@@ -15,7 +15,7 @@ public:
     enum Type {
         None,
         Player,
-        Ennemy,
+        Enemy,
         PlayerLimits, ///< Barriers at the limit of the world, to garbage collect entities colliding with it
         Universe, ///< Everything that end collision with this body is destroyed
 

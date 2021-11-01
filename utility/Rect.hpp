@@ -27,12 +27,13 @@ struct tRect
     vec size { static_cast<T>(0) };
     vec origin { static_cast<T>(0) };
 
-    vec center() const
+    vec getCenter() const
     {
         return origin + size / static_cast<T>(2);
     }
 
-    void setCenter(const glm::vec2 center)
+    /// @brief Shift the origin, the size is preserved.
+    void setOriginFromCenter(const glm::vec2 center)
     {
         origin = center - size / static_cast<T>(2);
     }

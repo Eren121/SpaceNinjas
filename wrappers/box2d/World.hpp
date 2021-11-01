@@ -30,7 +30,7 @@ private:
     Time m_simulationTime;
 
     /// @brief Count of iteration of the simulation, advanced by one at each step
-    int m_iteration;
+    long m_iteration;
 
     /// @brief Effectively destroy all the bodies marked for destroying. Should not be called when locked.
     void cleanupDestroyedBodies(bool callDestroyCallback);
@@ -50,7 +50,7 @@ public:
     /// @details The callback is called just after the body has spawn in the world, at the same frame.
 
     /// @brief Get the count of iteration of the simulation, advanced by one at each step, starting at 0.
-    [[nodiscard]] int getIteration() const;
+    [[nodiscard]] long getIteration() const;
 
     /// @returns The current time of the simulation in seconds.
     /// @remarks It can only be a multiple of dt.
