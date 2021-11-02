@@ -1,3 +1,5 @@
+-- https://github.com/kikito/tween.lua
+
 local tween = {
     _VERSION     = 'tween 2.1.1',
     _DESCRIPTION = 'tweening for lua',
