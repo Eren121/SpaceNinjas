@@ -7,6 +7,7 @@
 #include "utility/version.hpp"
 #include <cstdlib>
 #include <spdlog/fmt/fmt.h>
+#include <entt/entt.hpp>
 
 namespace SpaceNinja
 {

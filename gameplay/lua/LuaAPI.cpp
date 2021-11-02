@@ -2,7 +2,6 @@
 #include "gameplay/lua/LuaAPI.hpp"
 #include "gameplay/lua/Thread.hpp"
 #include "gameplay/Stage.hpp"
-#include "gameplay/Body.hpp"
 #include "ui/StoryMessage.hpp"
 #include "process/Wait.hpp"
 #include "process/Process.hpp"
@@ -20,9 +19,7 @@ namespace SpaceNinja::script
 
         auto& world = m_stage.getWorld();
         world.onDestroy.connect([this](b2Body& b2body) {
-            Body *body = b2body.GetUserData();
-
-            if(body->type == Body::Enemy)
+            if(b2body.GetUserData().type == BodyType::Enemy)
             {
                 m_enemyCount--;
                 getLogger().trace("Enemy destroyed (remaining: {})", m_enemyCount);
@@ -61,22 +58,7 @@ namespace SpaceNinja::script
 
         m_enemyCount++;
 
-        const Texture *playerTexture = &m_stage.getGame().textures("enemy.png");
-        const glm::vec2 playerTextureSize = playerTexture->getSize();
-        const float ratio = playerTextureSize.y / playerTextureSize.x;
-        const float fixedSizeX = 2.0f;
-
-        Rect box;
-        box.size = {fixedSizeX, fixedSizeX * ratio};
-        box.setOriginFromCenter(pos);
-
-        auto& world = m_stage.getWorld();
-        auto& body = world.createBoxBody(box);
-
-        Body *user = new Body(Body::Enemy, body, box.size / 2.0f);
-        user->setTexture(playerTexture);
-        body.GetUserData() = user;
-
+        b2Body& body{m_stage.getWorld().createEnemyBody(pos)};
         return body;
     }
 

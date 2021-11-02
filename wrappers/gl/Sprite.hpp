@@ -3,7 +3,7 @@
 #include "Shape.hpp"
 
 /// @brief A sprite is simply a rectangular shape.
-/// @details The rectangle has bottom-left which is origin in (0, 0) and top-right in (1, 1)
+/// @details bottom-left == (0, 0); top-right == (1, 1)
 class Sprite : public Shape
 {
 public:

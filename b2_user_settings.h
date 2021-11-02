@@ -3,7 +3,6 @@
 
 #pragma once
 
-#include "Fwd.hpp"
 #include <stdarg.h>
 #include <stdint.h>
 
@@ -20,19 +19,12 @@
 // User data
 
 /// You can define this to inject whatever data you want in b2Body
-using b2BodyUserData = Body*;
+#include "gameplay/DataBody.hpp"
+using b2BodyUserData = SpaceNinja::DataBody;
 
 /// You can define this to inject whatever data you want in b2Fixture
-struct B2_API b2FixtureUserData
-{
-	b2FixtureUserData()
-	{
-		pointer = 0;
-	}
-
-	/// For legacy compatibility
-	uintptr_t pointer;
-};
+#include "gameplay/DataFixture.hpp"
+using b2FixtureUserData = SpaceNinja::DataFixture;
 
 /// You can define this to inject whatever data you want in b2Joint
 struct B2_API b2JointUserData

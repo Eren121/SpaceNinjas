@@ -25,3 +25,6 @@
 [submodule "thirdparty/freetype"]
 	path = thirdparty/freetype
 	url = https://github.com/freetype/freetype
+[submodule "thirdparty/entt"]
+	path = thirdparty/entt
+	url = https://github.com/skypjack/entt

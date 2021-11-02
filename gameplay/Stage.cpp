@@ -1,5 +1,5 @@
 #include "gameplay/Stage.hpp"
-#include "gameplay/Body.hpp"
+
 #include "gameplay/VictoryMenu.hpp"
 #include "gameplay/player/PlayerControl.hpp"
 #include "gameplay/player/PlayerShoot.hpp"
@@ -40,22 +40,7 @@ namespace SpaceNinja
 
     void Stage::spawnPlayer()
     {
-        const Texture *playerTexture = &m_game.textures("player.png");
-        const glm::vec2 playerTextureSize = playerTexture->getSize();
-        const float ratio = playerTextureSize.y / playerTextureSize.x;
-        const float fixedSizeX = 2.0f;
-
-        Rect coords; // pos and size of the player
-        coords.size = {fixedSizeX, fixedSizeX * ratio};
-        coords.setOriginFromCenter(clipToWorldSpace({0.0f, 0.0f}));
-
-        auto& player = m_world->createBoxBody(coords, b2_dynamicBody, 5.0f);
-        m_player = &player;
-
-        Body *userData = new Body(Body::Player, player, coords.radius());
-        player.GetUserData() = userData;
-
-        userData->setTexture(playerTexture);
+        m_player = &m_world->createPlayerBody({0, 0});
 
         // End the stage when the player is killed
         m_world->onDestroy.connect([this](b2Body& body) {
@@ -92,10 +77,7 @@ namespace SpaceNinja
         for(const Rect& rect : {leftBox, rightBox, topBox, bottomBox})
         {
             b2Body& body = m_world->createBoxBody(rect, b2_staticBody);
-
-            Body *userData = new Body(Body::PlayerLimits, body, rect.size / 2.0f);
-            body.GetUserData() = userData;
-            userData->setTexture(&m_game.textures("debug.jpg"));
+            body.GetUserData().type = BodyType::PlayerLimits;
         }
     }
 
@@ -119,9 +101,7 @@ namespace SpaceNinja
         shape.SetAsBox(glVec2(bounds.size / 2.0f));
 
         body.CreateFixture(&shape, 0.0f)->SetSensor(true);
-
-        Body *userData = new Body(Body::Universe, body, bounds.size / 2.0f);
-        body.GetUserData() = userData;
+        body.GetUserData().type = BodyType::Universe;
     }
 
     bool Stage::updateNode()
@@ -306,7 +286,6 @@ namespace SpaceNinja
             // Debug textures as a Box (to see boundaries)
 
             static bool debugTextures = false;
-            static std::map<Body*, const Texture*> replacedTextures;
 
             if(ImGui::Button("Reset")) { m_zoom = 1.0f; }
             ImGui::SameLine();
@@ -314,30 +293,29 @@ namespace SpaceNinja
 
             if(ImGui::Checkbox("Debug Textures", &debugTextures))
             {
+                // Replace each body texture with a debug texture
+                // Add a component to backup the texture to disable debug rendering later
+
                 for(b2Body& body : *m_world)
                 {
-                    if(body.GetUserData())
+                    entt::const_handle handle = body.GetUserData().handle;
+                    if(!handle) continue;
+
+                    for(b2Fixture& fixture : body.GetUserData())
                     {
-                        Body *user = body.GetUserData();
+                        DataFixture& data = fixture.GetUserData();
+                        if(!data.sprite) continue;
 
                         if(debugTextures)
                         {
-                            replacedTextures[user] = user->getTexture();
-                            user->setTexture(&m_game.textures("@missing"));
+                            data.savedTexture = data.sprite->getTexture();
+                            data.sprite->setTexture(&m_game.textures("@missing"));
                         }
                         else
                         {
-                            if(replacedTextures.contains(user))
-                            {
-                                user->setTexture(replacedTextures[user]);
-                            }
+                            data.sprite->setTexture(data.savedTexture);
                         }
                     }
-                }
-
-                if(!debugTextures)
-                {
-                    replacedTextures.clear();
                 }
             }
         }

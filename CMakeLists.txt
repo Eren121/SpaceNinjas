@@ -63,8 +63,6 @@ set(SRC
     media/WindowDebugInfo.hpp
     gameplay/StageSceneNode.cpp
     gameplay/StageSceneNode.hpp
-    gameplay/Body.cpp
-    gameplay/Body.hpp
     gameplay/CollisionManager.cpp
     gameplay/CollisionManager.hpp
     gameplay/player/PlayerControl.cpp
@@ -243,7 +241,7 @@ set(SRC
     wrappers/lua/LuaGuard.hpp
     wrappers/nostd/source_location.cpp
     wrappers/nostd/source_location.hpp Fwd.hpp wrappers/box2d/Fwd.hpp
-        media/AudioEngine.cpp media/AudioEngine.hpp)
+        media/AudioEngine.cpp media/AudioEngine.hpp gameplay/DataBody.cpp gameplay/DataBody.hpp)
 
 #######################################
 # ImGUI
@@ -278,8 +276,13 @@ add_definitions(-DGLEW_STATIC) # needed for executable
 add_definitions(-DMAKE_LIB) # Do not compile lua interpreter
 set(LUA_HOME "${THIRD_PARTY_DIR}/lua")
 set(LUA_SRC "${LUA_HOME}/onelua.c")
-set(SRC ${SRC} ${LUA_SRC})
+set(SRC ${SRC} ${LUA_SRC} gameplay/BodyType.hpp gameplay/DataFixture.hpp)
 include_directories("${LUA_HOME}")
+
+#######################################
+# entt
+
+include_directories("thirdparty/entt/single_include")
 
 # compile Lua in C++
 #######################################

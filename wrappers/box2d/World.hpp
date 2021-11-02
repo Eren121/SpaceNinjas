@@ -78,7 +78,7 @@ public:
     void markForDestroy(b2Body *body);
 
     /// @brief Create a body
-    b2Body& createBody(b2BodyDef &def);
+    virtual b2Body& createBody(b2BodyDef &def);
 
     /// @brief Utility to create a body only composed of a Box fixture
     /// @param box The size and the position of the body.

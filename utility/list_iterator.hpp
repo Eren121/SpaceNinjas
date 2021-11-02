@@ -51,7 +51,7 @@ private:
     {
         if constexpr(isFreeFunc())
         {
-            return next(*current);
+            return next(current);
         }
         else
         {

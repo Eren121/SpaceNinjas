@@ -32,36 +32,23 @@ namespace SpaceNinja
 
     bool PlayerShoot::tryShoot(b2Body &player)
     {
-        Game &game = getStage().getGame();
-        b2::World &world = getStage().getWorld();
+        Game& game{getStage().getGame()};
+        StageWorld& world{getStage().getWorld()};
 
-        bool hasShot = false;
+        bool hasShot{false};
 
         if (game.getControls().shoot.isPressed())
         {
+            const glm::vec2 pos{b2::getPosition(player)};
+
             // Speed of the missile, in m/s
-            const float speed = 100.0f;
+            const float speed{100.0f};
 
             // Use the same direction as the player is facing
-            const glm::vec2 direction = math::angle2vec(player.GetAngle());
+            const glm::vec2 direction{math::angle2vec(player.GetAngle())};
 
-            const Texture *playerTexture = &game.textures("laser.png");
-            const glm::vec2 playerTextureSize = playerTexture->getSize();
-            const float ratio = playerTextureSize.y / playerTextureSize.x;
-            const float fixedSizeX = 2.0f;
-
-            Rect box;
-            box.size = {fixedSizeX, fixedSizeX * ratio};
-            box.setOriginFromCenter(b2::toGLM(player.GetPosition()) + direction);
-
-            auto &missile = world.createBoxBody(box, b2_dynamicBody, 1.0f, true);
-            missile.GetFixtureList()->SetSensor(true); // To never collide (better implement eventually to collide with some objects...)
-            missile.SetLinearVelocity(b2::fromGLM(direction * speed));
-            b2::setAngle(missile, player.GetAngle());
-
-            Body *user = new Body(Body::PlayerMissile, missile, box.size / 2.0f);
-            user->setTexture(playerTexture);
-            missile.GetUserData() = user;
+            b2Body &missile{world.createMissileBody(pos + direction)};
+            b2::setVelocityWithAngle(missile, speed * direction);
 
             hasShot = true;
         }

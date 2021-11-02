@@ -6,6 +6,8 @@
 #include <memory>
 #include <unordered_map>
 
+#define LOGGABLE(name) static auto& getLogger() { static auto ret{Logger::getOrCreate(name)}; return *ret; }
+
 /// @brief Wrapper around 'spdlog' library..
 /// @details Automatically creates and get loggers.
 class Logger
