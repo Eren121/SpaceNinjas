@@ -52,6 +52,7 @@ namespace SpaceNinja::script
 
         api["timeScale"] = sol::property(&LuaAPI::getTimeScale, &LuaAPI::setTimeScale);
         api["bounds"] = sol::property(&LuaAPI::getBounds);
+        api["player"] = sol::property(&LuaAPI::getPlayer);
     }
 
     b2Body& LuaAPI::spawnEnemy(const glm::vec2& pos)
@@ -177,5 +178,10 @@ namespace SpaceNinja::script
     Rect LuaAPI::getBounds() const
     {
         return m_stage.getBounds();
+    }
+
+    b2Body &LuaAPI::getPlayer()
+    {
+        return m_stage.getPlayer();
     }
 }

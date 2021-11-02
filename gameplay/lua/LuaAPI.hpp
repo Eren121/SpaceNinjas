@@ -65,6 +65,8 @@ namespace SpaceNinja::script
         /// @remarks returns zero if there is no player
         glm::vec2 getPlayerPos() const;
 
+        b2Body& getPlayer();
+
         /// @return A process that wait the desired amount and then finishes.
         std::shared_ptr<Snow::exe::Process> wait(int millis) const;
 

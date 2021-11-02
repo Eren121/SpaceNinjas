@@ -20,9 +20,14 @@ function random_angle()
 end
 
 -- Wait an amount of milliseconds.
+-- If no argument, wait until next frame
 -- More generally, all durations are in milliseconds.
 function wait(duration)
-    coroutine.yield(api:wait(duration))
+    if duration == nil then
+        coroutine.yield()
+    else
+        coroutine.yield(api:wait(duration))
+    end
 end
 
 -- Send a message to the player, wait until it finishes
