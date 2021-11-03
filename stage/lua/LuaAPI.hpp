@@ -1,7 +1,7 @@
 #pragma once
 
 #include "wrappers/box2d/World.hpp"
-#include "utility/logging.hpp"
+#include <snk/logging.hpp>
 #include "process/Process.hpp"
 #include "Fwd.hpp"
 #include <sol/sol.hpp>

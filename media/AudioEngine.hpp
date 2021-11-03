@@ -1,6 +1,6 @@
 #pragma once
 
-#include "utility/logging.hpp"
+#include <snk/logging.hpp>
 #include <fmod.hpp>
 #include <filesystem>
 

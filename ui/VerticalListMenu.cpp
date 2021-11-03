@@ -2,8 +2,8 @@
 #include "Game.hpp"
 #include "media/input/Axis.hpp"
 #include "process/Wait.hpp"
-#include "utility/math.hpp"
-#include "utility/time/Timer.hpp"
+#include <snk/math.hpp>
+#include <snk/time/Timer.hpp>
 #include "wrappers/freetype/Text.hpp"
 #include "GameControls.hpp"
 #include <imgui.h>

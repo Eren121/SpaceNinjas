@@ -3,7 +3,7 @@
 #include "Clock.hpp"
 
 /// @brief Count the FPS, but more generally any event.
-/// @remarks Stored as a time utility because the definition of 'frame' may be anything. Even if obviously the main
+/// @remarks Stored as a time snk because the definition of 'frame' may be anything. Even if obviously the main
 /// purpose is to count FPSes. It only measure how many times an unspecified event occured between two point of time,
 /// and gives the average of events per second.
 class FPSCounter

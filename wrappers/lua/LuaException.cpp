@@ -1,5 +1,5 @@
 #include "wrappers/lua/LuaException.hpp"
-#include "utility/Str.hpp"
+#include <snk/Str.hpp>
 
 namespace lua_utils
 {

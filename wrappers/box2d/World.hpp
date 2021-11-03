@@ -1,9 +1,9 @@
 #pragma once
 
 #include "box2d.hpp"
-#include <utility/list_iterator.hpp>
-#include <utility/time/Time.hpp>
-#include <utility/Rect.hpp>
+#include <snk/list_iterator.hpp>
+#include <snk/time/Time.hpp>
+#include <snk/Rect.hpp>
 #include <box2d/b2_world.h>
 #include <box2d/b2_body.h>
 #include <box2d/b2_fixture.h>

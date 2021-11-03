@@ -1,9 +1,9 @@
 #include "MenuStage.hpp"
 #include "Game.hpp"
 #include "wrappers/freetype/Text.hpp"
-#include "utility/time/Timer.hpp"
+#include <snk/time/Timer.hpp>
 #include "stage/Stage.hpp"
-#include "utility/math.hpp"
+#include <snk/math.hpp>
 #include "GameControls.hpp"
 #include <imgui.h>
 

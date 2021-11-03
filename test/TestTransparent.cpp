@@ -2,7 +2,7 @@
 #include <wrappers/gl/VertexArray.hpp>
 #include <wrappers/gl/ConvexShape.hpp>
 #include <wrappers/gl/Line.hpp>
-#include <utility/math.hpp>
+#include <snk/math.hpp>
 #include <imgui.h>
 #include <imgui_impl_opengl3.h>
 #include <imgui_impl_sdl.h>

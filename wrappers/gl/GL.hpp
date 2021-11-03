@@ -1,6 +1,6 @@
 #pragma once
 
-#include <utility/offset_of.hpp>
+#include <snk/offset_of.hpp>
 #include "OpenGL.hpp"
 #include <vector>
 #include <utility>

@@ -1,6 +1,6 @@
 #include "Texture.hpp"
 #include <wrappers/SDL.hpp>
-#include <utility/IO.hpp>
+#include <snk/IO.hpp>
 #include <glm/vec4.hpp>
 
 Texture::Texture()

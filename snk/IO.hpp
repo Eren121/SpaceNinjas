@@ -17,7 +17,7 @@ public:
     FileNotFoundException(const std::filesystem::path& path, SOURCE_LOCATION_DECL(location));
 };
 
-/// @brief I/O utility functions.
+/// @brief I/O snk functions.
 namespace IO
 {
     /// @brief Read all the content of a file into a string.

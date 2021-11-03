@@ -4,7 +4,7 @@
 #include <wrappers/gl/Texture.hpp>
 #include <wrappers/gl/VertexArray.hpp>
 #include <wrappers/freetype/Font.hpp>
-#include "utility/LazyResource.hpp"
+#include <snk/LazyResource.hpp>
 #include <glm/vec4.hpp>
 
 /// @brief The renderable part of Font, the String itself.

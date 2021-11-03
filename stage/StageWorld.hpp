@@ -4,9 +4,9 @@
 #include "wrappers/box2d/World.hpp"
 #include "wrappers/box2d/DebugDraw.hpp"
 #include "media/scene/SceneNode.hpp"
-#include "utility/time/Clock.hpp"
-#include "utility/time/FPSCounter.hpp"
-#include "utility/logging.hpp"
+#include <snk/time/Clock.hpp>
+#include <snk/time/FPSCounter.hpp>
+#include <snk/logging.hpp>
 #include "Fwd.hpp"
 
 namespace SpaceNinja

@@ -8,7 +8,7 @@
 #define TAU (2.0f * PI)
 #define SQRT2 1.41421356237309504880f
 
-#include "utility/fmt.hpp"
+#include <snk/fmt.hpp>
 #include <cmath>
 #include <algorithm>
 #include <random>

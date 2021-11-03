@@ -49,6 +49,3 @@ private:
     task<> m_handle;
 };
 }
-namespace SpaceNinja::exe
-{
-}

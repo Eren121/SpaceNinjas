@@ -2,8 +2,8 @@
 
 #include "Window.hpp"
 #include "scene/SceneNode.hpp"
-#include <utility/time/FPSCounter.hpp>
-#include <utility/time/Clock.hpp>
+#include <snk/time/FPSCounter.hpp>
+#include <snk/time/Clock.hpp>
 
 namespace Snow::media
 {

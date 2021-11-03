@@ -1,6 +1,6 @@
 #include "GL.hpp"
-#include <utility/Exception.hpp>
-#include "utility/macro/unused.hpp"
+#include <snk/Exception.hpp>
+#include <snk/macro/unused.hpp>
 #include <cstdio>
 #include <cassert>
 

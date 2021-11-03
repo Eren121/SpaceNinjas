@@ -1,5 +1,5 @@
 #include "SDL.hpp"
-#include "utility/Str.hpp"
+#include <snk/Str.hpp>
 #include <sstream>
 #include <iostream>
 

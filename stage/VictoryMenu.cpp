@@ -1,6 +1,6 @@
 #include "VictoryMenu.hpp"
 #include "media/Window.hpp"
-#include "utility/Str.hpp"
+#include <snk/Str.hpp>
 #include "process/Wait.hpp"
 #include "process/ProcessQueue.hpp"
 #include "wrappers/freetype/Text.hpp"

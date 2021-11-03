@@ -1,5 +1,5 @@
 #include "Sprite.hpp"
-#include <utility/Rect.hpp>
+#include <snk/Rect.hpp>
 
 Sprite::Sprite(const glm::vec2& size)
     : m_size(size)

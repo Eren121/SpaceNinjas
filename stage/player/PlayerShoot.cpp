@@ -1,6 +1,6 @@
 #include "stage/player/PlayerShoot.hpp"
 #include "Game.hpp"
-#include "utility/math.hpp"
+#include <snk/math.hpp>
 
 namespace SpaceNinja
 {

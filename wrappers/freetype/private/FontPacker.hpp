@@ -1,8 +1,8 @@
 #pragma once
 
 #include "wrappers/gl/Texture.hpp"
-#include "utility/binpacking/MaxRectsBinPack.h"
-#include "utility/Rect.hpp"
+#include <snk/binpacking/MaxRectsBinPack.h>
+#include <snk/Rect.hpp>
 #include <glm/vec2.hpp>
 #include <optional>
 

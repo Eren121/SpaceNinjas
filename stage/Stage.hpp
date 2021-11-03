@@ -6,7 +6,7 @@
 #include "stage/lua/LuaEngine.hpp"
 #include "process/ProcessPool.hpp"
 #include "Fwd.hpp"
-#include "utility/logging.hpp"
+#include <snk/logging.hpp>
 
 namespace SpaceNinja
 {

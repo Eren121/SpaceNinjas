@@ -1,4 +1,4 @@
-#include "utility/version.hpp"
+#include <snk/version.hpp>
 #include <sstream>
 
 namespace Snow

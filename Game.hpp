@@ -12,7 +12,7 @@
 #include <wrappers/freetype/Font.hpp>
 #include <wrappers/box2d/DebugDraw.hpp>
 #include <wrappers/box2d/World.hpp>
-#include <utility/Rect.hpp>
+#include <snk/Rect.hpp>
 #include <box2d/box2d.h>
 
 namespace SpaceNinja

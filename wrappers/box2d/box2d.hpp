@@ -1,10 +1,10 @@
 #pragma once
 
-#include "utility/math.hpp"
+#include <snk/math.hpp>
 #include <box2d/box2d.h>
 #include <glm/glm.hpp>
 
-/// @brief box2d utility functions
+/// @brief box2d snk functions
 namespace b2
 {
     namespace

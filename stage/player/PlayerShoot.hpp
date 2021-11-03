@@ -1,7 +1,7 @@
 #pragma once
 
 #include "stage/player/PlayerSceneNode.hpp"
-#include "utility/time/Timer.hpp"
+#include <snk/time/Timer.hpp>
 
 namespace SpaceNinja
 {

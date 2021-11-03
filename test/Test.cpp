@@ -1,5 +1,5 @@
 #include "test/Test.hpp"
-#include <utility/math.hpp>
+#include <snk/math.hpp>
 #include <imgui.h>
 #include <imgui_impl_opengl3.h>
 #include <imgui_impl_sdl.h>

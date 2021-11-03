@@ -1,7 +1,7 @@
 #pragma once
 
 #include "process/CoProcess.hpp"
-#include "utility/time/Time.hpp"
+#include <snk/time/Time.hpp>
 #include "Fwd.hpp"
 
 namespace SpaceNinja::ui

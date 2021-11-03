@@ -2,9 +2,9 @@
 #include "test/TestTransformable.hpp"
 #include "test/TestTransparent.hpp"
 #include "test/TestInput.hpp"
-#include "utility/macro/unused.hpp"
-#include "utility/logging.hpp"
-#include "utility/version.hpp"
+#include <snk/macro/unused.hpp>
+#include <snk/logging.hpp>
+#include <snk/version.hpp>
 #include <cstdlib>
 #include <spdlog/fmt/fmt.h>
 #include <entt/entt.hpp>

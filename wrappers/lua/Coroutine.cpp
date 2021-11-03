@@ -2,7 +2,7 @@
 #include "LuaException.hpp"
 #include "LuaGuard.hpp"
 #include <cassert>
-#include <utility/Str.hpp>
+#include <snk/Str.hpp>
 #include <sol/sol.hpp>
 
 using namespace lua_utils;

@@ -4,7 +4,7 @@
 #include "stage/Stage.hpp"
 #include "wrappers/lua/LuaGuard.hpp"
 #include "wrappers/lua/LuaException.hpp"
-#include "utility/macro/unused.hpp"
+#include <snk/macro/unused.hpp>
 
 namespace SpaceNinja::script {
     LuaEngine::LuaEngine(Stage &stage)

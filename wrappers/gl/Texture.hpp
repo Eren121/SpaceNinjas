@@ -1,7 +1,7 @@
 #pragma once
 
 #include "wrappers/gl/GL.hpp"
-#include "utility/Rect.hpp"
+#include <snk/Rect.hpp>
 #include <SDL_surface.h>
 #include <glm/vec2.hpp>
 #include <filesystem>

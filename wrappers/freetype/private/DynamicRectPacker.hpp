@@ -1,7 +1,7 @@
 #pragma once
 
-#include "utility/binpacking/MaxRectsBinPack.h"
-#include "utility/Rect.hpp"
+#include <snk/binpacking/MaxRectsBinPack.h>
+#include <snk/Rect.hpp>
 #include <map>
 
 /// @brief Pack textures into one.

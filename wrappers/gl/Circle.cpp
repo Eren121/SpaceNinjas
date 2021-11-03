@@ -1,5 +1,5 @@
 #include "Circle.hpp"
-#include <utility/math.hpp>
+#include <snk/math.hpp>
 #include <cmath>
 
 Circle::Circle(unsigned short pointCount)

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "wrappers/lua/Lua.hpp"
-#include "utility/Exception.hpp"
+#include <snk/Exception.hpp>
 
 namespace lua_utils
 {

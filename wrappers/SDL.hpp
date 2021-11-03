@@ -1,8 +1,8 @@
 #pragma once
 
 #include "wrappers/nostd/source_location.hpp"
-#include "utility/Exception.hpp"
-#include "utility/swapmove.hpp"
+#include <snk/Exception.hpp>
+#include <snk/swapmove.hpp>
 #include <SDL.h>
 #include <SDL_image.h>
 #include <glm/vec4.hpp>
@@ -15,7 +15,7 @@
 ///     and this check does that.
 #define SDL_Check(expr) do { if((expr) != 0) { throw SDL::Exception(#expr); } } while(0)
 
-/// @brief SDL wrapper and utility functions
+/// @brief SDL wrapper and snk functions
 namespace SDL
 {
     /// @brief Deleter for SDL structures

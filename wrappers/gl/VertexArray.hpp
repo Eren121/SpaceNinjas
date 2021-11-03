@@ -5,7 +5,7 @@
 #include "Texture.hpp"
 #include "Transformable.hpp"
 #include "wrappers/gl/GL.hpp"
-#include "utility/LazyResource.hpp"
+#include <snk/LazyResource.hpp>
 #include <glm/glm.hpp>
 #include <vector>
 #include <type_traits>

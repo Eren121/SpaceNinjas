@@ -4,8 +4,8 @@
 #include "media/scene/SceneNode.hpp"
 #include "process/CoProcess.hpp"
 #include "wrappers/gl/Sprite.hpp"
-#include "utility/GridPosition.hpp"
-#include "utility/logging.hpp"
+#include <snk/GridPosition.hpp>
+#include <snk/logging.hpp>
 #include "process/CoProcess.hpp"
 #include "Game.hpp"
 #include "Fwd.hpp"

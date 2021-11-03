@@ -1,6 +1,6 @@
 #pragma once
 
-#include <utility/Exception.hpp>
+#include <snk/Exception.hpp>
 
 /// @brief Exception to throw for FreeType errors.
 class FTException : public ::Exception

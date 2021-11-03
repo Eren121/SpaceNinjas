@@ -1,6 +1,6 @@
 #pragma once
 
-#include "utility/fmt.hpp"
+#include <snk/fmt.hpp>
 #include <string>
 
 namespace Snow

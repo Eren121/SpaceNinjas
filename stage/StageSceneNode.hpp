@@ -1,7 +1,7 @@
 #pragma once
 
 #include "media/scene/SceneNode.hpp"
-#include "utility/logging.hpp"
+#include <snk/logging.hpp>
 #include "Fwd.hpp"
 
 namespace SpaceNinja

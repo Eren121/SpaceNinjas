@@ -140,41 +140,41 @@ set(SRC
     ui/MenuStage.hpp
     ui/VerticalListMenu.cpp
     ui/VerticalListMenu.hpp
-    utility/Exception.cpp
-    utility/Exception.hpp
-    utility/GridPosition.cpp
-    utility/GridPosition.hpp
-    utility/Guard.hpp
-    utility/IO.cpp
-    utility/IO.hpp
-    utility/LazyResource.hpp
-    utility/Rect.hpp
-    utility/Str.cpp
-    utility/Str.hpp
-    utility/algorithm.hpp
-    utility/binpacking/GuillotineBinPack.cpp
-    utility/binpacking/GuillotineBinPack.h
-    utility/binpacking/MaxRectsBinPack.cpp
-    utility/binpacking/MaxRectsBinPack.h
-    utility/binpacking/Rect.cpp
-    utility/binpacking/Rect.h
-    utility/list_iterator.hpp
-    utility/logging.cpp
-    utility/macro/pp.hpp
-    utility/macro/unused.hpp
-    utility/math.cpp
-    utility/math.hpp
-    utility/offset_of.hpp
-    utility/string_litteral.hpp
-    utility/swapmove.hpp
-    utility/time/Clock.cpp
-    utility/time/Clock.hpp
-    utility/time/FPSCounter.cpp
-    utility/time/FPSCounter.hpp
-    utility/time/Time.cpp
-    utility/time/Time.hpp
-    utility/time/Timer.cpp
-    utility/time/Timer.hpp
+        snk/Exception.cpp
+        snk/Exception.hpp
+        snk/GridPosition.cpp
+        snk/GridPosition.hpp
+        snk/Guard.hpp
+        snk/IO.cpp
+        snk/IO.hpp
+        snk/LazyResource.hpp
+        snk/Rect.hpp
+        snk/Str.cpp
+        snk/Str.hpp
+        snk/algorithm.hpp
+        snk/binpacking/GuillotineBinPack.cpp
+        snk/binpacking/GuillotineBinPack.h
+        snk/binpacking/MaxRectsBinPack.cpp
+        snk/binpacking/MaxRectsBinPack.h
+        snk/binpacking/Rect.cpp
+        snk/binpacking/Rect.h
+        snk/list_iterator.hpp
+        snk/logging.cpp
+        snk/macro/pp.hpp
+        snk/macro/unused.hpp
+        snk/math.cpp
+        snk/math.hpp
+        snk/offset_of.hpp
+        snk/string_litteral.hpp
+        snk/swapmove.hpp
+        snk/time/Clock.cpp
+        snk/time/Clock.hpp
+        snk/time/FPSCounter.cpp
+        snk/time/FPSCounter.hpp
+        snk/time/Time.cpp
+        snk/time/Time.hpp
+        snk/time/Timer.cpp
+        snk/time/Timer.hpp
     wrappers/DebugWindow.cpp
     wrappers/DebugWindow.hpp
     wrappers/SDL.cpp
@@ -254,7 +254,7 @@ set(IMGUI_SRC
     ${IMGUI_HOME}/imgui_demo.cpp
     ${IMGUI_HOME}/imgui_draw.cpp
     ${IMGUI_HOME}/imgui_tables.cpp
-    ${IMGUI_HOME}/imgui_widgets.cpp utility/fmt.hpp utility/version.hpp utility/version.cpp ui/StoryMessage.cpp ui/StoryMessage.hpp)
+    ${IMGUI_HOME}/imgui_widgets.cpp snk/fmt.hpp snk/version.hpp snk/version.cpp ui/StoryMessage.cpp ui/StoryMessage.hpp)
 
 add_library(ImGUI STATIC ${IMGUI_SRC})
 
