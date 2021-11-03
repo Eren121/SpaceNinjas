@@ -1,17 +1,20 @@
 #pragma once
 
-#include <snk/fmt.hpp>
-#include <string>
+#include "formatter.hpp"
 
-namespace Snow
+namespace snk
 {
-    /// @brief Provide a POD with major/minor/patch members.
-    struct Version
+    /// @brief Generic version to_string - compatible to help printing library versions.
+    struct version
     {
-        int major, minor, patch;
+        int major;
+        int minor;
+        int patch;
     };
 
-    std::string to_string(const Version& version);
+    std::string to_string(const version& v);
 }
 
-SNOW_DEFINE_USER_FMT(std::same_as<Snow::Version>);
+template<>
+struct fmt::formatter<snk::version>
+    : snk::formatter<snk::version> {};

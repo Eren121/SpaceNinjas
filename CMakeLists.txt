@@ -276,7 +276,7 @@ add_definitions(-DGLEW_STATIC) # needed for executable
 add_definitions(-DMAKE_LIB) # Do not compile lua interpreter
 set(LUA_HOME "${THIRD_PARTY_DIR}/lua")
 set(LUA_SRC "${LUA_HOME}/onelua.c")
-set(SRC ${SRC} ${LUA_SRC} stage/BodyType.hpp stage/DataFixture.hpp)
+set(SRC ${SRC} ${LUA_SRC} stage/BodyType.hpp stage/DataFixture.hpp snk/formatter.hpp)
 include_directories("${LUA_HOME}")
 
 #######################################

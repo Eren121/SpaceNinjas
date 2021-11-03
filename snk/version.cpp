@@ -1,9 +1,9 @@
-#include <snk/version.hpp>
+#include "version.hpp"
 #include <sstream>
 
-namespace Snow
+namespace snk
 {
-    std::string to_string(const Version& version)
+    std::string to_string(const version& version)
     {
         std::ostringstream ss;
         ss << "v";

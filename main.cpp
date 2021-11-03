@@ -2,6 +2,7 @@
 #include "test/TestTransformable.hpp"
 #include "test/TestTransparent.hpp"
 #include "test/TestInput.hpp"
+#include <snk/version.hpp>
 #include <snk/macro/unused.hpp>
 #include <snk/logging.hpp>
 #include <snk/version.hpp>
@@ -19,7 +20,7 @@ namespace SpaceNinja
         {
             // 123,456 = v12.34.56
 
-            Snow::Version version;
+            snk::version version;
             version.major = FMT_VERSION / 10000;
             version.minor = FMT_VERSION % 10000 / 100;
             version.patch  = FMT_VERSION % 100;
