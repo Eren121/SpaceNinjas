@@ -9,7 +9,7 @@ namespace lua_utils
     {
     }
 
-    std::string LuaException::getLocation(lua_State *L)
+    std::string LuaException::getLocation(lua_State *L, int level)
     {
         if(!L)
         {
@@ -18,16 +18,25 @@ namespace lua_utils
 
         lua_Debug ar;
 
-        if(!lua_getstack(L, 0, &ar))
+        if(!lua_getstack(L, level, &ar))
         {
             return "<Invalid stack index>";
         }
         else
         {
             lua_getinfo(L, "nSl", &ar);
-            const int line = ar.currentline;
 
-            return Str{} << "line " << line;
+            if(std::string{"C"} == ar.what)
+            {
+                // We are inside a C function,
+                // Get information about the calling level
+                return getLocation(L, level + 1);
+            }
+            else
+            {
+                const int line = ar.currentline;
+                return Str{} << "line " << line;
+            }
         }
     }
 }
