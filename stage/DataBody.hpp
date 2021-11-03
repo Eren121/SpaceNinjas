@@ -1,6 +1,7 @@
 #pragma once
 
 #include <snk/list_iterator.hpp>
+#include <snk/list_iterator.hpp>
 #include "BodyType.hpp"
 #include <entt/entt.hpp>
 #include <glm/vec2.hpp>
@@ -37,8 +38,8 @@ namespace SpaceNinja
         b2Body& getBody() { return *m_body; }
         const b2Body& getBody() const { return *m_body; }
 
-        list_iterator<b2Fixture, next> begin() const;
-        list_iterator<b2Fixture, next> end() const;
+        snk::list_iterator<b2Fixture, next> begin() const;
+        snk::list_iterator<b2Fixture, next> end() const;
 
         BodyType type{BodyType::None};
 

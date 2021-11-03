@@ -1,9 +1,10 @@
 #include "VictoryMenu.hpp"
 #include "media/Window.hpp"
-#include <snk/Str.hpp>
+#include <snk/str.hpp>
 #include "process/Wait.hpp"
 #include "process/ProcessQueue.hpp"
 #include "wrappers/freetype/Text.hpp"
+
 #include <glm/gtc/matrix_transform.hpp>
 
 VictoryMenu::VictoryMenu(std::shared_ptr<SpaceNinja::Stage> stage)
@@ -38,7 +39,7 @@ task<> VictoryMenu::fadeInVictoryMessage()
     Text info;
     info.setCharacterSize(128);
     info.setFont(&m_game.getFont());
-    info.setString(Str{} << "Victory Stage " << m_stage->getID());
+    info.setString(snk::str{} << "Victory Stage " << m_stage->getID());
     info.setOrigin(info.getSize() / 2.0f);
     info.setPosition(m_window.getSize() * glm::vec2{0.5f, 0.75f});
     info.setOutlineColor({1.0f, 0.0f, 0.0f, 1.0f});

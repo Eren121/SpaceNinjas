@@ -1,6 +1,6 @@
 #include "DebugDraw.hpp"
 #include <wrappers/box2d/box2d.hpp>
-#include <snk/macro/unused.hpp>
+#include <snk/unused.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
 using namespace b2;

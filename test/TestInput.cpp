@@ -2,6 +2,7 @@
 #include "media/input/BoolAction.hpp"
 #include "media/input/AxisAction.hpp"
 #include "media/input/VectorAction.hpp"
+
 #include <imgui.h>
 
 namespace SpaceNinja::test
@@ -12,7 +13,7 @@ TestInput::TestInput()
     m_window.onEvent.connect([this](const SDL_Event &e, long) {
         switch (e.type) {
             case SDL_KEYDOWN:
-                m_lastEvent = Str{} << "Key down: " << SDL_GetKeyName(e.key.keysym.sym);
+                m_lastEvent = snk::str{} << "Key down: " << SDL_GetKeyName(e.key.keysym.sym);
                 break;
 
             case SDL_KEYUP:

@@ -2,6 +2,7 @@
 
 #include "box2d.hpp"
 #include <snk/list_iterator.hpp>
+#include <snk/list_iterator.hpp>
 #include <snk/time/Time.hpp>
 #include <snk/Rect.hpp>
 #include <box2d/b2_world.h>
@@ -59,8 +60,8 @@ public:
     /// @name Iterate bodies
     /// @brief Iterable interface to iterate the bodies of the world.
     /// @{
-    using body_iterator = list_iterator<b2Body, static_cast<b2Body* (b2Body::*)()>(&b2Body::GetNext)>;
-    using const_body_iterator = list_iterator<const b2Body, static_cast<const b2Body* (b2Body::*)() const>(&b2Body::GetNext)>;
+    using body_iterator = snk::list_iterator<b2Body, static_cast<b2Body* (b2Body::*)()>(&b2Body::GetNext)>;
+    using const_body_iterator = snk::list_iterator<const b2Body, static_cast<const b2Body* (b2Body::*)() const>(&b2Body::GetNext)>;
 
     body_iterator begin();
     body_iterator end();

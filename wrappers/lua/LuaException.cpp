@@ -1,11 +1,11 @@
 #include "wrappers/lua/LuaException.hpp"
-#include <snk/Str.hpp>
+#include <snk/str.hpp>
 
 namespace lua_utils
 {
     LuaException::LuaException(lua_State *L, const std::string &msg,
-                               const nostd::source_location &location)
-        : Exception(Str{} << "Lua Exception: " << getLocation(L) << ": " << msg, location)
+                               const snk::source_location &location)
+        : exception(snk::str{} << "Lua Exception: " << getLocation(L) << ": " << msg, location)
     {
     }
 
@@ -35,7 +35,7 @@ namespace lua_utils
             else
             {
                 const int line = ar.currentline;
-                return Str{} << "line " << line;
+                return snk::str{} << "line " << line;
             }
         }
     }

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Str.hpp"
+#include "str.hpp"
 #include <glm/vec2.hpp>
 #include <glm/gtx/string_cast.hpp>
 
@@ -96,7 +96,7 @@ struct tRect
 
     friend std::string to_string(const tRect& r)
     {
-        return Str{} << "Rect(origin=" << to_string(r.origin) << ", size=" << to_string(r.size) << ")";
+        return snk::str{} << "Rect(origin=" << to_string(r.origin) << ", size=" << to_string(r.size) << ")";
     }
 };
 

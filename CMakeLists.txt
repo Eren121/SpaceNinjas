@@ -14,12 +14,16 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fcoroutines-ts")
 elseif(MSVC)
     message(STATUS "MSVC Compiler detected")
-
+    message(STATUS "MSVC version: ${MSVC_VERSION}")
     # using MSVC
     add_compile_options("/await:strict")
 
     # fix msvc warning about exceptions
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /EHsc")
+
+    # syntax only
+    # set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /Zs")
+
 else()
     # Assume using GCC
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fcoroutines")
@@ -140,42 +144,7 @@ set(SRC
     ui/MenuStage.hpp
     ui/VerticalListMenu.cpp
     ui/VerticalListMenu.hpp
-        snk/Exception.cpp
-        snk/Exception.hpp
-        snk/GridPosition.cpp
-        snk/GridPosition.hpp
-        snk/Guard.hpp
-        snk/IO.cpp
-        snk/IO.hpp
-        snk/LazyResource.hpp
-        snk/Rect.hpp
-        snk/Str.cpp
-        snk/Str.hpp
-        snk/algorithm.hpp
-        snk/binpacking/GuillotineBinPack.cpp
-        snk/binpacking/GuillotineBinPack.h
-        snk/binpacking/MaxRectsBinPack.cpp
-        snk/binpacking/MaxRectsBinPack.h
-        snk/binpacking/Rect.cpp
-        snk/binpacking/Rect.h
-        snk/list_iterator.hpp
-        snk/logging.cpp
-        snk/macro/pp.hpp
-        snk/macro/unused.hpp
-        snk/math.cpp
-        snk/math.hpp
-        snk/offset_of.hpp
-        snk/string_litteral.hpp
-        snk/swapmove.hpp
-        snk/time/Clock.cpp
-        snk/time/Clock.hpp
-        snk/time/FPSCounter.cpp
-        snk/time/FPSCounter.hpp
-        snk/time/Time.cpp
-        snk/time/Time.hpp
-        snk/time/Timer.cpp
-        snk/time/Timer.hpp
-    wrappers/DebugWindow.cpp
+        wrappers/DebugWindow.cpp
     wrappers/DebugWindow.hpp
     wrappers/SDL.cpp
     wrappers/SDL.hpp
@@ -238,9 +207,7 @@ set(SRC
     wrappers/lua/LuaException.cpp
     wrappers/lua/LuaException.hpp
     wrappers/lua/LuaGuard.cpp
-    wrappers/lua/LuaGuard.hpp
-    wrappers/nostd/source_location.cpp
-    wrappers/nostd/source_location.hpp Fwd.hpp wrappers/box2d/Fwd.hpp
+    wrappers/lua/LuaGuard.hpp Fwd.hpp wrappers/box2d/Fwd.hpp
         media/AudioEngine.cpp media/AudioEngine.hpp stage/DataBody.cpp stage/DataBody.hpp)
 
 #######################################
@@ -254,7 +221,7 @@ set(IMGUI_SRC
     ${IMGUI_HOME}/imgui_demo.cpp
     ${IMGUI_HOME}/imgui_draw.cpp
     ${IMGUI_HOME}/imgui_tables.cpp
-    ${IMGUI_HOME}/imgui_widgets.cpp snk/fmt.hpp snk/version.hpp snk/version.cpp ui/StoryMessage.cpp ui/StoryMessage.hpp)
+    ${IMGUI_HOME}/imgui_widgets.cpp ui/StoryMessage.cpp ui/StoryMessage.hpp)
 
 add_library(ImGUI STATIC ${IMGUI_SRC})
 
@@ -273,10 +240,12 @@ add_definitions(-DGLEW_STATIC) # needed for executable
 # Lua
 # Add sources in project
 
+#######################################
+
 add_definitions(-DMAKE_LIB) # Do not compile lua interpreter
 set(LUA_HOME "${THIRD_PARTY_DIR}/lua")
 set(LUA_SRC "${LUA_HOME}/onelua.c")
-set(SRC ${SRC} ${LUA_SRC} stage/BodyType.hpp stage/DataFixture.hpp snk/formatter.hpp)
+set(SRC ${SRC} ${LUA_SRC} stage/BodyType.hpp stage/DataFixture.hpp)
 include_directories("${LUA_HOME}")
 
 #######################################
@@ -298,6 +267,9 @@ add_executable(SDL_OpenGL ${SRC})
 if(WIN32)
     set(SDL2_DIR "${THIRD_PARTY_DIR}/windows/SDL2-2.0.16")
 endif()
+
+#######################################
+# SDL2
 
 find_package(SDL2 REQUIRED)
 include_directories(${SDL2_INCLUDE_DIRS})
@@ -356,6 +328,13 @@ endif()
 
 include_directories("${FMOD_HOME}/inc")
 
+
+#######################################
+# snk (utility library)
+
+add_subdirectory(snk)
+target_link_libraries(SDL_OpenGL snk::snk)
+
 #######################################
 # Optimize compilation times
 
@@ -365,8 +344,8 @@ target_precompile_headers(SDL_OpenGL PRIVATE
 
 
 # Unity builds
-# set_target_properties(SDL_OpenGL PROPERTIES UNITY_BUILD ON)
-# set_target_properties(SDL_OpenGL PROPERTIES UNITY_BUILD_MODE BATCH UNITY_BUILD_BATCH_SIZE 50)
+set_target_properties(SDL_OpenGL PROPERTIES UNITY_BUILD ON)
+set_target_properties(SDL_OpenGL PROPERTIES UNITY_BUILD_MODE BATCH UNITY_BUILD_BATCH_SIZE 10)
 
 #######################################
 

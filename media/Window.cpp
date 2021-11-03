@@ -1,5 +1,7 @@
 #include "Window.hpp"
 #include "OpenGL.hpp"
+
+
 #include <iostream>
 
 namespace Snow::media
@@ -62,7 +64,7 @@ void Window::initGLEW()
     GLenum err = glewInit();
 
     if (err != GLEW_OK) {
-        throw Exception(Str{} << "Glew initialization failed: " << glewGetErrorString(err));
+        throw snk::exception(snk::str{} << "Glew initialization failed: " << glewGetErrorString(err));
     }
 }
 

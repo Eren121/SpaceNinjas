@@ -1,9 +1,11 @@
 #include "FTException.hpp"
-#include <snk/Str.hpp>
+#include <snk/str.hpp>
 #include <ft2build.h>
 #include <map>
 #include <string>
 #include FT_FREETYPE_H
+
+
 
 // Include & define macro, FreeType does not define errors by default to save space
 // Since it need to be sure it was compiled with error enabled, we can still get the errors manually
@@ -33,8 +35,8 @@ namespace
     }
 }
 
-FTException::FTException(int ft_error, const std::string& msg, const nostd::source_location& loc)
-    : Exception(Str{} << "FreeType error: " << msg << ": (" << ft_error << ") " << getFreetypeError(ft_error), loc)
+FTException::FTException(int ft_error, const std::string& msg, const snk::source_location& loc)
+    : snk::exception(snk::str{} << "FreeType error: " << msg << ": (" << ft_error << ") " << getFreetypeError(ft_error), loc)
 {
 
 }

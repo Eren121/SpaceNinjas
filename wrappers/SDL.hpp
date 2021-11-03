@@ -1,7 +1,7 @@
 #pragma once
 
-#include "wrappers/nostd/source_location.hpp"
-#include <snk/Exception.hpp>
+#include "snk/source_location.hpp"
+#include <snk/exception.hpp>
 #include <snk/swapmove.hpp>
 #include <SDL.h>
 #include <SDL_image.h>
@@ -25,17 +25,17 @@ namespace SDL
     };
 
     /// @brief Exception to throw when an SDL error is met.
-        class Exception : public ::Exception
+        class Exception : public ::snk::exception
         {
         public:
-            explicit Exception(const std::string& msg = "", const nostd::source_location& loc = nostd::source_location::current());
+            explicit Exception(const std::string& msg = "", const snk::source_location& loc = snk::source_location::current());
         };
 
     /// @brief Exception to throw when a SDL_image error is met.
-    class IMGException : public ::Exception
+    class IMGException : public ::snk::exception
     {
     public:
-        explicit IMGException(const std::string& msg = "", const nostd::source_location& loc = nostd::source_location::current());
+        explicit IMGException(const std::string& msg = "", const snk::source_location& loc = snk::source_location::current());
     };
 
 

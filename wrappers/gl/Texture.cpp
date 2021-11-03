@@ -1,6 +1,6 @@
 #include "Texture.hpp"
 #include <wrappers/SDL.hpp>
-#include <snk/IO.hpp>
+#include <snk/io.hpp>
 #include <glm/vec4.hpp>
 
 Texture::Texture()
@@ -40,7 +40,7 @@ void Texture::load(const std::filesystem::path& path)
     SDL_Surface *image = IMG_Load(path.string().c_str());
     if(!image)
     {
-        throw FileNotFoundException(path);
+        throw snk::file_not_found_exception(path);
     }
 
     load(image);

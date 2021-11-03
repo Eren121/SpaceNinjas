@@ -1,6 +1,7 @@
 #include "Face.hpp"
 #include "Check.hpp"
 #include "FT.hpp"
+#include "wrappers/freetype/FTException.hpp"
 #include <utility>
 
 namespace FT
@@ -102,7 +103,7 @@ namespace FT
 
             if(!uvs)
             {
-                throw Exception("Unexpected error while trying to add a glyph texture page");
+                throw snk::exception("Unexpected error while trying to add a glyph texture page");
             }
         }
 

@@ -3,14 +3,18 @@
 #include <algorithm>
 #include <cstddef>
 
-/// Permit to use litteral strings in template like X<"ABC">.
-template<std::size_t n>
-struct StringLiteral
+namespace snk
 {
-    constexpr StringLiteral(const char (&str)[n])
+    /// @brief Permit to use litteral strings in template like X<"ABC">.
+    /// @details https://ctrpeach.io/posts/cpp20-string-literal-template-parameters/
+    template<std::size_t n>
+    struct string_literal
     {
-        std::copy_n(str, n, value);
-    }
-    
-    char value[n];
-};
+        constexpr string_literal(const char (&str)[n]) // NOLINT(google-explicit-constructor)
+        {
+            std::copy_n(str, n, value);
+        }
+
+        char value[n] {};
+    };
+}

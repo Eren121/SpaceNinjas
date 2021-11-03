@@ -1,6 +1,6 @@
 #include "Shader.hpp"
-#include <snk/Exception.hpp>
-#include <snk/IO.hpp>
+#include <snk/exception.hpp>
+#include <snk/io.hpp>
 #include "OpenGL.hpp"
 #include <glm/gtc/type_ptr.hpp>
 #include <vector>
@@ -20,7 +20,7 @@ void Shader::load(const std::string& vertexSrc, const std::string& fragmentSrc)
 
 void Shader::load(const std::filesystem::path& vert, const std::filesystem::path& frag)
 {
-    load(IO::readAll(vert), IO::readAll(frag));
+    load(snk::read_all(vert), snk::read_all(frag));
 }
 
 std::string Shader::getProgramInfoLog(GL::Program& programID)
@@ -56,7 +56,7 @@ void Shader::compile(GL::Shader& shader, const std::string& source)
     glGetShaderiv(shader, GL_COMPILE_STATUS, &status);
     if(!status)
     {
-        throw Exception(getShaderInfoLog(shader));
+        throw snk::exception(getShaderInfoLog(shader));
     }
 }
 
@@ -70,7 +70,7 @@ void Shader::link(GL::Shader& vertex, GL::Shader& fragment)
     glGetProgramiv(m_program, GL_LINK_STATUS, &success);
     if(!success)
     {
-        throw Exception(getProgramInfoLog(m_program));
+        throw snk::exception(getProgramInfoLog(m_program));
     }
 
     // The shaders are not needed anymore

@@ -1,5 +1,5 @@
 #include "process/Process.hpp"
-#include <snk/Guard.hpp>
+#include <snk/guard.hpp>
 
 namespace Snow::exe
 {

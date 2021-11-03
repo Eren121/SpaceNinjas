@@ -114,7 +114,7 @@ namespace GL
         // offset is C and doesn't works with templates
         // Taking the address will not dereference, not causing segfault.
 
-        glVertexAttribPointer(index, size, type, GL_FALSE, sizeof(Class), reinterpret_cast<const void*>(offset_of(field)));
+        glVertexAttribPointer(index, size, type, GL_FALSE, sizeof(Class), reinterpret_cast<const void*>(snk::offset_of(field)));
         glEnableVertexAttribArray(index);
     }
 };

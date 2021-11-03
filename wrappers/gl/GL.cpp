@@ -1,6 +1,6 @@
 #include "GL.hpp"
-#include <snk/Exception.hpp>
-#include <snk/macro/unused.hpp>
+#include <snk/exception.hpp>
+#include <snk/unused.hpp>
 #include <cstdio>
 #include <cassert>
 
@@ -11,7 +11,7 @@ GL::Shader::Shader(GLenum type)
     id = glCreateShader(type);
     if(!id)
     {
-        throw Exception("Failed to create a shader");
+        throw snk::exception("Failed to create a shader");
     }
 }
 
@@ -26,7 +26,7 @@ GL::Program::Program()
     id = glCreateProgram();
     if(!id)
     {
-        throw Exception("Failed to create a shader program");
+        throw snk::exception("Failed to create a shader program");
     }
 }
 
@@ -96,7 +96,7 @@ namespace GL
                         type, severity, message);
 
                 // Throw if the message is an error and throwing is enabled
-                throw Exception("GL Error");
+                throw snk::exception("GL Error");
             }
         }
     }

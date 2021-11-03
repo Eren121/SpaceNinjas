@@ -1,5 +1,5 @@
 #include "AudioEngine.hpp"
-#include <snk/Str.hpp>
+#include <snk/str.hpp>
 #include <fmod_errors.h>
 #include <stdexcept>
 
@@ -34,7 +34,7 @@ void Snow::media::AudioEngine::update()
 
 void Snow::media::AudioEngine::playSound(const std::filesystem::path &path)
 {
-    if(!std::filesystem::exists(path)) throw std::runtime_error{Str{} << path << " does not exist"};
+    if(!std::filesystem::exists(path)) throw std::runtime_error{snk::str{} << path << " does not exist"};
 
     const std::string name = path.string();
 

@@ -3,12 +3,13 @@
 #include "test/TestTransparent.hpp"
 #include "test/TestInput.hpp"
 #include <snk/version.hpp>
-#include <snk/macro/unused.hpp>
+#include <snk/unused.hpp>
 #include <snk/logging.hpp>
 #include <snk/version.hpp>
 #include <cstdlib>
 #include <spdlog/fmt/fmt.h>
 #include <entt/entt.hpp>
+#include <version>
 
 namespace SpaceNinja
 {

@@ -8,7 +8,7 @@
 #define TAU (2.0f * PI)
 #define SQRT2 1.41421356237309504880f
 
-#include <snk/fmt.hpp>
+#include <snk/formatter.hpp>
 #include <cmath>
 #include <algorithm>
 #include <random>
@@ -30,7 +30,8 @@ concept glm_type = requires(T t)
 };
 
 /// @brief Make 'glm' library types supports fmt::format().
-SNOW_DEFINE_USER_FMT(glm_type);
+template<glm_type T>
+struct fmt::formatter<T> : snk::formatter<T> {};
 
 namespace math
 {

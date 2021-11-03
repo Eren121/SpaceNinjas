@@ -5,14 +5,14 @@
 #include "Texture.hpp"
 #include "Transformable.hpp"
 #include "wrappers/gl/GL.hpp"
-#include <snk/LazyResource.hpp>
+#include <snk/lazy_resource.hpp>
 #include <glm/glm.hpp>
 #include <vector>
 #include <type_traits>
 
 static_assert(std::is_standard_layout_v<Vertex>, "Vertex should be standard layout");
 
-class VertexArray : public Drawable, public Transformable, private LazyResource
+class VertexArray : public Drawable, public Transformable, private snk::lazy_resource
 {
 public:
     VertexArray() = default;
@@ -50,7 +50,7 @@ private:
     GLenum m_usage {GL_STATIC_DRAW};
     const Texture *m_texture {nullptr};
 
-    /// @name LazyResource
+    /// @name lazy_resource
     /// @{
     mutable bool m_needUpdate {true};
     mutable int m_verticesCount {0};

@@ -1,6 +1,6 @@
 #include "UnifiedInput.hpp"
 #include "media/Window.hpp"
-#include <snk/macro/unused.hpp>
+#include <snk/unused.hpp>
 
 namespace Snow::in
 {

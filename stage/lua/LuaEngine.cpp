@@ -4,7 +4,8 @@
 #include "stage/Stage.hpp"
 #include "wrappers/lua/LuaGuard.hpp"
 #include "wrappers/lua/LuaException.hpp"
-#include <snk/macro/unused.hpp>
+
+#include <snk/unused.hpp>
 
 namespace SpaceNinja::script {
     LuaEngine::LuaEngine(Stage &stage)
@@ -37,7 +38,7 @@ namespace SpaceNinja::script {
 
         if (!code.valid()) {
             sol::error err = code;
-            std::string msg = Str{} << "Script error: " << err.what();
+            std::string msg = snk::str{} << "Script error: " << err.what();
 
             throw lua_utils::LuaException(L, msg);
         }

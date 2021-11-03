@@ -2,7 +2,7 @@
 #include "LuaException.hpp"
 #include "LuaGuard.hpp"
 #include <cassert>
-#include <snk/Str.hpp>
+#include <snk/str.hpp>
 #include <sol/sol.hpp>
 
 using namespace lua_utils;
@@ -123,7 +123,7 @@ bool Coroutine::operator()(int *nres)
             lua_pop(m_thread, 1);
 
 
-            LuaException e = LuaException(m_thread, error);
+            LuaException e{m_thread, error};
 
             close();
 

@@ -1,9 +1,13 @@
 #pragma once
 
-template<typename T, auto next>
-concept list_iterator_free_next = requires(T *t) {
-    t = next(t);
-};
+#include <algorithm>
+
+namespace snk {
+
+    template<typename T, auto next>
+    concept list_iterator_free_next = requires(T *t) {
+        t = next(t);
+    };
 
 /// @brief Convert automatically some types to iterators.
 /// @details
@@ -33,14 +37,14 @@ concept list_iterator_free_next = requires(T *t) {
 /// If T is const, then we take the const overload. If T is non-const, then we take the non-const overload
 template<typename T, auto next>
     requires
-        list_iterator_free_next<T, next> ||
-        requires(T* t) { t = (t->*next)(); }
+    list_iterator_free_next<T, next> ||
+    requires(T* t) { t = (t->*next)(); }
 class list_iterator
 {
 private:
     static constexpr bool isFreeFunc() // Verbose due to MSVC poor support
     {
-        return list_iterator_free_next<T, next>;
+        return snk::list_iterator_free_next<T, next>;
     }
 
   /// @brief The current value pointed by this iterator. nullptr means this pointer is an end iterator.
@@ -98,4 +102,5 @@ public:
     }
 
     /// @}
-};;
+};
+};

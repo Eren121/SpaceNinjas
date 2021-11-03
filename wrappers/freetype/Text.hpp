@@ -4,14 +4,14 @@
 #include <wrappers/gl/Texture.hpp>
 #include <wrappers/gl/VertexArray.hpp>
 #include <wrappers/freetype/Font.hpp>
-#include <snk/LazyResource.hpp>
+#include <snk/lazy_resource.hpp>
 #include <glm/vec4.hpp>
 
 /// @brief The renderable part of Font, the String itself.
 /// @details Wrap a texture of text.
 /// @remarks If not scaled, the unit size of the Text is the pixel.
 /// @remarks Supports multiline Strings.
-class Text : public Drawable, public Transformable, private LazyResource
+class Text : public Drawable, public Transformable, private snk::lazy_resource
 {
 public:
     enum Layout

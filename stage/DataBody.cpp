@@ -1,5 +1,6 @@
 #include "DataBody.hpp"
 #include "wrappers/box2d/box2d.hpp"
+#include <snk/list_iterator.hpp>
 
 namespace SpaceNinja
 {
@@ -15,12 +16,12 @@ namespace SpaceNinja
     {
     }
 
-    list_iterator<b2Fixture, next> DataBody::begin() const
+    snk::list_iterator<b2Fixture, next> DataBody::begin() const
     {
         return m_body->GetFixtureList();
     }
 
-    list_iterator<b2Fixture, next> DataBody::end() const
+    snk::list_iterator<b2Fixture, next> DataBody::end() const
     {
         return nullptr;
     }

@@ -6,7 +6,7 @@
 #include "process/Wait.hpp"
 #include "process/Process.hpp"
 #include <snk/math.hpp>
-#include <snk/macro/unused.hpp>
+#include <snk/unused.hpp>
 #include <box2d/box2d.h>
 #include <spdlog/spdlog.h>
 

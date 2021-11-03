@@ -1,5 +1,5 @@
 #include "SDL.hpp"
-#include <snk/Str.hpp>
+#include <snk/str.hpp>
 #include <sstream>
 #include <iostream>
 
@@ -105,13 +105,13 @@ glm::vec4 SDL::colorToGLM(const SDL_Color& c)
     return ret;
 }
 
-SDL::Exception::Exception(const std::string& msg, const nostd::source_location& loc)
-    : ::Exception(Str{} << msg << ". SDL error: " << SDL_GetError(), loc)
+SDL::Exception::Exception(const std::string& msg, const snk::source_location& loc)
+    : ::snk::exception(snk::str{} << msg << ". SDL error: " << SDL_GetError(), loc)
 {
 }
 
-SDL::IMGException::IMGException(const std::string& msg, const nostd::source_location& loc)
-    : Exception(Str{} << msg << ". SDL_image error: " << IMG_GetError(), loc)
+SDL::IMGException::IMGException(const std::string& msg, const snk::source_location& loc)
+    : snk::exception(snk::str{} << msg << ". SDL_image error: " << IMG_GetError(), loc)
 {
 }
 

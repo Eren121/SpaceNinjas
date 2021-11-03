@@ -1,6 +1,6 @@
 #pragma once
 
-#include <snk/string_litteral.hpp>
+#include "string_litteral.hpp"
 #include <spdlog/logger.h>
 #include <spdlog/fmt/ostr.h> // To provide {}-format support for types overloading operator<<()
 #include <memory>
@@ -26,7 +26,7 @@ private:
     static std::unordered_map<std::string, pointer> m_registeredLoggers;
 };
 
-template<StringLiteral name>
+template<snk::string_literal name>
 class Loggable
 {
 public:

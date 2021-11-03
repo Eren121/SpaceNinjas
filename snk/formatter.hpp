@@ -1,7 +1,7 @@
 #pragma once
 
+#include "fmt.hpp"
 #include <string>
-#include <spdlog/fmt/fmt.h>
 #include <concepts>
 
 namespace snk
