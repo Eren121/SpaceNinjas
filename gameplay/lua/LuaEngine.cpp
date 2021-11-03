@@ -128,11 +128,16 @@ namespace SpaceNinja::script {
 
     void LuaEngine::createBodyType(sol::state &L)
     {
-        auto type = L.new_usertype<b2Body>("b2Body");
+        // Use DataBody and not b2Body. Why?
+        // Because DataBody is copied so can be safely used even if the body is deleted
+        // However you still need to check body.valid before using it or it will throw NPE.
 
-        type["velocity"] = sol::property(b2::getVelocity, b2::setVelocityWithAngle);
-        type["position"] = sol::property(b2::getPosition, b2::setPosition);
-        type["angle"] = sol::property(b2::getAngle, b2::setAngle);
+        auto type = L.new_usertype<DataBody>("DataBody");
+
+        type["velocity"] = sol::property(&DataBody::getVelocity, &DataBody::setVelocityWithAngle);
+        type["position"] = sol::property(&DataBody::getPosition, &DataBody::setPosition);
+        type["angle"] = sol::property(&DataBody::getAngle, &DataBody::setAngle);
+        type["valid"] = sol::property(&DataBody::isValid);
     }
 
     void LuaEngine::createRectType(sol::state &L)

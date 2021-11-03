@@ -19,7 +19,7 @@ namespace SpaceNinja
         if(moveDirection.x != 0.0f || moveDirection.y != 0.0f) // Use different because we know the default is really exact 0.0f
         {
             // Quantity of force applied
-            float force = 1000.0f;
+            float force = 100.0f;
 
             // NOT use impulse
             // Because impulse is dependant of how much time I call it.
@@ -41,8 +41,6 @@ namespace SpaceNinja
 
                 player.SetLinearVelocity(speed);
             }
-
-            player.SetLinearDamping(0.2f);
         }
     }
 

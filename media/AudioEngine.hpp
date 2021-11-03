@@ -6,8 +6,10 @@
 
 namespace Snow::media
 {
-class AudioEngine : public Loggable<"AudioEngine">
+class AudioEngine
 {
+    LOGGABLE("AudioEngine")
+
 public:
     AudioEngine();
     ~AudioEngine();

@@ -1,8 +1,7 @@
 #pragma once
 
 #include "utility/math.hpp"
-#include <box2d/b2_body.h>
-#include <box2d/b2_draw.h>
+#include <box2d/box2d.h>
 #include <glm/glm.hpp>
 
 /// @brief box2d utility functions

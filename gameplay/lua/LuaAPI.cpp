@@ -52,14 +52,14 @@ namespace SpaceNinja::script
         api["player"] = sol::property(&LuaAPI::getPlayer);
     }
 
-    b2Body& LuaAPI::spawnEnemy(const glm::vec2& pos)
+    DataBody LuaAPI::spawnEnemy(const glm::vec2& pos)
     {
         getLogger().debug("Calling spawnEnemy(pos={})", pos);
 
         m_enemyCount++;
 
         b2Body& body{m_stage.getWorld().createEnemyBody(pos)};
-        return body;
+        return body.GetUserData();
     }
 
     void LuaAPI::triggerWin()
@@ -162,8 +162,8 @@ namespace SpaceNinja::script
         return m_stage.getBounds();
     }
 
-    b2Body &LuaAPI::getPlayer()
+    DataBody LuaAPI::getPlayer()
     {
-        return m_stage.getPlayer();
+        return m_stage.getPlayer().GetUserData();
     }
 }

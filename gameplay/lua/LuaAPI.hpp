@@ -11,8 +11,10 @@ namespace SpaceNinja::script
 {
     /// @brief An instance of this class is in the Lua code, named 'api'.
     /// @details The functions of this class are bound to Lua.
-    class LuaAPI : public Loggable<"LuaAPI">
+    class LuaAPI
     {
+        LOGGABLE("LuaAPI")
+
     public:
         explicit LuaAPI(Stage& stage);
 
@@ -29,7 +31,7 @@ namespace SpaceNinja::script
 
         /// @brief Spawn an enemy in the world.
         /// @return The spawned body.
-        b2Body& spawnEnemy(const glm::vec2& pos);
+        DataBody spawnEnemy(const glm::vec2& pos);
 
         /// @brief Starts an asynchronous task.
         /// @details The task will pushSceneStage immediately after invoking run(), after the next sleep of the script but
@@ -65,7 +67,7 @@ namespace SpaceNinja::script
         /// @remarks returns zero if there is no player
         glm::vec2 getPlayerPos() const;
 
-        b2Body& getPlayer();
+        DataBody getPlayer();
 
         /// @return A process that wait the desired amount and then finishes.
         std::shared_ptr<Snow::exe::Process> wait(int millis) const;

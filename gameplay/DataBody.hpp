@@ -3,6 +3,7 @@
 #include "utility/list_iterator.hpp"
 #include "BodyType.hpp"
 #include <entt/entt.hpp>
+#include <glm/vec2.hpp>
 
 // Since this file is included in b2_user_settings.h,
 // we can't include any Box2D file to prevent circular inclusion.
@@ -41,7 +42,20 @@ namespace SpaceNinja
 
         BodyType type{BodyType::None};
 
-        operator bool() const { return m_body; }
+        operator bool() const { return m_body != nullptr; }
+        bool isValid() const { return m_body != nullptr; }
+
+        glm::vec2 getPosition() const;
+        void setPosition(const glm::vec2& pos);
+
+        float getAngle() const;
+        void setAngle(float);
+
+        void setVelocity(const glm::vec2& vel);
+        glm::vec2 getVelocity(const b2Body& body);
+
+        /// @brief Set the velocity and update the angle to the direction.
+        void setVelocityWithAngle(const glm::vec2& vel);
 
     private:
 

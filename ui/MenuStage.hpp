@@ -13,8 +13,10 @@
 namespace SpaceNinja::ui
 {
     /// @brief The menu to choose a Stage among the unlocked Stages.
-    class MenuStage : public SceneNode, private Snow::exe::CoProcess, public Loggable<"MenuStage">
+    class MenuStage : public SceneNode, private Snow::exe::CoProcess
     {
+        LOGGABLE("MenuStage")
+
     public:
         /// @brief VerticalListMenu Stage item
         class Item : public Sprite

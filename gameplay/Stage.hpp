@@ -10,8 +10,10 @@
 
 namespace SpaceNinja
 {
-    class Stage : public SceneNode, public Loggable<"Stage">
+    class Stage : public SceneNode
     {
+        LOGGABLE("Stage")
+
     public:
         explicit Stage(Game &game, int id);
 

@@ -206,7 +206,7 @@ namespace SpaceNinja
 
     b2Body &StageWorld::createMissileBody(const glm::vec2 &pos)
     {
-        b2Body &body{createBoxBody(pos, 1.0f, "laser.png")};
+        b2Body &body{createBoxBody(pos, 2.0f, "laser.png")};
         entt::handle handle{m_registry, m_registry.create()};
         body.GetUserData() = DataBody{handle, body, BodyType::PlayerMissile};
 
@@ -226,6 +226,7 @@ namespace SpaceNinja
     b2Body &StageWorld::createPlayerBody(const glm::vec2 &pos)
     {
         b2Body &body{createBoxBody(pos, 2.0f, "player.png")};
+        body.SetLinearDamping(0.8f);
         entt::handle handle{m_registry, m_registry.create()};
         body.GetUserData() = DataBody{handle, body, BodyType::Player};
 

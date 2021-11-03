@@ -9,8 +9,10 @@
 #define CEREAL_NVP_M(field) ::cereal::make_nvp(&#field[2], field)
 
 /// @brief Represents all the player data stored in a save file.
-struct Save : public SceneNode, public Loggable<"Save">
+struct Save : public SceneNode
 {
+    LOGGABLE("Save")
+
 private:
     /// @brief Contains the last level the player has unlocked and can play.
     /// @remarks Starts at 1.
