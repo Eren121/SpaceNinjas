@@ -22,7 +22,7 @@
 
 #include "test.h"
 
-/// This tests bullet collision and provides an example of a gameplay scenario.
+/// This tests bullet collision and provides an example of a stage scenario.
 /// This also uses a loop shape.
 class Pinball : public Test
 {

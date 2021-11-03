@@ -1,5 +1,5 @@
 #include "Game.hpp"
-#include "gameplay/StageWorld.hpp"
+#include "stage/StageWorld.hpp"
 
 #include <imgui.h>
 

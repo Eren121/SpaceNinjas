@@ -19,11 +19,11 @@
 // User data
 
 /// You can define this to inject whatever data you want in b2Body
-#include "gameplay/DataBody.hpp"
+#include "stage/DataBody.hpp"
 using b2BodyUserData = SpaceNinja::DataBody;
 
 /// You can define this to inject whatever data you want in b2Fixture
-#include "gameplay/DataFixture.hpp"
+#include "stage/DataFixture.hpp"
 using b2FixtureUserData = SpaceNinja::DataFixture;
 
 /// You can define this to inject whatever data you want in b2Joint

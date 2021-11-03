@@ -1,4 +1,4 @@
-#include "gameplay/player/PlayerControl.hpp"
+#include "stage/player/PlayerControl.hpp"
 #include "Game.hpp"
 #include "utility/math.hpp"
 

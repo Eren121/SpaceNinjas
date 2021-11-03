@@ -1,9 +1,9 @@
 #pragma once
 
-#include "gameplay/Victory.hpp"
-#include "gameplay/CollisionManager.hpp"
-#include "gameplay/StageWorld.hpp"
-#include "gameplay/lua/LuaEngine.hpp"
+#include "stage/Victory.hpp"
+#include "stage/CollisionManager.hpp"
+#include "stage/StageWorld.hpp"
+#include "stage/lua/LuaEngine.hpp"
 #include "process/ProcessPool.hpp"
 #include "Fwd.hpp"
 #include "utility/logging.hpp"

@@ -2,7 +2,7 @@
 #include "Game.hpp"
 #include "wrappers/freetype/Text.hpp"
 #include "utility/time/Timer.hpp"
-#include "gameplay/Stage.hpp"
+#include "stage/Stage.hpp"
 #include "utility/math.hpp"
 #include "GameControls.hpp"
 #include <imgui.h>

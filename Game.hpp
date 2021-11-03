@@ -4,8 +4,8 @@
 #include "media/AudioEngine.hpp"
 #include "GameControls.hpp"
 #include "media/TextureCache.hpp"
-#include "gameplay/Stage.hpp"
-#include "gameplay/Save.hpp"
+#include "stage/Stage.hpp"
+#include "stage/Save.hpp"
 #include "media/Window.hpp"
 #include "media/AudioEngine.hpp"
 #include <wrappers/gl/Shader.hpp>

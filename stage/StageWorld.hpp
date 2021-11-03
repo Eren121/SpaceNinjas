@@ -1,6 +1,6 @@
 #pragma once
 
-#include "gameplay/CollisionManager.hpp"
+#include "stage/CollisionManager.hpp"
 #include "wrappers/box2d/World.hpp"
 #include "wrappers/box2d/DebugDraw.hpp"
 #include "media/scene/SceneNode.hpp"

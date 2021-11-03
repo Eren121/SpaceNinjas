@@ -1,5 +1,5 @@
-#include "gameplay/StageSceneNode.hpp"
-#include "gameplay/Stage.hpp"
+#include "stage/StageSceneNode.hpp"
+#include "stage/Stage.hpp"
 
 namespace SpaceNinja
 {

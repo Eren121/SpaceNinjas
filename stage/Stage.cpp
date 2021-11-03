@@ -1,8 +1,8 @@
-#include "gameplay/Stage.hpp"
+#include "stage/Stage.hpp"
 
-#include "gameplay/VictoryMenu.hpp"
-#include "gameplay/player/PlayerControl.hpp"
-#include "gameplay/player/PlayerShoot.hpp"
+#include "stage/VictoryMenu.hpp"
+#include "stage/player/PlayerControl.hpp"
+#include "stage/player/PlayerShoot.hpp"
 #include "ui/VerticalListMenu.hpp"
 #include "Game.hpp"
 #include "utility/math.hpp"

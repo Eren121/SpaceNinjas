@@ -1,8 +1,8 @@
 #pragma once
 
-#include "gameplay/lua/LuaAPI.hpp"
-#include "gameplay/lua/Thread.hpp"
-#include "gameplay/StageSceneNode.hpp"
+#include "stage/lua/LuaAPI.hpp"
+#include "stage/lua/Thread.hpp"
+#include "stage/StageSceneNode.hpp"
 #include "Fwd.hpp"
 
 namespace SpaceNinja::script

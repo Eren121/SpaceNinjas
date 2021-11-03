@@ -1,6 +1,6 @@
 #pragma once
 
-#include "gameplay/StageSceneNode.hpp"
+#include "stage/StageSceneNode.hpp"
 
 namespace SpaceNinja
 {

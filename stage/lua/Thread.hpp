@@ -1,6 +1,6 @@
 #pragma once
 
-#include "gameplay/StageSceneNode.hpp"
+#include "stage/StageSceneNode.hpp"
 #include "wrappers/lua/Coroutine.hpp"
 #include "process/Process.hpp"
 #include "utility/logging.hpp"

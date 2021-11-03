@@ -61,31 +61,31 @@ set(SRC
     media/TextureCache.hpp
     media/WindowDebugInfo.cpp
     media/WindowDebugInfo.hpp
-    gameplay/StageSceneNode.cpp
-    gameplay/StageSceneNode.hpp
-    gameplay/CollisionManager.cpp
-    gameplay/CollisionManager.hpp
-    gameplay/player/PlayerControl.cpp
-    gameplay/player/PlayerControl.hpp
-    gameplay/player/PlayerSceneNode.cpp
-    gameplay/player/PlayerSceneNode.hpp
-    gameplay/player/PlayerShoot.cpp
-    gameplay/player/PlayerShoot.hpp
-    gameplay/Save.cpp
-    gameplay/Save.hpp
-    gameplay/Stage.cpp
-    gameplay/Stage.hpp
-    gameplay/StageWorld.cpp
-    gameplay/StageWorld.hpp
-    gameplay/Victory.hpp
-    gameplay/VictoryMenu.cpp
-    gameplay/VictoryMenu.hpp
-    gameplay/lua/LuaAPI.cpp
-    gameplay/lua/LuaAPI.hpp
-    gameplay/lua/LuaEngine.cpp
-    gameplay/lua/LuaEngine.hpp
-        gameplay/lua/Thread.cpp
-        gameplay/lua/Thread.hpp
+        stage/StageSceneNode.cpp
+        stage/StageSceneNode.hpp
+        stage/CollisionManager.cpp
+        stage/CollisionManager.hpp
+        stage/player/PlayerControl.cpp
+        stage/player/PlayerControl.hpp
+        stage/player/PlayerSceneNode.cpp
+        stage/player/PlayerSceneNode.hpp
+        stage/player/PlayerShoot.cpp
+        stage/player/PlayerShoot.hpp
+        stage/Save.cpp
+        stage/Save.hpp
+        stage/Stage.cpp
+        stage/Stage.hpp
+        stage/StageWorld.cpp
+        stage/StageWorld.hpp
+        stage/Victory.hpp
+        stage/VictoryMenu.cpp
+        stage/VictoryMenu.hpp
+        stage/lua/LuaAPI.cpp
+        stage/lua/LuaAPI.hpp
+        stage/lua/LuaEngine.cpp
+        stage/lua/LuaEngine.hpp
+        stage/lua/Thread.cpp
+        stage/lua/Thread.hpp
     main.cpp
     media/ResourceCache.hpp
     media/Window.cpp
@@ -241,7 +241,7 @@ set(SRC
     wrappers/lua/LuaGuard.hpp
     wrappers/nostd/source_location.cpp
     wrappers/nostd/source_location.hpp Fwd.hpp wrappers/box2d/Fwd.hpp
-        media/AudioEngine.cpp media/AudioEngine.hpp gameplay/DataBody.cpp gameplay/DataBody.hpp)
+        media/AudioEngine.cpp media/AudioEngine.hpp stage/DataBody.cpp stage/DataBody.hpp)
 
 #######################################
 # ImGUI
@@ -276,7 +276,7 @@ add_definitions(-DGLEW_STATIC) # needed for executable
 add_definitions(-DMAKE_LIB) # Do not compile lua interpreter
 set(LUA_HOME "${THIRD_PARTY_DIR}/lua")
 set(LUA_SRC "${LUA_HOME}/onelua.c")
-set(SRC ${SRC} ${LUA_SRC} gameplay/BodyType.hpp gameplay/DataFixture.hpp)
+set(SRC ${SRC} ${LUA_SRC} stage/BodyType.hpp stage/DataFixture.hpp)
 include_directories("${LUA_HOME}")
 
 #######################################

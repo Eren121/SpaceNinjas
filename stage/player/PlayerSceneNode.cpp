@@ -1,4 +1,4 @@
-#include "gameplay/player/PlayerSceneNode.hpp"
+#include "stage/player/PlayerSceneNode.hpp"
 #include "Game.hpp"
 
 namespace SpaceNinja
