@@ -30,6 +30,6 @@ namespace SpaceNinja
     float DataBody::getAngle() const { return b2::getAngle(*m_body); }
     void DataBody::setAngle(float angle) { b2::setAngle(*m_body, angle); }
     void DataBody::setVelocity(const glm::vec2 &vel) { b2::setVelocity(*m_body, vel); }
-    glm::vec2 DataBody::getVelocity(const b2Body &body) { return b2::getVelocity(*m_body); }
+    glm::vec2 DataBody::getVelocity() { return b2::getVelocity(*m_body); }
     void DataBody::setVelocityWithAngle(const glm::vec2 &vel) { b2::setVelocityWithAngle(*m_body, vel); }
 }

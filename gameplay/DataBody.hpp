@@ -52,7 +52,7 @@ namespace SpaceNinja
         void setAngle(float);
 
         void setVelocity(const glm::vec2& vel);
-        glm::vec2 getVelocity(const b2Body& body);
+        glm::vec2 getVelocity();
 
         /// @brief Set the velocity and update the angle to the direction.
         void setVelocityWithAngle(const glm::vec2& vel);
