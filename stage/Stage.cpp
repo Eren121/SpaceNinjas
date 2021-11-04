@@ -13,7 +13,6 @@ namespace SpaceNinja
     Stage::Stage(Game &game, int id)
         : m_game(game),
           m_id(id),
-          m_player(nullptr),
           m_world(std::make_shared<StageWorld>(*this)),
           m_victory(Victory::Running)
     {
@@ -40,16 +39,7 @@ namespace SpaceNinja
 
     void Stage::spawnPlayer()
     {
-        m_player = &m_world->createPlayerBody({0, 0});
-
-        // End the stage when the player is killed
-        m_world->onDestroy.connect([this](b2Body& body) {
-            if(&body == m_player)
-            {
-                m_player = nullptr;
-                m_victory = Victory::Loss;
-            }
-        });
+        m_player = m_world->createPlayerBody({0, 0}).GetUserData();
     }
 
     void Stage::spawnPlayerLimits()
@@ -107,6 +97,12 @@ namespace SpaceNinja
     bool Stage::updateNode()
     {
         bool ret = true;
+
+        // End the stage when the player is killed
+        if(!m_player)
+        {
+            m_victory = Victory::Loss;
+        }
 
         if(m_victory != Victory::Running)
         {
@@ -206,19 +202,14 @@ namespace SpaceNinja
         return m_game;
     }
 
-    b2Body& Stage::getPlayer()
+    DataBody Stage::getPlayer() const
     {
-        return *m_player;
-    }
-
-    const b2Body& Stage::getPlayer() const
-    {
-        return *m_player;
+        return m_player;
     }
 
     bool Stage::hasPlayer() const
     {
-        return m_player != nullptr;
+        return m_player.isValid();
     }
 
     void Stage::stopStage(Victory victory)
@@ -274,7 +265,7 @@ namespace SpaceNinja
 
             if (hasPlayer())
             {
-                b2Body& player = getPlayer();
+                b2Body& player = m_player.getBody();
                 glm::vec2 pos = b2::toGLM(player.GetPosition());
 
                 if (ImGui::InputFloat2("Player position", &pos.x))

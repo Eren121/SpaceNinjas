@@ -12,7 +12,7 @@ namespace SpaceNinja
     {
         if (getStage().hasPlayer())
         {
-            onStep(getStage().getPlayer());
+            onStep(getStage().getPlayer().getBody());
         }
     }
 }

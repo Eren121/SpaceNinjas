@@ -1,5 +1,9 @@
 #include "Game.hpp"
 #include "stage/StageWorld.hpp"
+#include "gameplay/Turret.hpp"
+#include "gameplay/LookAtTarget.hpp"
+#include "gameplay/Missile.hpp"
+#include "gameplay/Living.hpp"
 
 #include <imgui.h>
 
@@ -10,13 +14,6 @@ namespace SpaceNinja
           m_defaultDelta(delta)
     {
         m_delta = m_defaultDelta;
-        deleter = [](DataBody& data) {
-            if(data.handle)
-            {
-                data.handle.destroy();
-            }
-        };
-
         SetDebugDraw(&m_debugDraw);
 
         initCollisions();
@@ -29,11 +26,42 @@ namespace SpaceNinja
 
     void StageWorld::initCollisions()
     {
-        m_collisionner.onEvent(BodyType::PlayerMissile, BodyType::Enemy, CollisionManager::Begin,
-                        [this](b2Body &missile, b2Body &enemy) {
-            // Kill enemy with shots
-            markForDestroy(&missile);
-            markForDestroy(&enemy);
+        m_collisionner.onEvent(BodyType::PlayerMissile, CollisionManager::Begin,
+                        [this](b2Body &body, b2Body &any) {
+            // Kill any with shots
+            // ONLY if the target is not the same as the thrower
+            // Otherwise missile would kill their thrower at the spawn:
+            // Missile are spawned in a fixed distance from the thrower
+            bool hit{true};
+
+            if(Missile *missile = body.GetUserData().handle.try_get<Missile>())
+            {
+                // We can compare
+                // Even if the thrower is dead, this should be ok (no NPE)
+                if(missile->thrower.handle.entity() == any.GetUserData().handle.entity())
+                {
+                    // disable hit its own thrower
+                    hit = false;
+                }
+            }
+
+            // Only hit with Living units
+            /// TODO make all bodies have handle because we have for the moment to check if the user data exists
+            if(!any.GetUserData() || !any.GetUserData().handle.try_get<Living>())
+            {
+                hit = false;
+            }
+            else if(hit)
+            {
+                // Damage only if hit
+                Living& living = any.GetUserData().handle.get<Living>();
+                living.damage(10.0f, any.GetUserData().handle);
+            }
+
+            if(hit)
+            {
+                markForDestroy(&body);
+            }
         });
 
         m_collisionner.onEvent(BodyType::Player, BodyType::Enemy, CollisionManager::Begin,
@@ -53,7 +81,7 @@ namespace SpaceNinja
 
         m_collisionner.setCollisionEnabled(BodyType::PlayerLimits, BodyType::Enemy, false);
         m_collisionner.setCollisionEnabled(BodyType::PlayerLimits, BodyType::PlayerMissile, false);
-        m_collisionner.setCollisionEnabled(BodyType::Player, BodyType::PlayerMissile, false);
+        //m_collisionner.setCollisionEnabled(BodyType::Player, BodyType::PlayerMissile, false);
         m_collisionner.setCollisionEnabled(BodyType::Enemy, BodyType::Enemy, false);
         m_collisionner.setCollisionEnabled(BodyType::PlayerMissile, BodyType::PlayerMissile, false);
         SetContactFilter(&m_collisionner);
@@ -75,9 +103,9 @@ namespace SpaceNinja
         //      Never run faster than real-time simulation, but can run slower if CPU is too slow
         //      And never run more than 1 step per frame in case of CPU bottleneck (if() and not while())
 
-        // Using WHILE can freeze the gameif the cpu is too slow, care
+        // Using WHILE can freeze the game if the cpu is too slow, care
 
-        if(m_sinceStart.getElapsedTime() >= getTime())
+        while(m_sinceStart.getElapsedTime() >= getTime())
         {
             constexpr const char *msgFormat = "pre-step {}; simulation time = {}; time since start = {}";
             const int nextIt = getIteration() + 1;
@@ -85,6 +113,55 @@ namespace SpaceNinja
 
             step();
             m_stepsPerSec.onFrame();
+
+            {
+                // Look at IA
+                auto view = m_registry.view<LookAtTarget, b2Body*>();
+                view.each([this](auto entity, LookAtTarget& lookAt, b2Body* body) {
+
+                    if(!lookAt.target)
+                    {
+                        // Remove the target if it is dead
+                        m_registry.remove<LookAtTarget>(entity);
+                    }
+                    else
+                    {
+                        const b2Body& target = lookAt.target.getBody();
+                        const float currentAngle{b2::getAngle(*body)};
+
+                        // Angle if the body face immediately the target
+                        const float finalAngle{math::vec2angle(b2::getPosition(target) - b2::getPosition(*body))};
+
+                        // The (signed) distance, we limit from the maximum angular speed per tick
+                        float distance{math::normalize(finalAngle - currentAngle)};
+                        if(std::abs(distance) > lookAt.angularSpeed)
+                        {
+                            distance = math::sgn(distance) * lookAt.angularSpeed;
+                        }
+
+                        b2::setAngle(*body, currentAngle + distance);
+                    }
+                });
+            }
+            {
+                // Turret IA
+                auto view = m_registry.view<Turret, b2Body*>();
+
+                view.each([this](auto entity, Turret& turret, b2Body* body) {
+
+                    const Time now{getTime()};
+
+                    if(now >= turret.lastShot + turret.period)
+                    {
+                        turret.lastShot = now;
+
+                        glm::vec2 direction{b2::getDirection(*body)};
+                        glm::vec2 missilePos{b2::getPosition(*body) + direction * 3.0f};
+                        b2Body& missileBody{createMissileBody(missilePos, body->GetUserData())};
+                        b2::setVelocityWithAngle(missileBody, direction * turret.missileSpeed);
+                    }
+                });
+            }
         }
 
         return true;
@@ -204,11 +281,18 @@ namespace SpaceNinja
         line.draw(states);
     }
 
-    b2Body &StageWorld::createMissileBody(const glm::vec2 &pos)
+    b2Body &StageWorld::createMissileBody(const glm::vec2 &pos, const DataBody& thrower)
     {
         b2Body &body{createBoxBody(pos, 2.0f, "laser.png")};
         entt::handle handle{m_registry, m_registry.create()};
         body.GetUserData() = DataBody{handle, body, BodyType::PlayerMissile};
+        body.GetUserData().handle.emplace<b2Body*>(&body);
+        body.GetUserData().handle.emplace<Missile>(thrower);
+
+        for(b2Fixture& fixture : body)
+        {
+            fixture.SetSensor(true);
+        }
 
         body.SetBullet(true);
         return body;
@@ -218,7 +302,20 @@ namespace SpaceNinja
     {
         b2Body &body{createBoxBody(pos, 2.0f, "enemy.png")};
         entt::handle handle{m_registry, m_registry.create()};
-        body.GetUserData() = DataBody{handle, body, BodyType::Enemy};
+
+        DataBody& data{body.GetUserData()};
+        data.type = BodyType::Enemy;
+        data.handle.emplace<b2Body*>(&body);
+        data.handle.emplace<Turret>();
+        data.handle.emplace<Living>();
+
+        if(m_stage.hasPlayer())
+        {
+            const DataBody& player{m_stage.getPlayer()};
+
+            const float angularSpeed{0.025f};
+            data.handle.emplace<LookAtTarget>(player, angularSpeed);
+        }
 
         return body;
     }
@@ -229,6 +326,8 @@ namespace SpaceNinja
         body.SetLinearDamping(0.8f);
         entt::handle handle{m_registry, m_registry.create()};
         body.GetUserData() = DataBody{handle, body, BodyType::Player};
+        body.GetUserData().handle.emplace<b2Body*>(&body);
+        body.GetUserData().handle.emplace<Living>();
 
         return body;
     }
@@ -254,5 +353,31 @@ namespace SpaceNinja
         fixtureData.sprite->setTexture(texture);
 
         return body;
+    }
+
+    void StageWorld::onDestroy(b2Body &body)
+    {
+        // Destroy the entity associated with the body
+        // Do not remove the entity from the registry!!!
+        // Remove entity from the world
+        // If you remove only from the registry, the the body will still exists on the world.
+        // But destroying the body from the world will also remove the entity.
+        DataBody data{body.GetUserData()};
+
+        if(data)
+        {
+            data.handle.destroy();
+        }
+    }
+
+    void StageWorld::onCreate(b2Body &body)
+    {
+        // Create the associated entity to the body
+        // The type will be None, it should be initialized by the function that create the entity
+
+        const auto entity{m_registry.create()};
+        const entt::handle handle{m_registry, entity};
+
+        body.GetUserData() = DataBody{handle, body, BodyType::None};
     }
 }

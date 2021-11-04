@@ -1,5 +1,6 @@
 #pragma once
 
+#include "iterate_body.hpp"
 #include <snk/math.hpp>
 #include <box2d/box2d.h>
 #include <glm/glm.hpp>
@@ -39,11 +40,19 @@ namespace b2
         void setVelocity(b2Body& body, const glm::vec2& vel) { body.SetLinearVelocity(fromGLM(vel)); }
         glm::vec2 getVelocity(const b2Body& body) { return toGLM(body.GetLinearVelocity()); }
 
+        glm::vec2 getDirection(const b2Body& body) { return math::angle2vec(getAngle(body)); }
+
         /// @brief Set the velocity and update the angle to the direction.
         void setVelocityWithAngle(b2Body& body, const glm::vec2& vel)
         {
             setVelocity(body, vel);
             setAngle(body, math::vec2angle(vel));
+        }
+
+        /// @brief Set the angle of a body to look at a target
+        void lookAt(b2Body& body, b2Body& target)
+        {
+            setAngle(body, math::vec2angle(getPosition(target) - getPosition(body)));
         }
     }
 }

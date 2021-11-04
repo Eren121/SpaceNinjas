@@ -11,7 +11,6 @@ namespace SpaceNinja
         /// @details The drawable should have all its vertices in coordinate system of the body (same as the fixtures)
         std::shared_ptr<Sprite> sprite;
 
-
         /// @brief Saved texture (data used for debugging).
         const Texture *savedTexture;
     };

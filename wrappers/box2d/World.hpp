@@ -40,13 +40,6 @@ public:
     explicit World(b2Vec2 gravity = {0.0f, 0.0f});
     virtual ~World();
 
-    /// @brief Callback when a body is destroyed.
-    /// @details The callback is called just before the body is destroyed, at the same frame.
-    /// @remarks The callback is not called when the World is destroyed, even if the bodies are.
-    sigslot::signal<b2Body&> onDestroy;
-
-    sigslot::signal<b2Body&> onCreate;
-
     /// @brief Callback when a body is created.
     /// @details The callback is called just after the body has spawn in the world, at the same frame.
 
@@ -79,7 +72,12 @@ public:
     void markForDestroy(b2Body *body);
 
     /// @brief Create a body
-    virtual b2Body& createBody(b2BodyDef &def);
+    /// @remarks virtual so the child class can initialize user data.
+    b2Body& createBody(b2BodyDef &def);
+
+    /// @brief Callback just before a body is destroyed
+    virtual void onDestroy(b2Body& body) {}
+    virtual void onCreate(b2Body& body) {}
 
     /// @brief Utility to create a body only composed of a Box fixture
     /// @param box The size and the position of the body.
@@ -90,10 +88,6 @@ public:
     /// want a real time simulation, with as condition until the time of the simulation is lower than the current real time.
     /// @remarks Also destroy the bodies marked as destroyed at the end of the step.
     void step();
-
-    /// @brief Deleter for user data.
-    /// @details If not null, will be called when each body is destroyed, as well for each body when the world is destroyed.
-    std::function<void(b2BodyUserData&)> deleter;
 
 protected:
     /// @brief How much time to advance at each step.

@@ -185,6 +185,23 @@ namespace math
         return angle;
     }
 
+    /// @param angle Unnormalized angle (can take any float value).
+    // @brief Normalize an angle in interval [0;2pi]
+    /// @remarks _u stands for unsigned because [0;2pi] is unsigned and [-pi;pi] is signed.
+    inline float normalize_u(float angle)
+    {
+        // Same angle restrained in interval [-2pi;2pi]
+        angle = fmod(angle, 2.0f * PI);
+
+        // If negative, make positive
+        if(angle < 0)
+        {
+            angle += 2.0f * PI;
+        }
+
+        return angle;
+    }
+
     /// @brief Get the angular distance between two points
     /// @returns The signed, angular distance as the smallest angle from @p from to @p to.
     inline float angularDist(float from, float to)
@@ -202,6 +219,21 @@ namespace math
         }
 
         return d;
+    }
+
+    /// @brief Returns the angle between two angle
+    /// @returns The angle signed, between origin and target
+    /// @details Returns always the smallest angle in one of the two directions.
+    inline float angleBetween(float origin, float target)
+    {
+        float ret{target - origin};
+
+        if(std::abs(ret) > PI)
+        {
+            ret = -(2 * PI - ret);
+        }
+
+        return ret;
     }
 
     /// @brief Linear mix two angles, returns in [-pi;-pi]

@@ -86,9 +86,6 @@ namespace SpaceNinja::script
     private:
 
         Stage& m_stage;
-
-        /// @brief Counter of remaining living enemies.
-        int m_enemyCount{0};
     };
 }
 

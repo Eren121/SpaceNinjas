@@ -26,16 +26,23 @@ namespace SpaceNinja
         /// @brief Body factories
         b2Body& createEnemyBody(const glm::vec2 &pos);
         b2Body& createPlayerBody(const glm::vec2 &pos);
-        b2Body& createMissileBody(const glm::vec2 &pos);
+        b2Body& createMissileBody(const glm::vec2 &pos, const DataBody& thrower);
 
         b2Body& createBoxBody(const glm::vec2 &pos, float width, const std::string &texture);
         using World::createBoxBody;
         /// @}
 
+        entt::registry& getRegistry() { return m_registry; }
+
     protected:
         bool updateNode() override;
         void drawNode(RenderStates states) const override;
         void debugNode() override;
+
+        void onDestroy(b2Body& body) override;
+
+        void onCreate(b2Body& body) override;
+
 
     private:
         void initCollisions();

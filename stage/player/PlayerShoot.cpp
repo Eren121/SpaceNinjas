@@ -47,7 +47,7 @@ namespace SpaceNinja
             // Use the same direction as the player is facing
             const glm::vec2 direction{math::angle2vec(player.GetAngle())};
 
-            b2Body &missile{world.createMissileBody(pos + direction)};
+            b2Body &missile{world.createMissileBody(pos + direction, player.GetUserData())};
             b2::setVelocityWithAngle(missile, speed * direction);
 
             hasShot = true;

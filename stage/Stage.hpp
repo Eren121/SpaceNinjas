@@ -41,9 +41,7 @@ namespace SpaceNinja
         void openMenuIfAsked();
 
     public:
-        b2Body &getPlayer();
-
-        const b2Body &getPlayer() const;
+        DataBody getPlayer() const;
 
         void stopStage(Victory victory);
 
@@ -82,7 +80,7 @@ namespace SpaceNinja
         Game &m_game;
         int m_id;
 
-        b2Body *m_player;
+        DataBody m_player;
 
         std::shared_ptr<StageWorld> m_world;
         std::shared_ptr<script::LuaEngine> m_scriptEngine;

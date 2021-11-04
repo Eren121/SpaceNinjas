@@ -94,13 +94,6 @@ void World::cleanupDestroyedBodies(bool callDestroyCallback)
             onDestroy(*body);
         }
 
-        // Deallocate user data if there is
-        b2BodyUserData& userData = body->GetUserData();
-        if (deleter)
-        {
-            deleter(userData);
-        }
-
         // Remove effectively the body from the world
         DestroyBody(body);
     }
@@ -110,8 +103,9 @@ void World::cleanupDestroyedBodies(bool callDestroyCallback)
 
 b2Body& World::createBody(b2BodyDef &def)
 {
-    b2Body *body = CreateBody(&def);
-    return *body;
+    b2Body &body = *CreateBody(&def);
+    onCreate(body);
+    return body;
 }
 
 b2Body& World::createBoxBody(const Rect& rect, b2BodyType type, float density, bool bullet)
@@ -121,14 +115,14 @@ b2Body& World::createBoxBody(const Rect& rect, b2BodyType type, float density, b
     def.bullet = bullet;
     def.position = b2::fromGLM(rect.getCenter());
 
-    b2Body *body = CreateBody(&def);
+    b2Body& body = createBody(def);
 
     b2PolygonShape box;
     box.SetAsBox(rect.size.x / 2.0f, rect.size.y / 2.0f);
 
-    body->CreateFixture(&box, density);
+    body.CreateFixture(&box, density);
 
-    return *body;
+    return body;
 }
 
 }

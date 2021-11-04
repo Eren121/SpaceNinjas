@@ -5,6 +5,7 @@
 #include "ui/StoryMessage.hpp"
 #include "process/Wait.hpp"
 #include "process/Process.hpp"
+#include "gameplay/Hostile.hpp"
 #include <snk/math.hpp>
 #include <snk/unused.hpp>
 #include <box2d/box2d.h>
@@ -16,15 +17,6 @@ namespace SpaceNinja::script
         : m_stage(stage)
     {
         getLogger().set_level(spdlog::level::debug);
-
-        auto& world = m_stage.getWorld();
-        world.onDestroy.connect([this](b2Body& b2body) {
-            if(b2body.GetUserData().type == BodyType::Enemy)
-            {
-                m_enemyCount--;
-                getLogger().trace("Enemy destroyed (remaining: {})", m_enemyCount);
-            }
-        });
     }
 
 
@@ -55,8 +47,6 @@ namespace SpaceNinja::script
     DataBody LuaAPI::spawnEnemy(const glm::vec2& pos)
     {
         getLogger().debug("Calling spawnEnemy(pos={})", pos);
-
-        m_enemyCount++;
 
         b2Body& body{m_stage.getWorld().createEnemyBody(pos)};
         return body.GetUserData();
@@ -98,9 +88,18 @@ namespace SpaceNinja::script
 
     int LuaAPI::getEnemyCount() const
     {
-        getLogger().trace("Calling getEnemyCount() (returns: {})", m_enemyCount);
 
-        return m_enemyCount;
+        // Single type view know the exact amount of entities
+        // For "obvious reasons"...
+        // Not obvious to me but we will believe it and don't ask :D
+        // https://github.com/skypjack/entt/issues/567
+
+        auto view{m_stage.getWorld().getRegistry().view<Hostile>()};
+        const auto enemyCount{static_cast<int>(view.size())};
+
+        getLogger().trace("Calling getEnemyCount() (returns: {})", enemyCount);
+
+        return enemyCount;
     }
 
     std::shared_ptr<Snow::exe::Process> LuaAPI::wait(int millis) const
@@ -129,7 +128,7 @@ namespace SpaceNinja::script
     {
         if(m_stage.hasPlayer())
         {
-            glm::vec2 worldPos = b2::toGLM(m_stage.getPlayer().GetPosition());
+            glm::vec2 worldPos{m_stage.getPlayer().getPosition()};
             return worldPos;
         }
         else
@@ -164,6 +163,6 @@ namespace SpaceNinja::script
 
     DataBody LuaAPI::getPlayer()
     {
-        return m_stage.getPlayer().GetUserData();
+        return m_stage.getPlayer();
     }
 }

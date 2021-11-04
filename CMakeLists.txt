@@ -208,7 +208,8 @@ set(SRC
     wrappers/lua/LuaException.hpp
     wrappers/lua/LuaGuard.cpp
     wrappers/lua/LuaGuard.hpp Fwd.hpp wrappers/box2d/Fwd.hpp
-        media/AudioEngine.cpp media/AudioEngine.hpp stage/DataBody.cpp stage/DataBody.hpp)
+        media/AudioEngine.cpp media/AudioEngine.hpp stage/DataBody.cpp stage/DataBody.hpp gameplay/Turret.cpp gameplay/Turret.hpp gameplay/Living.hpp gameplay/Hostile.hpp
+        ui/StoryMessage.cpp ui/StoryMessage.hpp gameplay/LookAtTarget.hpp gameplay/Missile.hpp wrappers/box2d/iterate_body.hpp)
 
 #######################################
 # ImGUI
@@ -221,7 +222,7 @@ set(IMGUI_SRC
     ${IMGUI_HOME}/imgui_demo.cpp
     ${IMGUI_HOME}/imgui_draw.cpp
     ${IMGUI_HOME}/imgui_tables.cpp
-    ${IMGUI_HOME}/imgui_widgets.cpp ui/StoryMessage.cpp ui/StoryMessage.hpp)
+    ${IMGUI_HOME}/imgui_widgets.cpp)
 
 add_library(ImGUI STATIC ${IMGUI_SRC})
 

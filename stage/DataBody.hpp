@@ -43,8 +43,8 @@ namespace SpaceNinja
 
         BodyType type{BodyType::None};
 
-        operator bool() const { return m_body != nullptr; }
-        bool isValid() const { return m_body != nullptr; }
+        operator bool() const { return isValid(); }
+        bool isValid() const { return handle.valid(); }
 
         glm::vec2 getPosition() const;
         void setPosition(const glm::vec2& pos);
