@@ -34,9 +34,12 @@ void DebugDraw::DrawPolygon(const b2Vec2 *vertices, int32 vertexCount, const b2C
     m_shape.draw(states);
 }
 
-void DebugDraw::DrawSolidPolygon(const b2Vec2 *vertices, int32 vertexCount, const b2Color& color)
+void DebugDraw::DrawSolidPolygon(const b2Vec2 *vertices, int32 vertexCount, const b2Color& queryColor)
 {
     std::vector<Vertex> vec;
+
+    b2Color color{queryColor};
+    color.a *= 0.25;
 
     for(int i = 0; i < vertexCount; ++i)
     {
@@ -67,8 +70,11 @@ void DebugDraw::DrawCircle(const b2Vec2& center, float radius, const b2Color& co
     }
 }
 
-void DebugDraw::DrawSolidCircle(const b2Vec2& center, float radius, const b2Vec2& axis, const b2Color& color)
+void DebugDraw::DrawSolidCircle(const b2Vec2& center, float radius, const b2Vec2& axis, const b2Color& queryColor)
 {
+    b2Color color{queryColor};
+    color.a *= 0.25;
+
     RenderStates child = this->states;
     child.model = glm::translate(child.model, {center.x, center.y, 0.0f});
     child.model = glm::scale(child.model, glm::vec3{radius});
