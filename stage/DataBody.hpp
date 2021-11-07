@@ -5,6 +5,7 @@
 #include "BodyType.hpp"
 #include <entt/entt.hpp>
 #include <glm/vec2.hpp>
+#include "Fwd.hpp"
 
 // Since this file is included in b2_user_settings.h,
 // we can't include any Box2D file to prevent circular inclusion.
@@ -32,11 +33,13 @@ namespace SpaceNinja
         ///     Never change, a entt::const_handle means that the referred entity is always the same.
         entt::handle handle;
 
-        explicit DataBody() = default;
+        DataBody() = default;
         DataBody(const entt::handle& handle, b2Body& body, BodyType type);
 
         b2Body& getBody() { return *m_body; }
         const b2Body& getBody() const { return *m_body; }
+
+        StageWorld& getWorld();
 
         snk::list_iterator<b2Fixture, next> begin() const;
         snk::list_iterator<b2Fixture, next> end() const;
@@ -48,6 +51,8 @@ namespace SpaceNinja
 
         glm::vec2 getPosition() const;
         void setPosition(const glm::vec2& pos);
+
+        void setSensor(bool sensor);
 
         float getAngle() const;
         void setAngle(float);
@@ -65,4 +70,9 @@ namespace SpaceNinja
         ///     So we keep the pointer private to never change and expose a public getter.
         b2Body *m_body{nullptr};
     };
+
+
+    /// @brief Don't use config file because it needs box2D recompilation each time...
+    DataBody& getData(b2Body& body);
+    const DataBody& getData(const b2Body& body);
 }

@@ -1,10 +1,12 @@
 #include "Game.hpp"
+#include "physics/BodyBuilder.hpp"
 #include "stage/StageWorld.hpp"
 #include "gameplay/Turret.hpp"
 #include "gameplay/LookAtTarget.hpp"
 #include "gameplay/Missile.hpp"
 #include "gameplay/Living.hpp"
-
+#include "gameplay/Animation.hpp"
+#include "wrappers/freetype/Text.hpp"
 #include <imgui.h>
 
 namespace SpaceNinja
@@ -34,49 +36,61 @@ namespace SpaceNinja
             // Missile are spawned in a fixed distance from the thrower
             bool hit{true};
 
-            if(Missile *missile = body.GetUserData().handle.try_get<Missile>())
+            if(Missile *missile = getData(body).handle.try_get<Missile>())
             {
                 // We can compare
                 // Even if the thrower is dead, this should be ok (no NPE)
-                if(missile->thrower.handle.entity() == any.GetUserData().handle.entity())
+                if(missile->thrower.handle.entity() == getData(any).handle.entity())
                 {
                     // disable hit its own thrower
                     hit = false;
                 }
             }
+            else
+            {
+                hit = false;
+                getLogger().warn("Tag missile without Missile component hit");
+            }
 
             // Only hit with Living units
             /// TODO make all bodies have handle because we have for the moment to check if the user data exists
-            if(!any.GetUserData() || !any.GetUserData().handle.try_get<Living>())
+            if(!getData(any) || !getData(any).handle.try_get<Living>())
             {
                 hit = false;
             }
-            else if(hit)
+
+            if(getData(any))
             {
-                // Damage only if hit
-                Living& living = any.GetUserData().handle.get<Living>();
-                living.damage(10.0f, any.GetUserData().handle);
+                if (auto *living = getData(any).handle.try_get<Living>(); living && hit)
+                {
+                    // Damage only if hit
+                    living->damage(10.0f, getData(any));
+                }
             }
 
             if(hit)
             {
-                markForDestroy(&body);
+                markForDestroy(getData(body));
             }
         });
 
         m_collisionner.onEvent(BodyType::Player, BodyType::Enemy, CollisionManager::Begin,
                                [this](b2Body &player, b2Body &) {
-            // Kill player on collision with enemies
-            markForDestroy(&player);
+            // Damage player on collision with enemies
+           if(getData(player).handle.try_get<Living>())
+           {
+               Living& living = getData(player).handle.get<Living>();
+               living.damage(10.0f, getData(player));
+           }
         });
 
         m_collisionner.onEvent(BodyType::Universe, CollisionManager::End, [this](b2Body&, b2Body& any) {
 
-            BodyType type{any.GetUserData().type};
+            BodyType type{getData(any).type};
 
             getLogger().trace("Destroyed body out of bounds, type={}", type);
 
-            markForDestroy(&any);
+            markForDestroy(getData(any));
         });
 
         m_collisionner.setCollisionEnabled(BodyType::PlayerLimits, BodyType::Enemy, false);
@@ -157,10 +171,42 @@ namespace SpaceNinja
 
                         glm::vec2 direction{b2::getDirection(*body)};
                         glm::vec2 missilePos{b2::getPosition(*body) + direction * 3.0f};
-                        b2Body& missileBody{createMissileBody(missilePos, body->GetUserData())};
-                        b2::setVelocityWithAngle(missileBody, direction * turret.missileSpeed);
+                        DataBody& missileBody = createMissileBody(*this, missilePos, getData(*body));
+                        missileBody.setVelocityWithAngle(direction * turret.missileSpeed);
                     }
                 });
+            }
+
+            auto animations_view = m_registry.view<Animation>();
+
+            for(auto&& [entity, animation] : animations_view.each())
+            {
+                if(getTime() >= animation.endTime)
+                {
+                    // Remove the animation if the time is elapsed
+                    m_registry.destroy(entity);
+                }
+
+                // Update the frame accordingly to the time of the world
+
+                // Get the texture from the path
+                // The filename in the .json sprite sheet should be
+                // in the same folder as all textures...
+                const Time elapsed(getTime() - animation.startTime);
+                const Snow::media::ase::Frame& frame{animation.sheet->getFrameFromTime(elapsed)};
+
+                if(frame.index != animation.currentFrame)
+                {
+                    animation.currentFrame = frame.index;
+
+                    const Texture& texture{getStage().getGame().textures(frame.filename)};
+                    animation.sprite.setTexture(&texture);
+
+                    Rect uvs(frame.rect);
+                    uvs /= texture.getSize();
+
+                    animation.sprite.setUVs(uvs);
+                }
             }
         }
 
@@ -175,7 +221,7 @@ namespace SpaceNinja
         {
             RenderStates states = parent;
 
-            const DataBody& body = b2body.GetUserData();
+            const DataBody& body = getData(b2body);
             if(!body) continue;
 
             const glm::vec2 bodyPos{b2::getPosition(b2body)};
@@ -194,12 +240,35 @@ namespace SpaceNinja
 
             for(b2Fixture& fixture : body)
             {
-                const DataFixture& data{fixture.GetUserData()};
+                const DataFixture& data{getData(fixture)};
 
                 if(data.sprite)
                 {
                     data.sprite->draw(states);
+
+                    if(Living *living = body.handle.try_get<Living>())
+                    {
+                        // Draw health count for living bodies
+                        Text text;
+                        text.setScale(glm::vec2{1.0f / 32.0f});
+                        text.setString(fmt::format("{}", living->hitPoints));
+                        text.setFont(&m_stage.getGame().getFont());
+
+                        text.draw(states);
+                    }
                 }
+            }
+        }
+
+
+        {
+            // Draw animations
+
+            auto animations_view = m_registry.view<Animation>();
+
+            for(auto&& [entity, animation] : animations_view.each())
+            {
+                animation.sprite.draw(parent);
             }
         }
 
@@ -281,92 +350,25 @@ namespace SpaceNinja
         line.draw(states);
     }
 
-    b2Body &StageWorld::createMissileBody(const glm::vec2 &pos, const DataBody& thrower)
-    {
-        b2Body &body{createBoxBody(pos, 2.0f, "laser.png")};
-        entt::handle handle{m_registry, m_registry.create()};
-        body.GetUserData() = DataBody{handle, body, BodyType::PlayerMissile};
-        body.GetUserData().handle.emplace<b2Body*>(&body);
-        body.GetUserData().handle.emplace<Missile>(thrower);
-
-        for(b2Fixture& fixture : body)
-        {
-            fixture.SetSensor(true);
-        }
-
-        body.SetBullet(true);
-        return body;
-    }
-
-    b2Body &StageWorld::createEnemyBody(const glm::vec2 &pos)
-    {
-        b2Body &body{createBoxBody(pos, 2.0f, "enemy.png")};
-        entt::handle handle{m_registry, m_registry.create()};
-
-        DataBody& data{body.GetUserData()};
-        data.type = BodyType::Enemy;
-        data.handle.emplace<b2Body*>(&body);
-        data.handle.emplace<Turret>();
-        data.handle.emplace<Living>();
-
-        if(m_stage.hasPlayer())
-        {
-            const DataBody& player{m_stage.getPlayer()};
-
-            const float angularSpeed{0.025f};
-            data.handle.emplace<LookAtTarget>(player, angularSpeed);
-        }
-
-        return body;
-    }
-
-    b2Body &StageWorld::createPlayerBody(const glm::vec2 &pos)
-    {
-        b2Body &body{createBoxBody(pos, 2.0f, "player.png")};
-        body.SetLinearDamping(0.8f);
-        entt::handle handle{m_registry, m_registry.create()};
-        body.GetUserData() = DataBody{handle, body, BodyType::Player};
-        body.GetUserData().handle.emplace<b2Body*>(&body);
-        body.GetUserData().handle.emplace<Living>();
-
-        return body;
-    }
-
-    b2Body& StageWorld::createBoxBody(const glm::vec2 &pos, float width, const std::string &texPath)
-    {
-        const Texture *texture = &m_stage.getGame().textures(texPath);
-        const glm::vec2 textureSize = texture->getSize();
-        const float ratio = textureSize.y / textureSize.x;
-
-        Rect box;
-        box.size = {width, width * ratio};
-        box.setOriginFromCenter(pos);
-
-        b2Body& body{World::createBoxBody(box, b2_dynamicBody, 1.0f, false)};
-
-        // Add the drawable rectangle in center of the body with the same size as the box
-
-        DataFixture& fixtureData{body.GetFixtureList()->GetUserData()};
-        fixtureData.sprite = std::make_shared<Sprite>();
-        fixtureData.sprite->setOrigin(Sprite::Centered); // sprite 0.5 / 0.5 each side
-        fixtureData.sprite->setScale(box.size); // not / 2 because sprite 0.5/0.5 each side
-        fixtureData.sprite->setTexture(texture);
-
-        return body;
-    }
-
     void StageWorld::onDestroy(b2Body &body)
     {
         // Destroy the entity associated with the body
-        // Do not remove the entity from the registry!!!
-        // Remove entity from the world
         // If you remove only from the registry, the the body will still exists on the world.
         // But destroying the body from the world will also remove the entity.
-        DataBody data{body.GetUserData()};
 
-        if(data)
+        DataBody data = getData(body);
+
+        if(data) // Should always be true
         {
+            // Prevent loop
+            data.handle.template remove<b2Body*>();
+
+
             data.handle.destroy();
+        }
+        else
+        {
+            getLogger().warn("A body was destroyed which had no associated entity");
         }
     }
 
@@ -378,6 +380,17 @@ namespace SpaceNinja
         const auto entity{m_registry.create()};
         const entt::handle handle{m_registry, entity};
 
-        body.GetUserData() = DataBody{handle, body, BodyType::None};
+        // Initialize the user data
+        // (Note: the DataBody exists at this point but it default-constructed)
+        getData(body) = DataBody{handle, body, BodyType::None};
+
+        // Add the body component to the entity associated to the body
+        getData(body).handle.emplace<b2Body*>(&body);
+    }
+
+    DataBody& StageWorld::createBody(b2BodyDef& def)
+    {
+        b2Body& body = b2::World::createBody(def);
+        return getData(body);
     }
 }

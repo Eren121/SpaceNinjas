@@ -109,3 +109,14 @@ float Time::operator/(const Time& rhs) const
     // Can't use default operator/() because it's integral like long, so they will be truncated
     return asSeconds() / rhs.asSeconds();
 }
+
+Time Time::operator%(const Time& rhs) const
+{
+    return Time{m_duration % rhs.m_duration};
+}
+
+Time& Time::operator%=(const Time& rhs)
+{
+    m_duration %= rhs.m_duration;
+    return *this;
+}

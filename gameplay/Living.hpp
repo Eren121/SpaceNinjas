@@ -12,13 +12,6 @@ namespace SpaceNinja
         float hitPoints{100.0f};
 
         /// @brief Remove hitPoints, and destroy entity if hitPoints hits zero.
-        void damage(float amount, entt::handle handle)
-        {
-            hitPoints -= amount;
-            if(hitPoints <= 0.0f)
-            {
-                handle.destroy();
-            }
-        }
+        void damage(float amount, DataBody& data);
     };
 }

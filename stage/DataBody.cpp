@@ -1,4 +1,5 @@
 #include "DataBody.hpp"
+#include "stage/StageWorld.hpp"
 #include "wrappers/box2d/box2d.hpp"
 #include <snk/list_iterator.hpp>
 
@@ -14,6 +15,14 @@ namespace SpaceNinja
           type(type),
           m_body(&body)
     {
+    }
+
+    void DataBody::setSensor(bool sensor)
+    {
+        for(b2Fixture& fixture : *m_body)
+        {
+            fixture.SetSensor(sensor);
+        }
     }
 
     snk::list_iterator<b2Fixture, next> DataBody::begin() const
@@ -33,4 +42,23 @@ namespace SpaceNinja
     void DataBody::setVelocity(const glm::vec2 &vel) { b2::setVelocity(*m_body, vel); }
     glm::vec2 DataBody::getVelocity() { return b2::getVelocity(*m_body); }
     void DataBody::setVelocityWithAngle(const glm::vec2 &vel) { b2::setVelocityWithAngle(*m_body, vel); }
+
+    StageWorld& DataBody::getWorld() { return static_cast<StageWorld&>(*m_body->GetWorld()); }
+
+    DataBody& getData(b2Body& body)
+    {
+        return *static_cast<DataBody*>(body.GetUserData().userData.get());
+    }
+
+    const DataBody& getData(const b2Body& body)
+    {
+        return *static_cast<DataBody*>(body.GetUserData().userData.get());
+    }
+}
+
+namespace b2
+{
+    std::function<void(BodyUserData&)> BodyUserData::construct = [](BodyUserData& bud) {
+        bud.userData = std::make_shared<SpaceNinja::DataBody>();
+    };
 }

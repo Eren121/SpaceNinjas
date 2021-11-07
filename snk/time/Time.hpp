@@ -48,10 +48,12 @@ public:
     Time operator/(float f) const;
     Time& operator/=(float f);
 
+    Time operator%(const Time& rhs) const;
+    Time& operator%=(const Time& rhs);
+
     float operator/(const Time& rhs) const;
 
     auto operator<=>(const Time& rhs) const = default;
-    bool operator==(const Time& rhs) const = default;
 
     /// @}
 

@@ -3,6 +3,7 @@
 #include <string>
 #include <unordered_map>
 #include <concepts>
+#include <functional>
 
 namespace Snow::media
 {

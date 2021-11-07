@@ -17,6 +17,6 @@ namespace SpaceNinja
 
         /// @brief At what maximum angular speed the body can turn.
         /// @details Maximum amount of radians the body can turn each tick.
-        float angularSpeed;
+        float angularSpeed{10000.0f};
     };
 }

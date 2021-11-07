@@ -37,10 +37,15 @@ void Texture::loadMissingTexture()
 
 void Texture::load(const std::filesystem::path& path)
 {
+    if(!fs::exists(path))
+    {
+        throw snk::file_not_found_exception(path);
+    }
+
     SDL_Surface *image = IMG_Load(path.string().c_str());
     if(!image)
     {
-        throw snk::file_not_found_exception(path);
+        throw snk::io_exception{snk::str{} << path << ": " << SDL_GetError()};
     }
 
     load(image);
@@ -75,6 +80,7 @@ void Texture::load(SDL_Surface *surface)
 
     glBindTexture(GL_TEXTURE_2D, m_texture);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, converted->w, converted->h, 0, GL_RGBA, GL_UNSIGNED_BYTE, converted->pixels);
+
     glGenerateMipmap(GL_TEXTURE_2D);
 
     SDL_UnlockSurface(converted);

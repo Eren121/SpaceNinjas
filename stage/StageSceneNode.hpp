@@ -16,9 +16,6 @@ namespace SpaceNinja
     protected:
         bool updateNode() final;
 
-        /// @remarks Since the Node is not always run each frame, it makes no sense to draw in it.
-        void drawNode(RenderStates states) const final {}
-
         /// @brief Run only when a new simulation step is reached.
         virtual void onStep() = 0;
 

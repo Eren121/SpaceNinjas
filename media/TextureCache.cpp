@@ -13,6 +13,7 @@ void TextureCache::loadResource(Texture &texture, const std::string &id)
 {
     auto path = m_root / id;
     texture.load(path);
+    texture.setFilter(Texture::Nearest);
 }
 
 }

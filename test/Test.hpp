@@ -3,27 +3,31 @@
 #include "media/Window.hpp"
 #include "wrappers/gl/Shader.hpp"
 #include "wrappers/freetype/Font.hpp"
+#include <snk/logging.hpp>
 
 namespace SpaceNinja::test
 {
+    /// @brief Test transformable with a IMGUI interface
+    class Test
+    {
+        LOGGABLE("Test")
 
-/// @brief Test transformable with a IMGUI interface
-class Test
-{
-public:
-    Test();
+    public:
+        Test();
 
-    virtual ~Test() = default;
+        virtual ~Test() = default;
 
-    void run();
+        void run();
 
-protected:
-    virtual void draw() = 0;
+        static void runTests();
 
-protected:
-    Font m_font;
-    Snow::media::Window m_window;
-    Shader m_shader;
-};
+    protected:
+        virtual void draw() = 0;
+
+    protected:
+        Font m_font;
+        Snow::media::Window m_window;
+        Shader m_shader;
+    };
 
 }

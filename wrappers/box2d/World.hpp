@@ -72,16 +72,14 @@ public:
     void markForDestroy(b2Body *body);
 
     /// @brief Create a body
-    /// @remarks virtual so the child class can initialize user data.
+    /// @remarks Calls onCreate().
     b2Body& createBody(b2BodyDef &def);
 
     /// @brief Callback just before a body is destroyed
     virtual void onDestroy(b2Body& body) {}
-    virtual void onCreate(b2Body& body) {}
 
-    /// @brief Utility to create a body only composed of a Box fixture
-    /// @param box The size and the position of the body.
-    b2Body& createBoxBody(const Rect& box, b2BodyType type = b2_dynamicBody, float density = 1.0f, bool bullet = false);
+    /// @brief Callback just after a body is created.
+    virtual void onCreate(b2Body& body) {}
 
     /// @brief Advance the simulation.
     /// @details Performs a semi-fixed step. Always performs only one step. You have to do {} while loop it if you

@@ -1,5 +1,7 @@
 #pragma once
 
+#include "stage/DataBody.hpp"
+#include "stage/DataFixture.hpp"
 #include "media/scene/SceneStack.hpp"
 #include "media/AudioEngine.hpp"
 #include "GameControls.hpp"
@@ -8,6 +10,7 @@
 #include "stage/Save.hpp"
 #include "media/Window.hpp"
 #include "media/AudioEngine.hpp"
+#include "media/ase/SheetCache.hpp"
 #include <wrappers/gl/Shader.hpp>
 #include <wrappers/freetype/Font.hpp>
 #include <wrappers/box2d/DebugDraw.hpp>
@@ -69,6 +72,7 @@ public:
 
 public:
     Snow::media::TextureCache textures;
+    Snow::SheetCache sheets;
     SceneStack scene;
 
     Save &getSave() { return *m_save; }

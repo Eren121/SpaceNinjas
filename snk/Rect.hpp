@@ -10,7 +10,8 @@ struct tRect
 {
     using vec = glm::tvec2<T>;
 
-    explicit tRect(const vec& size = {0, 0})
+    tRect() = default;
+    explicit tRect(const vec& size)
         : size(size)
     {
     }
@@ -89,10 +90,16 @@ struct tRect
     }
 
     /// @brief Multiply the coordinates of all the points.
-    tRect operator*(T factor) const
+    tRect operator*(const T& factor) const
     {
         return {size * factor, origin * factor};
     }
+
+    /// @brif Divide the coordinates of all the points
+    tRect operator/(const auto& factor) const { return {size / factor, origin / factor}; }
+
+    template<typename U>
+    tRect<T>& operator/=(const U& factor) { size /= factor; origin /= factor; return *this; }
 
     friend std::string to_string(const tRect& r)
     {

@@ -1,5 +1,7 @@
 #include "CollisionManager.hpp"
 #include <box2d/b2_contact.h>
+#include "DataBody.hpp"
+#include "DataFixture.hpp"
 
 namespace SpaceNinja
 {
@@ -36,8 +38,8 @@ namespace SpaceNinja
 
     void CollisionManager::onEvent(b2Body& a, b2Body& b, EventType type)
     {
-        DataBody& userDataA = a.GetUserData();
-        DataBody& userDataB = b.GetUserData();
+        DataBody& userDataA = getData(a);
+        DataBody& userDataB = getData(b);
         const BodyType typeA = userDataA.type;
         const BodyType typeB = userDataB.type;
 
@@ -70,8 +72,8 @@ namespace SpaceNinja
 
     bool CollisionManager::ShouldCollide(b2Fixture *fixtureA, b2Fixture *fixtureB)
     {
-        const DataBody& userDataA = fixtureA->GetBody()->GetUserData();
-        const DataBody& userDataB = fixtureB->GetBody()->GetUserData();
+        const DataBody& userDataA = getData(*fixtureA->GetBody());
+        const DataBody& userDataB = getData(*fixtureB->GetBody());
         const BodyType typeA = userDataA.type;
         const BodyType typeB = userDataB.type;
 

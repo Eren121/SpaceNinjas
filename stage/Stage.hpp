@@ -1,9 +1,10 @@
 #pragma once
 
-#include "stage/Victory.hpp"
-#include "stage/CollisionManager.hpp"
-#include "stage/StageWorld.hpp"
-#include "stage/lua/LuaEngine.hpp"
+#include "DataBody.hpp"
+#include "Victory.hpp"
+#include "CollisionManager.hpp"
+#include "StageWorld.hpp"
+#include "lua/LuaEngine.hpp"
 #include "process/ProcessPool.hpp"
 #include "Fwd.hpp"
 #include <snk/logging.hpp>

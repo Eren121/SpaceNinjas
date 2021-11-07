@@ -1,6 +1,7 @@
 #include "stage/player/PlayerShoot.hpp"
 #include "Game.hpp"
 #include <snk/math.hpp>
+#include "stage/physics/BodyBuilder.hpp"
 
 namespace SpaceNinja
 {
@@ -47,8 +48,8 @@ namespace SpaceNinja
             // Use the same direction as the player is facing
             const glm::vec2 direction{math::angle2vec(player.GetAngle())};
 
-            b2Body &missile{world.createMissileBody(pos + direction, player.GetUserData())};
-            b2::setVelocityWithAngle(missile, speed * direction);
+            DataBody &missile = createMissileBody(world, pos + direction, getData(player));
+            missile.setVelocityWithAngle(speed * direction);
 
             hasShot = true;
         }

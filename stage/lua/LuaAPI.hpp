@@ -4,6 +4,7 @@
 #include <snk/logging.hpp>
 #include "process/Process.hpp"
 #include "Fwd.hpp"
+#include "stage/DataBody.hpp"
 #include <sol/sol.hpp>
 
 

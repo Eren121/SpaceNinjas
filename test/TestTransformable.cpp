@@ -122,35 +122,12 @@ void TestTransformable::draw()
 
 void TestTransformable::run()
 {
-    // https://decovar.dev/blog/2019/05/26/sdl-imgui/#sdl
-
-    IMGUI_CHECKVERSION();
-    ImGui::CreateContext();
-    ImGuiIO &io = ImGui::GetIO();
-    (void) io;
-    ImGui::StyleColorsDark();
-    ImGui_ImplOpenGL3_Init("#version 330 core");
-    ImGui_ImplSDL2_InitForOpenGL(m_window.getHandle(), nullptr);
-
-    sigslot::scoped_connection conn = m_window.onEvent.connect([](const SDL_Event &event, long) {
-        ImGui_ImplSDL2_ProcessEvent(&event);
-    });
-
     while (m_window.isOpen()) {
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         m_window.handleEvents();
-
-        ImGui_ImplOpenGL3_NewFrame();
-        ImGui_ImplSDL2_NewFrame();
-        ImGui::NewFrame();
-
         draw();
-
-        ImGui::Render();
-        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-
         m_window.display();
     }
 

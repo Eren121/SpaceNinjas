@@ -2,6 +2,7 @@
 #include "stage/lua/LuaAPI.hpp"
 #include "stage/lua/Thread.hpp"
 #include "stage/Stage.hpp"
+#include "stage/physics/BodyBuilder.hpp"
 #include "ui/StoryMessage.hpp"
 #include "process/Wait.hpp"
 #include "process/Process.hpp"
@@ -47,9 +48,7 @@ namespace SpaceNinja::script
     DataBody LuaAPI::spawnEnemy(const glm::vec2& pos)
     {
         getLogger().debug("Calling spawnEnemy(pos={})", pos);
-
-        b2Body& body{m_stage.getWorld().createEnemyBody(pos)};
-        return body.GetUserData();
+        return createEnemyBody(m_stage.getWorld(), pos);
     }
 
     void LuaAPI::triggerWin()

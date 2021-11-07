@@ -19,12 +19,36 @@
 // User data
 
 /// You can define this to inject whatever data you want in b2Body
-#include "stage/DataBody.hpp"
-using b2BodyUserData = SpaceNinja::DataBody;
 
-/// You can define this to inject whatever data you want in b2Fixture
-#include "stage/DataFixture.hpp"
-using b2FixtureUserData = SpaceNinja::DataFixture;
+#include <memory>
+
+// shared_ptr because copied from BodyDef (but not used)...
+
+#include <functional>
+
+namespace b2
+{
+    /// @details For performance reasons, no pointer check is done,
+    /// construct and destruct should be implemented as non-null functions in user code.
+    /// shared_ptr because box2D will copy it once with *Def classes.
+
+    struct BodyUserData
+    {
+        static std::function<void(BodyUserData&)> construct;
+        BodyUserData() { construct(*this); }
+        std::shared_ptr<void> userData{nullptr};
+    };
+
+    struct FixtureUserData
+    {
+        static std::function<void(FixtureUserData&)> construct;
+        FixtureUserData() { construct(*this); }
+        std::shared_ptr<void> userData{nullptr};
+    };
+}
+
+using b2BodyUserData = b2::BodyUserData;
+using b2FixtureUserData = b2::FixtureUserData;
 
 /// You can define this to inject whatever data you want in b2Joint
 struct B2_API b2JointUserData

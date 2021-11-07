@@ -44,6 +44,7 @@ include_directories("thirdparty/cereal/include")
 link_directories("thirdparty/lua")
 include_directories("thirdparty/sol2/include")
 add_definitions(-DSOL_ALL_SAFETIES_ON=1)
+add_definitions(-DSOL_USING_CXX_LUA=1)
 link_directories("thirdparty/box2d/build/bin")
 include_directories("thirdparty/freetype/include")
 include_directories("thirdparty/spdlog/include")
@@ -53,8 +54,6 @@ link_directories("thirdparty/spdlog/build")
 # It probably because it works with system library but not project compiled one
 #link_directories("thirdparty/freetype/build")
 
-include_directories("thirdparty/imgui/")
-include_directories("thirdparty/imgui/backends")
 set(SRC
     OpenGL.hpp
     Game.cpp
@@ -130,6 +129,7 @@ set(SRC
     process/ProcessStack.hpp
     process/Wait.cpp
     process/Wait.hpp
+    test/TestSpriteSheet.cpp test/TestSpriteSheet.hpp
     test/Test.cpp
     test/Test.hpp
     test/TestInput.cpp
@@ -208,8 +208,13 @@ set(SRC
     wrappers/lua/LuaException.hpp
     wrappers/lua/LuaGuard.cpp
     wrappers/lua/LuaGuard.hpp Fwd.hpp wrappers/box2d/Fwd.hpp
-        media/AudioEngine.cpp media/AudioEngine.hpp stage/DataBody.cpp stage/DataBody.hpp gameplay/Turret.cpp gameplay/Turret.hpp gameplay/Living.hpp gameplay/Hostile.hpp
-        ui/StoryMessage.cpp ui/StoryMessage.hpp gameplay/LookAtTarget.hpp gameplay/Missile.hpp wrappers/box2d/iterate_body.hpp)
+        media/AudioEngine.cpp media/AudioEngine.hpp stage/DataBody.cpp stage/DataBody.hpp gameplay/Turret.cpp gameplay/Turret.hpp gameplay/Living.hpp gameplay/Living.cpp gameplay/Hostile.hpp
+        ui/StoryMessage.cpp ui/StoryMessage.hpp gameplay/LookAtTarget.hpp gameplay/Missile.hpp wrappers/box2d/iterate_body.hpp
+        stage/BodyType.hpp stage/DataFixture.hpp stage/DataFixture.cpp
+        media/ase/SpriteSheet.cpp media/ase/SpriteSheet.hpp json.hpp pch.hpp
+        gameplay/Animation.hpp
+        media/ase/Frame.hpp
+        stage/physics/BodyBuilder.cpp stage/physics/BodyBuilder.hpp)
 
 #######################################
 # ImGUI
@@ -225,6 +230,8 @@ set(IMGUI_SRC
     ${IMGUI_HOME}/imgui_widgets.cpp)
 
 add_library(ImGUI STATIC ${IMGUI_SRC})
+target_include_directories(ImGUI PUBLIC "thirdparty/imgui/")
+target_include_directories(ImGUI PUBLIC "thirdparty/imgui/backends")
 
 #######################################
 # GLEW
@@ -234,27 +241,25 @@ set(GLEW_HOME "thirdparty/glew")
 set(GLEW_INCLUDE_DIR "${GLEW_HOME}/include")
 set(GLEW_SOURCES "${GLEW_HOME}/src/glew.c")
 include_directories(${GLEW_INCLUDE_DIR})
-set(SRC ${SRC} ${GLEW_SOURCES})
+set(SRC ${SRC} ${GLEW_SOURCES} media/ase/SheetCache.cpp media/ase/SheetCache.hpp test/TestBox2D.cpp test/TestBox2D.hpp)
 add_definitions(-DGLEW_STATIC) # needed for executable
 
 #######################################
 # Lua
-# Add sources in project
-
-#######################################
+# compile Lua in C++
 
 add_definitions(-DMAKE_LIB) # Do not compile lua interpreter
 set(LUA_HOME "${THIRD_PARTY_DIR}/lua")
 set(LUA_SRC "${LUA_HOME}/onelua.c")
-set(SRC ${SRC} ${LUA_SRC} stage/BodyType.hpp stage/DataFixture.hpp)
-include_directories("${LUA_HOME}")
+set_source_files_properties(${LUA_SRC} PROPERTIES LANGUAGE CXX )
+add_library(Lua STATIC ${LUA_SRC})
+target_include_directories(Lua PUBLIC "${LUA_HOME}")
 
 #######################################
 # entt
 
-include_directories("thirdparty/entt/single_include")
+add_subdirectory("${THIRD_PARTY_DIR}/entt")
 
-# compile Lua in C++
 #######################################
 
 add_executable(SDL_OpenGL ${SRC})
@@ -308,6 +313,9 @@ add_subdirectory("${box2d_HOME}" "${PROJECT_BINARY_DIR}/box2d")
 include_directories("${box2d_HOME}/include")
 target_link_libraries(SDL_OpenGL box2d)
 
+# user data need EnTT
+target_link_libraries(box2d PUBLIC EnTT::EnTT)
+
 #######################################
 # Freetype
 
@@ -329,6 +337,12 @@ endif()
 
 include_directories("${FMOD_HOME}/inc")
 
+#######################################
+# JSON
+
+add_subdirectory("${THIRD_PARTY_DIR}/json")
+target_link_libraries(SDL_OpenGL nlohmann_json::nlohmann_json)
+
 
 #######################################
 # snk (utility library)
@@ -340,18 +354,18 @@ target_link_libraries(SDL_OpenGL snk::snk)
 # Optimize compilation times
 
 # Precompiled headers (for C++ only to avoid some errors)
-target_precompile_headers(SDL_OpenGL PRIVATE
-    "$<$<COMPILE_LANGUAGE:CXX>:${CMAKE_CURRENT_SOURCE_DIR}/pch.hpp>")
+# target_precompile_headers(SDL_OpenGL PRIVATE
+#    "$<$<COMPILE_LANGUAGE:CXX>:${CMAKE_CURRENT_SOURCE_DIR}/pch.hpp>")
 
 
 # Unity builds
-set_target_properties(SDL_OpenGL PROPERTIES UNITY_BUILD ON)
-set_target_properties(SDL_OpenGL PROPERTIES UNITY_BUILD_MODE BATCH UNITY_BUILD_BATCH_SIZE 10)
+# set_target_properties(SDL_OpenGL PROPERTIES UNITY_BUILD ON)
+# set_target_properties(SDL_OpenGL PROPERTIES UNITY_BUILD_MODE BATCH UNITY_BUILD_BATCH_SIZE 10)
 
 #######################################
 
 find_package(OpenGL REQUIRED)
-target_link_libraries(SDL_OpenGL ${OPENGL_LIBRARIES} ImGUI)
+target_link_libraries(SDL_OpenGL ${OPENGL_LIBRARIES} ImGUI Lua EnTT::EnTT)
 
 if(NOT WIN32)
     target_link_libraries(SDL_OpenGL dl pthread)

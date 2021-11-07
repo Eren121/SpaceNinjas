@@ -1,12 +1,13 @@
-#include "stage/Stage.hpp"
-
-#include "stage/VictoryMenu.hpp"
-#include "stage/player/PlayerControl.hpp"
-#include "stage/player/PlayerShoot.hpp"
+#include "DataFixture.hpp"
+#include "Stage.hpp"
+#include "VictoryMenu.hpp"
+#include "player/PlayerControl.hpp"
+#include "player/PlayerShoot.hpp"
 #include "ui/VerticalListMenu.hpp"
 #include "Game.hpp"
 #include <snk/math.hpp>
 #include <imgui.h>
+#include "stage/physics/BodyBuilder.hpp"
 
 namespace SpaceNinja
 {
@@ -39,7 +40,7 @@ namespace SpaceNinja
 
     void Stage::spawnPlayer()
     {
-        m_player = m_world->createPlayerBody({0, 0}).GetUserData();
+        m_player = createPlayerBody(*m_world, {0, 0});
     }
 
     void Stage::spawnPlayerLimits()
@@ -66,8 +67,14 @@ namespace SpaceNinja
 
         for(const Rect& rect : {leftBox, rightBox, topBox, bottomBox})
         {
-            b2Body& body = m_world->createBoxBody(rect, b2_staticBody);
-            body.GetUserData().type = BodyType::PlayerLimits;
+            b2BodyDef def;
+            def.type = b2_staticBody;
+
+            // Add the body in position (0, 0) but the fixture is on the right location so its ok
+
+            DataBody& data = m_world->createBody(def);
+            data.type = BodyType::PlayerLimits;
+            addBoxToBody(data, rect);
         }
     }
 
@@ -84,14 +91,12 @@ namespace SpaceNinja
 
         b2BodyDef def;
         def.type = b2_staticBody;
-        def.position.Set(glVec2(m_bounds.getCenter()));
-        b2Body& body = m_world->createBody(def);
 
-        b2PolygonShape shape;
-        shape.SetAsBox(glVec2(bounds.size / 2.0f));
+        DataBody& body = m_world->createBody(def);
 
-        body.CreateFixture(&shape, 0.0f)->SetSensor(true);
-        body.GetUserData().type = BodyType::Universe;
+        addBoxToBody(body, bounds);
+        body.type = BodyType::Universe;
+        body.setSensor(true);
     }
 
     bool Stage::updateNode()
@@ -289,12 +294,12 @@ namespace SpaceNinja
 
                 for(b2Body& body : *m_world)
                 {
-                    entt::const_handle handle = body.GetUserData().handle;
+                    entt::const_handle handle = getData(body).handle;
                     if(!handle) continue;
 
-                    for(b2Fixture& fixture : body.GetUserData())
+                    for(b2Fixture& fixture : getData(body))
                     {
-                        DataFixture& data = fixture.GetUserData();
+                        DataFixture& data = getData(fixture);
                         if(!data.sprite) continue;
 
                         if(debugTextures)

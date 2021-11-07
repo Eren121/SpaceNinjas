@@ -1,5 +1,6 @@
 #pragma once
 
+/*
 #include <spdlog/spdlog.h>
 #include <spdlog/fmt/ostr.h>
 #include <spdlog/sinks/stdout_sinks.h>
@@ -12,3 +13,5 @@
 #include <glm/glm.hpp>
 #include <sol/sol.hpp>
 #include <sigslot/signal.hpp>
+#include <entt/entt.hpp>
+ */

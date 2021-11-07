@@ -89,10 +89,7 @@ void World::cleanupDestroyedBodies(bool callDestroyCallback)
 
     for (auto *body : m_toDestroy)
     {
-        if(callDestroyCallback)
-        {
-            onDestroy(*body);
-        }
+        onDestroy(*body);
 
         // Remove effectively the body from the world
         DestroyBody(body);
@@ -105,23 +102,6 @@ b2Body& World::createBody(b2BodyDef &def)
 {
     b2Body &body = *CreateBody(&def);
     onCreate(body);
-    return body;
-}
-
-b2Body& World::createBoxBody(const Rect& rect, b2BodyType type, float density, bool bullet)
-{
-    b2BodyDef def;
-    def.type = type;
-    def.bullet = bullet;
-    def.position = b2::fromGLM(rect.getCenter());
-
-    b2Body& body = createBody(def);
-
-    b2PolygonShape box;
-    box.SetAsBox(rect.size.x / 2.0f, rect.size.y / 2.0f);
-
-    body.CreateFixture(&box, density);
-
     return body;
 }
 

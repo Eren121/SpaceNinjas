@@ -1,6 +1,6 @@
 #pragma once
 
-
+#include "BodyType.hpp"
 #include "wrappers/box2d/World.hpp"
 #include <map>
 #include <sigslot/signal.hpp>

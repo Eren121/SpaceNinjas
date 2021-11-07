@@ -4,6 +4,7 @@ cmake_minimum_required(VERSION 3.17)
 # Utilities in a std-like style.
 
 set(SRC
+        filesystem.hpp
         exception.cpp
         exception.hpp
     GridPosition.cpp

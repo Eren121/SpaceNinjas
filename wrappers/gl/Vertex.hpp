@@ -13,7 +13,7 @@ struct Vertex
     };
 
     Vertex() = default;
-    Vertex(const glm::vec2& pos) : pos(pos) {}
+    explicit Vertex(const glm::vec2& pos) : pos(pos) {}
     Vertex(const glm::vec2& pos, const glm::vec4& color) : pos(pos), color(color) {}
 
     glm::vec2 pos{0.0f};

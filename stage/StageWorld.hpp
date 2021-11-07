@@ -13,6 +13,7 @@ namespace SpaceNinja
 {
     class StageWorld : public b2::World, public SceneNode
     {
+
         LOGGABLE("StageWorld")
 
     public:
@@ -22,17 +23,28 @@ namespace SpaceNinja
         Clock& getClock() { return m_sinceStart; }
         const Clock& getClock() const { return m_sinceStart; }
 
-        /// @{
-        /// @brief Body factories
-        b2Body& createEnemyBody(const glm::vec2 &pos);
-        b2Body& createPlayerBody(const glm::vec2 &pos);
-        b2Body& createMissileBody(const glm::vec2 &pos, const DataBody& thrower);
+        /// @brief Main function to create bodies.
+        /// @details
+        ///     Do not use b2Body::CreateBody() to create bodies, because it will not
+        ///     create the associated entity with the body.
+        ///     Each entity has a body (even if it has no fixtures), and each body has an entity
+        ///     to simplify lifetime management.
+        ///     To destroy an entity, do not use entt::registry::destroy() nor b2World::DestroyEntity()
+        ///     but markForDestroy(). The advantage is double:
+        ///         1) It will clean both body and entity
+        ///         2) The entity will only destroyed at the end of the step so the entity is still
+        ///            safely useable in the rest in the caller function (no NPE on use).
+        DataBody& createBody(b2BodyDef& def);
 
-        b2Body& createBoxBody(const glm::vec2 &pos, float width, const std::string &texture);
-        using World::createBoxBody;
-        /// @}
+        /// @brief Just a wrapper for the parent function.
+        void markForDestroy(DataBody& data) { b2::World::markForDestroy(&data.getBody()); }
 
         entt::registry& getRegistry() { return m_registry; }
+
+        SpaceNinja::Stage& getStage();
+        SpaceNinja::Game& getGame();
+        const SpaceNinja::Stage& getStage() const;
+        const SpaceNinja::Game& getGame() const;
 
     protected:
         bool updateNode() override;
@@ -43,17 +55,12 @@ namespace SpaceNinja
 
         void onCreate(b2Body& body) override;
 
-
     private:
         void initCollisions();
 
         /// @brief Draw a legend to know how much pixel is 1 meter
         void drawLegend(RenderStates states) const;
 
-        SpaceNinja::Stage& getStage();
-        SpaceNinja::Game& getGame();
-        const SpaceNinja::Stage& getStage() const;
-        const SpaceNinja::Game& getGame() const;
 
         entt::registry m_registry;
 

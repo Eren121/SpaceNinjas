@@ -13,6 +13,7 @@ namespace SpaceNinja
     class Game;
     class GameControls;
     class Stage;
+    class StageWorld;
 }
 
 namespace Snow

@@ -13,6 +13,7 @@ namespace SpaceNinja
     Game::Game()
         : m_window("Haaa", 800, 600),
           textures(getRoot() / "textures"),
+          sheets(getRoot() / "textures"),
           m_save(std::make_shared<Save>())
     {
         GL::enableDebugging();
@@ -34,7 +35,7 @@ namespace SpaceNinja
             ar(*m_save);
         }
 
-        std::filesystem::path assets = std::filesystem::current_path() / "../assets";
+        std::filesystem::path assets = std::filesystem::current_path() / ".." / "assets";
         m_shader.load(assets / "vert.glsl", assets / "frag.glsl");
 
         auto fontPath = getRoot() / "fonts" / "monofonto.ttf";
@@ -184,7 +185,7 @@ namespace SpaceNinja
 
     std::filesystem::path Game::getRoot() const
     {
-        auto root = std::filesystem::current_path() / "../assets";
+        auto root = std::filesystem::current_path() / ".." / "assets";
         return root;
     }
 
