@@ -6,3 +6,5 @@
 save.json
 
 doc/html
+/cmake-build-release/
+*~
