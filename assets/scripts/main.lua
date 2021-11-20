@@ -2,7 +2,7 @@ function main(stage_id)
 
     package.path = "../assets/scripts/?.lua"
 
-    require('common_functions')
+    require("common_functions")
 
     -- Argument checking: void main(int stage_id)
     if(type(stage_id) ~= "number") then
@@ -17,7 +17,7 @@ function main(stage_id)
         -- then second return value is error_msg
         error_msg = stage_module
         print(error_msg)
-        print("No module associated to the stage (searched module '" .. module_name .. "')")
+        print("No module associated to the stage (searched module \"" .. module_name .. "\")")
     end
 
     -- Get the function stageXX where XX is the stage_id to run it as the main coroutine
